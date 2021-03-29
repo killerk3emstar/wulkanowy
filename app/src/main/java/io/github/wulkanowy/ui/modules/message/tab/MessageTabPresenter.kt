@@ -173,7 +173,7 @@ class MessageTabPresenter @Inject constructor(
         } else {
             messages
                 .map { it to calculateMatchRatio(it, query) }
-                .sortedByDescending { it.second }
+                .sortedWith(compareBy<Pair<Message, Int>> { -it.second }.thenByDescending { it.first.date })
                 .filter { it.second > 5000 }
                 .map { it.first }
         }
@@ -208,14 +208,6 @@ class MessageTabPresenter @Inject constructor(
             FuzzySearch.ratio(
                 query.toLowerCase(Locale.getDefault()),
                 message.date.toFormattedString("dd.MM.yyyy").toLowerCase(Locale.getDefault())
-            ),
-            FuzzySearch.ratio(
-                query.toLowerCase(Locale.getDefault()),
-                message.date.toFormattedString("d MMMM").toLowerCase(Locale.getDefault())
-            ),
-            FuzzySearch.ratio(
-                query.toLowerCase(Locale.getDefault()),
-                message.date.toFormattedString("d MMMM yyyy").toLowerCase(Locale.getDefault())
             )
         ).maxOrNull() ?: 0
 
