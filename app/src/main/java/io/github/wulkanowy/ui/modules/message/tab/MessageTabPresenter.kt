@@ -75,8 +75,12 @@ class MessageTabPresenter @Inject constructor(
         loadData(true)
     }
 
-    fun onParentViewLoadData(forceRefresh: Boolean) {
-        loadData(forceRefresh)
+    fun onParentViewLoadData(
+        forceRefresh: Boolean,
+        onlyUnread: Boolean = false,
+        onlyWithAttachments: Boolean = false
+    ) {
+        loadData(forceRefresh, onlyUnread, onlyWithAttachments)
     }
 
     fun onMessageItemSelected(message: Message, position: Int) {
@@ -84,7 +88,11 @@ class MessageTabPresenter @Inject constructor(
         view?.openMessage(message)
     }
 
-    private fun loadData(forceRefresh: Boolean) {
+    private fun loadData(
+        forceRefresh: Boolean,
+        onlyUnread: Boolean = false,
+        onlyWithAttachments: Boolean = false
+    ) {
         Timber.i("Loading $folder message data started")
 
         flowWithResourceIn {
@@ -101,7 +109,13 @@ class MessageTabPresenter @Inject constructor(
                             showProgress(false)
                             showContent(true)
                             messages = it.data
-                            updateData(getFilteredData(lastSearchQuery))
+                            updateData(
+                                getFilteredData(
+                                    lastSearchQuery,
+                                    onlyUnread,
+                                    onlyWithAttachments
+                                )
+                            )
                             notifyParentDataLoaded()
                         }
                     }
@@ -109,7 +123,7 @@ class MessageTabPresenter @Inject constructor(
                 Status.SUCCESS -> {
                     Timber.i("Loading $folder message result: Success")
                     messages = it.data!!
-                    updateData(getFilteredData(lastSearchQuery))
+                    updateData(getFilteredData(lastSearchQuery, onlyUnread, onlyWithAttachments))
                     analytics.logEvent(
                         "load_data",
                         "type" to "messages",
@@ -167,15 +181,33 @@ class MessageTabPresenter @Inject constructor(
         }
     }
 
-    private fun getFilteredData(query: String): List<Message> {
+    private fun getFilteredData(
+        query: String,
+        onlyUnread: Boolean = false,
+        onlyWithAttachments: Boolean = false
+    ): List<Message> {
         return if (query.trim().isEmpty()) {
-            messages.sortedByDescending { it.date }
+            with(messages.sortedByDescending { it.date }) {
+                when {
+                    onlyUnread && onlyWithAttachments -> filter { it.unread == onlyUnread && it.hasAttachments == onlyWithAttachments }
+                    onlyUnread -> filter { it.unread == onlyUnread }
+                    onlyWithAttachments -> filter { it.hasAttachments == onlyWithAttachments }
+                    else -> this
+                }
+            }
         } else {
-            messages
+            with(messages
                 .map { it to calculateMatchRatio(it, query) }
                 .sortedWith(compareBy<Pair<Message, Int>> { -it.second }.thenByDescending { it.first.date })
                 .filter { it.second > 5000 }
-                .map { it.first }
+                .map { it.first }) {
+                when {
+                    onlyUnread && onlyWithAttachments -> filter { it.unread == onlyUnread && it.hasAttachments == onlyWithAttachments }
+                    onlyUnread -> filter { it.unread == onlyUnread }
+                    onlyWithAttachments -> filter { it.hasAttachments == onlyWithAttachments }
+                    else -> this
+                }
+            }
         }
     }
 

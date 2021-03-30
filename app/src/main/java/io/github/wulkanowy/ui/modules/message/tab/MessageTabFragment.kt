@@ -143,8 +143,12 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
         (parentFragment as? MessageFragment)?.onChildFragmentLoaded()
     }
 
-    fun onParentLoadData(forceRefresh: Boolean) {
-        presenter.onParentViewLoadData(forceRefresh)
+    fun onParentLoadData(
+        forceRefresh: Boolean,
+        onlyUnread: Boolean = false,
+        onlyWithAttachments: Boolean = false
+    ) {
+        presenter.onParentViewLoadData(forceRefresh, onlyUnread, onlyWithAttachments)
     }
 
     fun onParentDeleteMessage() {
