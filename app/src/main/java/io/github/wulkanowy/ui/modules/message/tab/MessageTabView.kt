@@ -7,6 +7,10 @@ interface MessageTabView : BaseView {
 
     val isViewEmpty: Boolean
 
+    val onlyUnread: Boolean
+
+    val onlyWithAttachments: Boolean
+
     fun initView()
 
     fun resetListPosition()

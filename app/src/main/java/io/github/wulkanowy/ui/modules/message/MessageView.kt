@@ -6,10 +6,6 @@ interface MessageView : BaseView {
 
     val currentPageIndex: Int
 
-    val onlyUnread: Boolean
-
-    val onlyWithAttachments: Boolean
-
     fun initView()
 
     fun showContent(show: Boolean)
@@ -18,9 +14,7 @@ interface MessageView : BaseView {
 
     fun notifyChildLoadData(
         index: Int,
-        forceRefresh: Boolean,
-        onlyUnread: Boolean,
-        onlyWithAttachments: Boolean
+        forceRefresh: Boolean
     )
 
     fun notifyChildMessageDeleted(tabId: Int)

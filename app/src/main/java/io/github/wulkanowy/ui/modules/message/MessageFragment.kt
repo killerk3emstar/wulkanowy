@@ -36,10 +36,6 @@ class MessageFragment : BaseFragment<FragmentMessageBinding>(R.layout.fragment_m
 
     override val currentPageIndex get() = binding.messageViewPager.currentItem
 
-    override val onlyUnread get() = binding.chipUnread.isChecked
-
-    override val onlyWithAttachments get() = binding.chipAttachments.isChecked
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMessageBinding.bind(view)
@@ -49,11 +45,13 @@ class MessageFragment : BaseFragment<FragmentMessageBinding>(R.layout.fragment_m
     override fun initView() {
         with(pagerAdapter) {
             containerId = binding.messageViewPager.id
-            addFragmentsWithTitle(mapOf(
-                MessageTabFragment.newInstance(RECEIVED) to getString(R.string.message_inbox),
-                MessageTabFragment.newInstance(SENT) to getString(R.string.message_sent),
-                MessageTabFragment.newInstance(TRASHED) to getString(R.string.message_trash)
-            ))
+            addFragmentsWithTitle(
+                mapOf(
+                    MessageTabFragment.newInstance(RECEIVED) to getString(R.string.message_inbox),
+                    MessageTabFragment.newInstance(SENT) to getString(R.string.message_sent),
+                    MessageTabFragment.newInstance(TRASHED) to getString(R.string.message_trash)
+                )
+            )
         }
 
         with(binding.messageViewPager) {
@@ -68,19 +66,12 @@ class MessageFragment : BaseFragment<FragmentMessageBinding>(R.layout.fragment_m
         }
 
         binding.openSendMessageButton.setOnClickListener { presenter.onSendMessageButtonClicked() }
-        binding.chipUnread.setOnCheckedChangeListener { chip, isChecked ->
-            presenter.onChipChecked(chip, isChecked)
-        }
-        binding.chipAttachments.setOnCheckedChangeListener { chip, isChecked ->
-            presenter.onChipChecked(chip, isChecked)
-        }
     }
 
     override fun showContent(show: Boolean) {
         with(binding) {
             messageViewPager.visibility = if (show) VISIBLE else INVISIBLE
             messageTabLayout.visibility = if (show) VISIBLE else INVISIBLE
-            messageChipGroup.visibility = if (show) VISIBLE else INVISIBLE
         }
     }
 
@@ -96,16 +87,9 @@ class MessageFragment : BaseFragment<FragmentMessageBinding>(R.layout.fragment_m
         (pagerAdapter.getFragmentInstance(tabId) as? MessageTabFragment)?.onParentDeleteMessage()
     }
 
-    override fun notifyChildLoadData(
-        index: Int,
-        forceRefresh: Boolean,
-        onlyUnread: Boolean,
-        onlyWithAttachments: Boolean
-    ) {
+    override fun notifyChildLoadData(index: Int, forceRefresh: Boolean) {
         (pagerAdapter.getFragmentInstance(index) as? MessageTabFragment)?.onParentLoadData(
-            forceRefresh,
-            onlyUnread,
-            onlyWithAttachments
+            forceRefresh
         )
     }
 

@@ -48,6 +48,10 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
     override val isViewEmpty
         get() = tabAdapter.itemCount == 0
 
+    override val onlyUnread get() = binding.chipUnread.isChecked
+
+    override val onlyWithAttachments get() = binding.chipAttachments.isChecked
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -77,9 +81,19 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
         with(binding) {
             messageTabSwipe.setOnRefreshListener(presenter::onSwipeRefresh)
             messageTabSwipe.setColorSchemeColors(requireContext().getThemeAttrColor(R.attr.colorPrimary))
-            messageTabSwipe.setProgressBackgroundColorSchemeColor(requireContext().getThemeAttrColor(R.attr.colorSwipeRefresh))
+            messageTabSwipe.setProgressBackgroundColorSchemeColor(
+                requireContext().getThemeAttrColor(
+                    R.attr.colorSwipeRefresh
+                )
+            )
             messageTabErrorRetry.setOnClickListener { presenter.onRetry() }
             messageTabErrorDetails.setOnClickListener { presenter.onDetailsClick() }
+        }
+        binding.chipUnread.setOnCheckedChangeListener { chip, isChecked ->
+            presenter.onChipChecked(chip, isChecked)
+        }
+        binding.chipAttachments.setOnCheckedChangeListener { chip, isChecked ->
+            presenter.onChipChecked(chip, isChecked)
         }
     }
 
@@ -148,7 +162,7 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
         onlyUnread: Boolean = false,
         onlyWithAttachments: Boolean = false
     ) {
-        presenter.onParentViewLoadData(forceRefresh, onlyUnread, onlyWithAttachments)
+        presenter.onParentViewLoadData(onlyUnread, onlyWithAttachments, forceRefresh)
     }
 
     fun onParentDeleteMessage() {

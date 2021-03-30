@@ -1,7 +1,5 @@
 package io.github.wulkanowy.ui.modules.message
 
-import android.widget.CompoundButton
-import io.github.wulkanowy.R
 import io.github.wulkanowy.data.repositories.StudentRepository
 import io.github.wulkanowy.ui.base.BasePresenter
 import io.github.wulkanowy.ui.base.ErrorHandler
@@ -29,29 +27,13 @@ class MessagePresenter @Inject constructor(
         loadChild(index)
     }
 
-    fun onChipChecked(chip: CompoundButton, isChecked: Boolean) {
-        when (chip.id) {
-            R.id.chip_unread -> {
-                view?.run { loadChild(currentPageIndex, isChecked, onlyWithAttachments) }
-            }
-            R.id.chip_attachments -> {
-                view?.run { loadChild(currentPageIndex, onlyUnread, isChecked) }
-            }
-        }
-    }
-
     private fun loadData() {
         view?.run { loadChild(currentPageIndex) }
     }
 
-    private fun loadChild(
-        index: Int,
-        onlyUnread: Boolean = false,
-        onlyWithAttachments: Boolean = false,
-        forceRefresh: Boolean = false
-    ) {
+    private fun loadChild(index: Int, forceRefresh: Boolean = false) {
         Timber.i("Load message child view index: $index")
-        view?.notifyChildLoadData(index, forceRefresh, onlyUnread, onlyWithAttachments)
+        view?.notifyChildLoadData(index, forceRefresh)
     }
 
     fun onChildViewLoaded() {

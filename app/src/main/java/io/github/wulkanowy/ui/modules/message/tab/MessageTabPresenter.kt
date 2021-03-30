@@ -1,5 +1,7 @@
 package io.github.wulkanowy.ui.modules.message.tab
 
+import android.widget.CompoundButton
+import io.github.wulkanowy.R
 import io.github.wulkanowy.data.Status
 import io.github.wulkanowy.data.db.entities.Message
 import io.github.wulkanowy.data.enums.MessageFolder
@@ -86,6 +88,17 @@ class MessageTabPresenter @Inject constructor(
     fun onMessageItemSelected(message: Message, position: Int) {
         Timber.i("Select message ${message.id} item (position: $position)")
         view?.openMessage(message)
+    }
+
+    fun onChipChecked(chip: CompoundButton, isChecked: Boolean) {
+        when (chip.id) {
+            R.id.chip_unread -> {
+                view?.run { onParentViewLoadData(false, isChecked, onlyWithAttachments) }
+            }
+            R.id.chip_attachments -> {
+                view?.run { onParentViewLoadData(false, onlyUnread, isChecked) }
+            }
+        }
     }
 
     private fun loadData(
