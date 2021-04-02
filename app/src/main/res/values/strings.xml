@@ -21,6 +21,7 @@
     <string name="account_quick_title">Select account</string>
     <string name="account_details_title">Account details</string>
     <string name="student_info_title">Student info</string>
+    <string name="dashboard_title">Dashboard</string>
 
 
     <!--Subtitles-->

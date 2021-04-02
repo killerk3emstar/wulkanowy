@@ -23,6 +23,7 @@ class MorePresenter @Inject constructor(
         view?.run {
             when (title) {
                 messagesRes?.first -> openMessagesView()
+                examRes?.first -> openExamView()
                 homeworkRes?.first -> openHomeworkView()
                 noteRes?.first -> openNoteView()
                 luckyNumberRes?.first -> openLuckyNumberView()
@@ -42,16 +43,19 @@ class MorePresenter @Inject constructor(
     private fun loadData() {
         Timber.i("Load items for more view")
         view?.run {
-            updateData(listOfNotNull(
-                messagesRes,
-                homeworkRes,
-                noteRes,
-                luckyNumberRes,
-                mobileDevicesRes,
-                conferencesRes,
-                schoolAndTeachersRes,
-                settingsRes
-            ))
+            updateData(
+                listOfNotNull(
+                    messagesRes,
+                    examRes,
+                    homeworkRes,
+                    noteRes,
+                    luckyNumberRes,
+                    mobileDevicesRes,
+                    conferencesRes,
+                    schoolAndTeachersRes,
+                    settingsRes
+                )
+            )
         }
     }
 }

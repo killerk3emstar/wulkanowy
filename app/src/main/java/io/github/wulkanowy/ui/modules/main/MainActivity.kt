@@ -39,7 +39,7 @@ import io.github.wulkanowy.databinding.ActivityMainBinding
 import io.github.wulkanowy.ui.base.BaseActivity
 import io.github.wulkanowy.ui.modules.account.accountquick.AccountQuickDialog
 import io.github.wulkanowy.ui.modules.attendance.AttendanceFragment
-import io.github.wulkanowy.ui.modules.exam.ExamFragment
+import io.github.wulkanowy.ui.modules.dashboard.DashboardFragment
 import io.github.wulkanowy.ui.modules.grade.GradeFragment
 import io.github.wulkanowy.ui.modules.homework.HomeworkFragment
 import io.github.wulkanowy.ui.modules.luckynumber.LuckyNumberFragment
@@ -222,13 +222,17 @@ class MainActivity : BaseActivity<MainPresenter, ActivityMainBinding>(), MainVie
         with(binding.mainBottomNav) {
             addItems(
                 listOf(
+                    AHBottomNavigationItem(
+                        R.string.dashboard_title,
+                        R.drawable.ic_main_dashboard,
+                        0
+                    ),
                     AHBottomNavigationItem(R.string.grade_title, R.drawable.ic_main_grade, 0),
                     AHBottomNavigationItem(
                         R.string.attendance_title,
                         R.drawable.ic_main_attendance,
                         0
                     ),
-                    AHBottomNavigationItem(R.string.exam_title, R.drawable.ic_main_exam, 0),
                     AHBottomNavigationItem(
                         R.string.timetable_title,
                         R.drawable.ic_main_timetable,
@@ -276,9 +280,9 @@ class MainActivity : BaseActivity<MainPresenter, ActivityMainBinding>(), MainVie
             }
             fragmentHideStrategy = HIDE
             rootFragments = listOf(
+                DashboardFragment.newInstance(),
                 GradeFragment.newInstance(),
                 AttendanceFragment.newInstance(),
-                ExamFragment.newInstance(),
                 TimetableFragment.newInstance(),
                 MoreFragment.newInstance()
             )
