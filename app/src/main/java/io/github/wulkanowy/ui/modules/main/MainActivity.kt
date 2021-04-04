@@ -217,12 +217,12 @@ class MainActivity : BaseActivity<MainPresenter, ActivityMainBinding>(), MainVie
 
         with(binding.mainBottomNav) {
             with(menu) {
-                add(Menu.NONE, 0, Menu.NONE, R.string.grade_title)
+                add(Menu.NONE, 0, Menu.NONE, R.string.dashboard_title)
+                    .setIcon(R.drawable.ic_main_dashboard)
+                add(Menu.NONE, 1, Menu.NONE, R.string.grade_title)
                     .setIcon(R.drawable.ic_main_grade)
-                add(Menu.NONE, 1, Menu.NONE, R.string.attendance_title)
+                add(Menu.NONE, 2, Menu.NONE, R.string.attendance_title)
                     .setIcon(R.drawable.ic_main_attendance)
-                add(Menu.NONE, 2, Menu.NONE, R.string.exam_title)
-                    .setIcon(R.drawable.ic_main_exam)
                 add(Menu.NONE, 3, Menu.NONE, R.string.timetable_title)
                     .setIcon(R.drawable.ic_main_timetable)
                 add(Menu.NONE, 4, Menu.NONE, R.string.more_title)
