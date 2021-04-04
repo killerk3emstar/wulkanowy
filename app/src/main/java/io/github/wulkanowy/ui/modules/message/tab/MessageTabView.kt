@@ -7,9 +7,9 @@ interface MessageTabView : BaseView {
 
     val isViewEmpty: Boolean
 
-    val onlyUnread: Boolean
+    var onlyUnread: Boolean
 
-    val onlyWithAttachments: Boolean
+    var onlyWithAttachments: Boolean
 
     fun initView()
 

@@ -48,9 +48,9 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
     override val isViewEmpty
         get() = tabAdapter.itemCount == 0
 
-    override val onlyUnread get() = binding.chipUnread.isChecked
+    override var onlyUnread = false
 
-    override val onlyWithAttachments get() = binding.chipAttachments.isChecked
+    override var onlyWithAttachments = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +69,8 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
 
     override fun initView() {
         with(tabAdapter) {
-            onClickListener = presenter::onMessageItemSelected
+            onItemClickListener = presenter::onMessageItemSelected
+            onHeaderClickListener = presenter::onChipChecked
             onChangesDetectedListener = ::resetListPosition
         }
 
@@ -88,12 +89,6 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
             )
             messageTabErrorRetry.setOnClickListener { presenter.onRetry() }
             messageTabErrorDetails.setOnClickListener { presenter.onDetailsClick() }
-        }
-        binding.chipUnread.setOnCheckedChangeListener { chip, isChecked ->
-            presenter.onChipChecked(chip, isChecked)
-        }
-        binding.chipAttachments.setOnCheckedChangeListener { chip, isChecked ->
-            presenter.onChipChecked(chip, isChecked)
         }
     }
 
@@ -114,7 +109,7 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
     }
 
     override fun updateData(data: List<Message>) {
-        tabAdapter.setDataItems(data)
+        tabAdapter.setDataItems(data, onlyUnread, onlyWithAttachments)
     }
 
     override fun showProgress(show: Boolean) {
@@ -159,10 +154,10 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
 
     fun onParentLoadData(
         forceRefresh: Boolean,
-        onlyUnread: Boolean = false,
-        onlyWithAttachments: Boolean = false
+        _onlyUnread: Boolean = onlyUnread,
+        _onlyWithAttachments: Boolean = onlyWithAttachments
     ) {
-        presenter.onParentViewLoadData(onlyUnread, onlyWithAttachments, forceRefresh)
+        presenter.onParentViewLoadData(forceRefresh, _onlyUnread, _onlyWithAttachments)
     }
 
     fun onParentDeleteMessage() {

@@ -58,15 +58,15 @@ class MessageTabPresenter @Inject constructor(
 
     fun onSwipeRefresh() {
         Timber.i("Force refreshing the $folder message")
-        onParentViewLoadData(true)
+        view?.run { onParentViewLoadData(true, onlyUnread, onlyWithAttachments) }
     }
 
     fun onRetry() {
         view?.run {
             showErrorView(false)
             showProgress(true)
+            loadData(true, onlyUnread, onlyWithAttachments)
         }
-        loadData(true)
     }
 
     fun onDetailsClick() {
@@ -74,13 +74,13 @@ class MessageTabPresenter @Inject constructor(
     }
 
     fun onDeleteMessage() {
-        loadData(true)
+        view?.run { loadData(true, onlyUnread, onlyWithAttachments) }
     }
 
     fun onParentViewLoadData(
         forceRefresh: Boolean,
-        onlyUnread: Boolean = false,
-        onlyWithAttachments: Boolean = false
+        onlyUnread: Boolean = view?.onlyUnread == true,
+        onlyWithAttachments: Boolean = view?.onlyWithAttachments == true
     ) {
         loadData(forceRefresh, onlyUnread, onlyWithAttachments)
     }
@@ -93,18 +93,24 @@ class MessageTabPresenter @Inject constructor(
     fun onChipChecked(chip: CompoundButton, isChecked: Boolean) {
         when (chip.id) {
             R.id.chip_unread -> {
-                view?.run { onParentViewLoadData(false, isChecked, onlyWithAttachments) }
+                view?.run {
+                    onlyUnread = isChecked
+                    onParentViewLoadData(false, onlyUnread, onlyWithAttachments)
+                }
             }
             R.id.chip_attachments -> {
-                view?.run { onParentViewLoadData(false, onlyUnread, isChecked) }
+                view?.run {
+                    onlyWithAttachments = isChecked
+                    onParentViewLoadData(false, onlyUnread, onlyWithAttachments)
+                }
             }
         }
     }
 
     private fun loadData(
         forceRefresh: Boolean,
-        onlyUnread: Boolean = false,
-        onlyWithAttachments: Boolean = false
+        onlyUnread: Boolean,
+        onlyWithAttachments: Boolean
     ) {
         Timber.i("Loading $folder message data started")
 
@@ -227,7 +233,7 @@ class MessageTabPresenter @Inject constructor(
     private fun updateData(data: List<Message>) {
         view?.run {
             showEmpty(data.isEmpty())
-            showContent(data.isNotEmpty())
+            showContent(true)
             showErrorView(false)
             updateData(data)
         }
