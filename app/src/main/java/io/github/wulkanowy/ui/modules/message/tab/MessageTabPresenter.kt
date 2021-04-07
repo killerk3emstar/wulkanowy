@@ -218,7 +218,7 @@ class MessageTabPresenter @Inject constructor(
             with(messages
                 .map { it to calculateMatchRatio(it, query) }
                 .sortedWith(compareBy<Pair<Message, Int>> { -it.second }.thenByDescending { it.first.date })
-                .filter { it.second > 5000 }
+                .filter { it.second > 6000 }
                 .map { it.first }) {
                 when {
                     onlyUnread && onlyWithAttachments -> filter { it.unread == onlyUnread && it.hasAttachments == onlyWithAttachments }
