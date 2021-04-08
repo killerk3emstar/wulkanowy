@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 import java.time.LocalDate
 
-@Entity(tableName = "Exams")
-data class Exam(
+@Entity(tableName = "TimetableHeaders")
+data class TimetableHeader(
 
     @ColumnInfo(name = "student_id")
     val studentId: Int,
@@ -17,26 +17,9 @@ data class Exam(
 
     val date: LocalDate,
 
-    @ColumnInfo(name = "entry_date")
-    val entryDate: LocalDate,
-
-    val subject: String,
-
-    val group: String,
-
-    val type: String,
-
-    val description: String,
-
-    val teacher: String,
-
-    @ColumnInfo(name = "teacher_symbol")
-    val teacherSymbol: String
+    val content: String,
 ) : Serializable {
 
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
-
-    @ColumnInfo(name = "is_notified")
-    var isNotified: Boolean = true
 }
