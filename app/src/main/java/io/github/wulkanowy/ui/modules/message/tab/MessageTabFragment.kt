@@ -62,9 +62,11 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentMessageTabBinding.bind(view)
         messageContainer = binding.messageTabRecycler
-        presenter.onAttachView(this, MessageFolder.valueOf(
-            (savedInstanceState ?: arguments)?.getString(MESSAGE_TAB_FOLDER_ID).orEmpty()
-        ))
+
+        val folder = MessageFolder.valueOf(
+            (savedInstanceState ?: requireArguments()).getString(MESSAGE_TAB_FOLDER_ID).orEmpty()
+        )
+        presenter.onAttachView(this, folder)
     }
 
     override fun initView() {
@@ -77,7 +79,7 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
         with(binding.messageTabRecycler) {
             layoutManager = LinearLayoutManager(context)
             adapter = tabAdapter
-            addItemDecoration(DividerItemDecoration(context))
+            addItemDecoration(DividerItemDecoration(context, false))
         }
         with(binding) {
             messageTabSwipe.setOnRefreshListener(presenter::onSwipeRefresh)
