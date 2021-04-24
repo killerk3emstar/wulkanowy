@@ -1,7 +1,10 @@
 package io.github.wulkanowy.ui.modules.dashboard
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
+import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.wulkanowy.R
@@ -27,6 +30,11 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
         fun newInstance() = DashboardFragment()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDashboardBinding.bind(view)
@@ -38,6 +46,10 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
             layoutManager = LinearLayoutManager(context)
             adapter = dashboardAdapter
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu[0].isVisible = false
     }
 
     override fun updateData(data: List<DashboardData>) {
