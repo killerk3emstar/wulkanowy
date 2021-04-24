@@ -40,6 +40,13 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
         }
     }
 
+    override fun updateData(data: List<DashboardData>) {
+        with(dashboardAdapter) {
+            items = data
+            notifyDataSetChanged()
+        }
+    }
+
     override fun onDestroyView() {
         presenter.onDetachView()
         super.onDestroyView()

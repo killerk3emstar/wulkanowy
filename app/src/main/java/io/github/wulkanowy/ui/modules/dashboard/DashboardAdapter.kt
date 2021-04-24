@@ -3,27 +3,24 @@ package io.github.wulkanowy.ui.modules.dashboard
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import io.github.wulkanowy.data.db.entities.Student
 import io.github.wulkanowy.databinding.ItemDashboardAccountBinding
+import io.github.wulkanowy.utils.nickOrName
 import javax.inject.Inject
 
 class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    enum class ViewType(val id: Int) {
-        ACCOUNT(1)
-    }
+    var items = emptyList<DashboardData>()
 
-    override fun getItemCount() = 1
+    override fun getItemCount() = items.size
 
-    override fun getItemViewType(position: Int) = when (position) {
-        0 -> ViewType.ACCOUNT.id
-        else -> ViewType.ACCOUNT.id
-    }
+    override fun getItemViewType(position: Int) = items[position].viewType.id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
         return when (viewType) {
-            ViewType.ACCOUNT.id -> AccountViewHolder(
+            DashboardViewType.ACCOUNT.id -> AccountViewHolder(
                 ItemDashboardAccountBinding.inflate(inflater, parent, false)
             )
             else -> throw IllegalArgumentException()
@@ -31,6 +28,18 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is AccountViewHolder -> bindAccountViewHolder(holder, position)
+        }
+    }
+
+    private fun bindAccountViewHolder(accountViewHolder: AccountViewHolder, position: Int) {
+        val item = items[position].data as Student
+
+        with(accountViewHolder.binding) {
+            dashboardAccountItemName.text = item.nickOrName
+            dashboardAccountItemSchoolName.text = item.schoolName
+        }
     }
 
     class AccountViewHolder(val binding: ItemDashboardAccountBinding) :

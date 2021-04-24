@@ -206,6 +206,7 @@ dependencies {
     implementation "com.squareup.moshi:moshi:$moshi"
     implementation "com.squareup.moshi:moshi-adapters:$moshi"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi"
+
     implementation "com.jakewharton.timber:timber:4.7.1"
     implementation "at.favre.lib:slf4j-timber:1.0.1"
     implementation "fr.bipi.treessence:treessence:0.3.2"
