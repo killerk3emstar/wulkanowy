@@ -1,5 +1,6 @@
 package io.github.wulkanowy.ui.modules.dashboard
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -59,11 +60,19 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    @Suppress("UNCHECKED_CAST")
     private fun bindHorizontalGroupViewHolder(
-        luckyNumberViewHolder: HorizontalGroupViewHolder,
+        horizontalGroupViewHolder: HorizontalGroupViewHolder,
         position: Int
     ) {
-        val item = items[position].data as LuckyNumber
+        val (luckyNumber, messageCount, attendancePercentage) = items[position].data as Triple<LuckyNumber?, Int?, Double?>
+
+        with(horizontalGroupViewHolder.binding) {
+            dashboardHorizontalGroupItemAttendanceValue.text = "%.2f%%".format(attendancePercentage)
+            dashboardHorizontalGroupItemLuckyValue.text = luckyNumber?.luckyNumber.toString()
+            dashboardHorizontalGroupItemMessageValue.text = messageCount.toString()
+        }
     }
 
     private fun bindGradesViewHolder(gradesViewHolder: GradesViewHolder, position: Int) {
