@@ -9,6 +9,7 @@ import io.github.wulkanowy.data.db.entities.Student
 import io.github.wulkanowy.databinding.ItemDashboardAccountBinding
 import io.github.wulkanowy.databinding.ItemDashboardGradesBinding
 import io.github.wulkanowy.databinding.ItemDashboardHorizontalGroupBinding
+import io.github.wulkanowy.databinding.ItemDashboardLessonsBinding
 import io.github.wulkanowy.utils.createNameInitialsDrawable
 import io.github.wulkanowy.utils.nickOrName
 import javax.inject.Inject
@@ -34,6 +35,9 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             DashboardViewType.GRADES.id -> GradesViewHolder(
                 ItemDashboardGradesBinding.inflate(inflater, parent, false)
             )
+            DashboardViewType.LESSONS.id -> LessonsViewHolder(
+                ItemDashboardLessonsBinding.inflate(inflater, parent, false)
+            )
             else -> throw IllegalArgumentException()
         }
     }
@@ -43,6 +47,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             is AccountViewHolder -> bindAccountViewHolder(holder, position)
             is HorizontalGroupViewHolder -> bindHorizontalGroupViewHolder(holder, position)
             is GradesViewHolder -> bindGradesViewHolder(holder, position)
+            is LessonsViewHolder -> bindLessonsViewHolder(holder, position)
         }
     }
 
@@ -79,6 +84,9 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         val item = items[position]
     }
 
+    private fun bindLessonsViewHolder(lessonsViewHolder: LessonsViewHolder, position: Int) {
+    }
+
     class AccountViewHolder(val binding: ItemDashboardAccountBinding) :
         RecyclerView.ViewHolder(binding.root)
 
@@ -86,5 +94,8 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         RecyclerView.ViewHolder(binding.root)
 
     class GradesViewHolder(val binding: ItemDashboardGradesBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    class LessonsViewHolder(val binding: ItemDashboardLessonsBinding) :
         RecyclerView.ViewHolder(binding.root)
 }

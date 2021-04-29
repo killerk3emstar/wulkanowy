@@ -9,6 +9,7 @@ import io.github.wulkanowy.data.repositories.LuckyNumberRepository
 import io.github.wulkanowy.data.repositories.MessageRepository
 import io.github.wulkanowy.data.repositories.SemesterRepository
 import io.github.wulkanowy.data.repositories.StudentRepository
+import io.github.wulkanowy.data.repositories.TimetableRepository
 import io.github.wulkanowy.ui.base.BasePresenter
 import io.github.wulkanowy.ui.base.ErrorHandler
 import io.github.wulkanowy.utils.calculatePercentage
@@ -17,6 +18,7 @@ import io.github.wulkanowy.utils.flowWithResourceIn
 import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
+import java.time.LocalDate
 import javax.inject.Inject
 
 class DashboardPresenter @Inject constructor(
@@ -26,7 +28,8 @@ class DashboardPresenter @Inject constructor(
     private val gradeRepository: GradeRepository,
     private val semesterRepository: SemesterRepository,
     private val messageRepository: MessageRepository,
-    private val attendanceSummaryRepository: AttendanceSummaryRepository
+    private val attendanceSummaryRepository: AttendanceSummaryRepository,
+    private val timetableRepository: TimetableRepository
 ) : BasePresenter<DashboardView>(errorHandler, studentRepository) {
 
     private val dashboardDataList = mutableListOf<DashboardData>()
@@ -39,6 +42,7 @@ class DashboardPresenter @Inject constructor(
         loadCurrentAccount()
         loadHorizontalGroup()
         loadGrades()
+        loadLessons()
     }
 
     private fun loadCurrentAccount() {
@@ -114,6 +118,33 @@ class DashboardPresenter @Inject constructor(
                 }
             }
         }.launch("dashboard_grades")
+    }
+
+    private fun loadLessons() {
+        flowWithResourceIn {
+            val student = studentRepository.getCurrentStudent(true)
+            val semester = semesterRepository.getCurrentSemester(student)
+
+            timetableRepository.getTimetable(
+                student = student,
+                semester = semester,
+                start = LocalDate.now(),
+                end = LocalDate.now(),
+                forceRefresh = false
+            )
+
+        }.onEach {
+            when (it.status) {
+                Status.LOADING -> Timber.i("Loading dashboard lessons data started")
+                Status.SUCCESS -> {
+                    Timber.i("Loading dashboard lessons result: Success")
+                    updateData(it.data!!, DashboardViewType.LESSONS)
+                }
+                Status.ERROR -> {
+                    Timber.i("Loading dashboard lessons result: An exception occurred")
+                }
+            }
+        }.launch("dashboard_lessons")
     }
 
     private fun updateData(data: Any, dashboardViewType: DashboardViewType) {
