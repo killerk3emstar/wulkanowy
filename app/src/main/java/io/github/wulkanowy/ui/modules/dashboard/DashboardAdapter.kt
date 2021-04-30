@@ -3,6 +3,7 @@ package io.github.wulkanowy.ui.modules.dashboard
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.wulkanowy.data.db.entities.LuckyNumber
 import io.github.wulkanowy.data.db.entities.Student
@@ -82,6 +83,11 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
     private fun bindGradesViewHolder(gradesViewHolder: GradesViewHolder, position: Int) {
         val item = items[position]
+
+        with(gradesViewHolder.binding.dashboardGradesItemRecycler) {
+            adapter = gradesViewHolder.adapter
+            layoutManager = LinearLayoutManager(context)
+        }
     }
 
     private fun bindLessonsViewHolder(lessonsViewHolder: LessonsViewHolder, position: Int) {
@@ -94,7 +100,10 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         RecyclerView.ViewHolder(binding.root)
 
     class GradesViewHolder(val binding: ItemDashboardGradesBinding) :
-        RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root) {
+
+        val adapter by lazy { DashboardGradesAdapter() }
+    }
 
     class LessonsViewHolder(val binding: ItemDashboardLessonsBinding) :
         RecyclerView.ViewHolder(binding.root)

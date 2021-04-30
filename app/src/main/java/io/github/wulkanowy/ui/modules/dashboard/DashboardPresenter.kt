@@ -41,8 +41,8 @@ class DashboardPresenter @Inject constructor(
 
         loadCurrentAccount()
         loadHorizontalGroup()
-        loadGrades()
         loadLessons()
+        loadGrades()
     }
 
     private fun loadCurrentAccount() {
@@ -150,6 +150,8 @@ class DashboardPresenter @Inject constructor(
     private fun updateData(data: Any, dashboardViewType: DashboardViewType) {
         dashboardDataList.removeAll { it.viewType == dashboardViewType }
         dashboardDataList.add(DashboardData(dashboardViewType, data))
+
+        dashboardDataList.sortBy { it.viewType.id }
 
         view?.updateData(dashboardDataList)
     }

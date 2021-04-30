@@ -2,7 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     android:layout_marginHorizontal="12dp"
     android:layout_marginTop="12dp"
     android:clickable="true"
@@ -21,19 +21,81 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Lekcje"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <TextView
+            android:id="@+id/dashboard_lessons_item_first_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="6dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Teraz:"
+            android:textColor="?colorPrimary"
+            android:textSize="13sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_title" />
+
+        <TextView
+            android:id="@+id/dashboard_lessons_item_first_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="12dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Matematyka, Sala 28"
+            android:textColor="?colorPrimary"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@id/dashboard_lessons_item_first_time"
+            app:layout_constraintStart_toEndOf="@id/dashboard_lessons_item_first_title"
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_first_title" />
+
+        <TextView
+            android:id="@+id/dashboard_lessons_item_first_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="10:45 - 11:45"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_first_title" />
+
+        <TextView
+            android:id="@+id/dashboard_lessons_item_second_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="2dp"
+            android:text="Później:"
+            android:textSize="13sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_title" />
+            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_first_value" />
+
+        <TextView
+            android:id="@+id/dashboard_lessons_item_second_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="16dp"
+            android:text="Matematyka, Sala 28"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/dashboard_lessons_item_second_time"
+            app:layout_constraintStart_toEndOf="@id/dashboard_lessons_item_second_title"
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_second_title" />
+
+        <TextView
+            android:id="@+id/dashboard_lessons_item_second_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="10:45 - 11:45"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_second_title" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
