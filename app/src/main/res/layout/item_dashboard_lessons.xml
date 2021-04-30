@@ -58,7 +58,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="10:45 - 11:45"
+            android:background="?colorPrimary"
+            android:paddingStart="6dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="6dp"
+            android:paddingBottom="1dp"
+            android:text="jeszcze 15 minut"
+            android:textColor="@android:color/white"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_first_title" />
@@ -68,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="6dp"
             android:text="Później:"
             android:textSize="13sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,10 +86,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="12dp"
-            android:layout_marginBottom="16dp"
             android:text="Matematyka, Sala 28"
             android:textSize="13sp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/dashboard_lessons_item_second_time"
             app:layout_constraintStart_toEndOf="@id/dashboard_lessons_item_second_title"
             app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_second_title" />
@@ -97,5 +101,49 @@
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_second_title" />
+
+        <View
+            android:id="@+id/dashboard_lessons_item_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="4dp"
+            android:background="?colorDivider"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_second_value" />
+
+        <TextView
+            android:id="@+id/dashboard_lessons_item_third_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:text="Następnie:"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_divider" />
+
+        <TextView
+            android:id="@+id/dashboard_lessons_item_third_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="12dp"
+            android:text="jeszcze 5 kolejnych lekcji"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@id/dashboard_lessons_item_third_time"
+            app:layout_constraintStart_toEndOf="@id/dashboard_lessons_item_third_title"
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_third_title" />
+
+        <TextView
+            android:id="@+id/dashboard_lessons_item_third_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="do 15:55"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_third_title" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

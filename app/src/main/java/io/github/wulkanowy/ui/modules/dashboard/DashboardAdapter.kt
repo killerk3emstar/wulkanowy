@@ -9,6 +9,7 @@ import io.github.wulkanowy.data.db.entities.LuckyNumber
 import io.github.wulkanowy.data.db.entities.Student
 import io.github.wulkanowy.databinding.ItemDashboardAccountBinding
 import io.github.wulkanowy.databinding.ItemDashboardGradesBinding
+import io.github.wulkanowy.databinding.ItemDashboardHomeworkBinding
 import io.github.wulkanowy.databinding.ItemDashboardHorizontalGroupBinding
 import io.github.wulkanowy.databinding.ItemDashboardLessonsBinding
 import io.github.wulkanowy.utils.createNameInitialsDrawable
@@ -39,6 +40,9 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             DashboardViewType.LESSONS.id -> LessonsViewHolder(
                 ItemDashboardLessonsBinding.inflate(inflater, parent, false)
             )
+            DashboardViewType.HOMEWORK.id -> HomeworkViewHolder(
+                ItemDashboardHomeworkBinding.inflate(inflater, parent, false)
+            )
             else -> throw IllegalArgumentException()
         }
     }
@@ -49,6 +53,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             is HorizontalGroupViewHolder -> bindHorizontalGroupViewHolder(holder, position)
             is GradesViewHolder -> bindGradesViewHolder(holder, position)
             is LessonsViewHolder -> bindLessonsViewHolder(holder, position)
+            is HomeworkViewHolder -> bindHomeworkViewHolder(holder, position)
         }
     }
 
@@ -93,6 +98,13 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     private fun bindLessonsViewHolder(lessonsViewHolder: LessonsViewHolder, position: Int) {
     }
 
+    private fun bindHomeworkViewHolder(homeworkViewHolder: HomeworkViewHolder, position: Int) {
+        with(homeworkViewHolder.binding.dashboardHomeworkItemRecycler) {
+            adapter = homeworkViewHolder.adapter
+            layoutManager = LinearLayoutManager(context)
+        }
+    }
+
     class AccountViewHolder(val binding: ItemDashboardAccountBinding) :
         RecyclerView.ViewHolder(binding.root)
 
@@ -107,4 +119,10 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
     class LessonsViewHolder(val binding: ItemDashboardLessonsBinding) :
         RecyclerView.ViewHolder(binding.root)
+
+    class HomeworkViewHolder(val binding: ItemDashboardHomeworkBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        val adapter by lazy { DashboardHomeworkAdapter() }
+    }
 }

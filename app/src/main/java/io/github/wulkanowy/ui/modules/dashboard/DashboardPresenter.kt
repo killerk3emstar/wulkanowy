@@ -5,6 +5,7 @@ import io.github.wulkanowy.data.Status
 import io.github.wulkanowy.data.enums.MessageFolder
 import io.github.wulkanowy.data.repositories.AttendanceSummaryRepository
 import io.github.wulkanowy.data.repositories.GradeRepository
+import io.github.wulkanowy.data.repositories.HomeworkRepository
 import io.github.wulkanowy.data.repositories.LuckyNumberRepository
 import io.github.wulkanowy.data.repositories.MessageRepository
 import io.github.wulkanowy.data.repositories.SemesterRepository
@@ -29,7 +30,8 @@ class DashboardPresenter @Inject constructor(
     private val semesterRepository: SemesterRepository,
     private val messageRepository: MessageRepository,
     private val attendanceSummaryRepository: AttendanceSummaryRepository,
-    private val timetableRepository: TimetableRepository
+    private val timetableRepository: TimetableRepository,
+    private val homeworkRepository: HomeworkRepository
 ) : BasePresenter<DashboardView>(errorHandler, studentRepository) {
 
     private val dashboardDataList = mutableListOf<DashboardData>()
@@ -43,6 +45,7 @@ class DashboardPresenter @Inject constructor(
         loadHorizontalGroup()
         loadLessons()
         loadGrades()
+        loadHomework()
     }
 
     private fun loadCurrentAccount() {
@@ -145,6 +148,33 @@ class DashboardPresenter @Inject constructor(
                 }
             }
         }.launch("dashboard_lessons")
+    }
+
+    private fun loadHomework() {
+        flowWithResourceIn {
+            val student = studentRepository.getCurrentStudent(true)
+            val semester = semesterRepository.getCurrentSemester(student)
+
+            homeworkRepository.getHomework(
+                student = student,
+                semester = semester,
+                start = LocalDate.now(),
+                end = LocalDate.now(),
+                forceRefresh = false
+            )
+
+        }.onEach {
+            when (it.status) {
+                Status.LOADING -> Timber.i("Loading dashboard lessons data started")
+                Status.SUCCESS -> {
+                    Timber.i("Loading dashboard lessons result: Success")
+                    updateData(it.data!!, DashboardViewType.HOMEWORK)
+                }
+                Status.ERROR -> {
+                    Timber.i("Loading dashboard lessons result: An exception occurred")
+                }
+            }
+        }.launch("dashboard_homework")
     }
 
     private fun updateData(data: Any, dashboardViewType: DashboardViewType) {
