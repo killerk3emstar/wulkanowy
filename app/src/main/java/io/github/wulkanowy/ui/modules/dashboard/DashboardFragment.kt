@@ -1,10 +1,7 @@
 package io.github.wulkanowy.ui.modules.dashboard
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
-import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.wulkanowy.R
@@ -50,15 +47,14 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu[0].isVisible = false
-    }
-
     override fun updateData(data: List<DashboardData>) {
         with(dashboardAdapter) {
             items = data
             notifyDataSetChanged()
         }
+    }
+
+    override fun showMessage(text: String) {
     }
 
     override fun onDestroyView() {

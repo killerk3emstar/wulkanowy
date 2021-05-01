@@ -129,8 +129,11 @@ class DashboardPresenter @Inject constructor(
                             grade.date.isAfter(LocalDate.now().minusDays(7))
                         }
                         .groupBy { grade -> grade.subject }
-                        .mapValues { entry -> entry.value.take(5) }
-                        .mapValues { entry -> entry.value.sortedBy { grade -> grade.date } }
+                        .mapValues { entry ->
+                            entry.value
+                                .take(5)
+                                .sortedBy { grade -> grade.date }
+                        }
                         .toList()
                         .sortedBy { subjectWithGrades -> subjectWithGrades.second[0].date }
                         .toMap()
@@ -138,8 +141,9 @@ class DashboardPresenter @Inject constructor(
                     updateData(filteredSubjectWithGrades, DashboardViewType.GRADES)
                 }
                 Status.ERROR -> {
-                    //updateData(filteredSubjectWithGrades, DashboardViewType.GRADES)
                     Timber.i("Loading dashboard grades result: An exception occurred")
+                    errorHandler.dispatch(it.error!!)
+                    showErrorInTile(it.error, DashboardViewType.GRADES)
                 }
             }
         }.launch("dashboard_grades")
@@ -245,12 +249,25 @@ class DashboardPresenter @Inject constructor(
 
     private fun updateData(data: Any, dashboardViewType: DashboardViewType) {
         dashboardDataList.removeAll { it.viewType == dashboardViewType }
-        dashboardDataList.add(DashboardData(dashboardViewType, data))
+        dashboardDataList.add(DashboardData(viewType = dashboardViewType, data = data))
 
         dashboardDataList.sortBy { it.viewType.id }
 
         view?.updateData(dashboardDataList)
     }
 
-    // private fun showErrorInTile()
+    private fun showErrorInTile(exception: Throwable?, dashboardViewType: DashboardViewType) {
+        dashboardDataList.removeAll { it.viewType == dashboardViewType }
+        dashboardDataList.add(
+            DashboardData(
+                viewType = dashboardViewType,
+                data = null,
+                error = exception
+            )
+        )
+
+        dashboardDataList.sortBy { it.viewType.id }
+
+        view?.updateData(dashboardDataList)
+    }
 }

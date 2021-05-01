@@ -6,5 +6,5 @@ data class DashboardData(
 
     val data: Any?,
 
-    val error: Exception? = null
+    val error: Throwable? = null
 )

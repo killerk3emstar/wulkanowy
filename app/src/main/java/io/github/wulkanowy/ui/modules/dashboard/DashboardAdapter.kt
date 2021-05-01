@@ -105,14 +105,17 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
     @Suppress("UNCHECKED_CAST")
     private fun bindGradesViewHolder(gradesViewHolder: GradesViewHolder, position: Int) {
-        val item = items[position].data as Map<String, List<Grade>>
+        val item = items[position]
+        val subjectWithGrades = item.data as Map<String, List<Grade>>? ?: emptyMap()
         val dashboardGradesAdapter = gradesViewHolder.adapter.apply {
-            this.items = item.toList()
+            this.items = subjectWithGrades.toList()
         }
 
         with(gradesViewHolder.binding) {
-            dashboardGradesItemRecycler.isVisible = item.isNotEmpty()
-            dashboardGradesItemEmpty.isVisible = item.isEmpty()
+            dashboardGradesItemRecycler.isVisible =
+                subjectWithGrades.isNotEmpty() && item.error == null
+            dashboardGradesItemEmpty.isVisible = subjectWithGrades.isEmpty() && item.error == null
+            dashboardGradesItemError.isVisible = item.error != null
 
             with(dashboardGradesItemRecycler) {
                 adapter = dashboardGradesAdapter
