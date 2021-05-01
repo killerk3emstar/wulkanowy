@@ -46,6 +46,9 @@ class DashboardPresenter @Inject constructor(
         loadLessons()
         loadGrades()
         loadHomework()
+        loadAnnouncements()
+        loadExams()
+        loadConferences()
     }
 
     private fun loadCurrentAccount() {
@@ -175,6 +178,18 @@ class DashboardPresenter @Inject constructor(
                 }
             }
         }.launch("dashboard_homework")
+    }
+
+    private fun loadAnnouncements() {
+        updateData(Any(), DashboardViewType.ANNOUNCEMENTS)
+    }
+
+    private fun loadExams() {
+        updateData(Any(), DashboardViewType.EXAMS)
+    }
+
+    private fun loadConferences() {
+        updateData(Any(), DashboardViewType.CONFERENCES)
     }
 
     private fun updateData(data: Any, dashboardViewType: DashboardViewType) {

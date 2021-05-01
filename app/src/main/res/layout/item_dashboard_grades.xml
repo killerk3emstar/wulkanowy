@@ -20,11 +20,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:drawablePadding="8dp"
             android:text="Ostatnie oceny"
             android:textSize="18sp"
             android:textStyle="bold"
+            app:drawableStartCompat="@drawable/ic_main_grade"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:drawableTint="?colorOnSurface" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dashboard_grades_item_recycler"

@@ -25,6 +25,8 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
 
     override val titleStringId get() = R.string.dashboard_title
 
+    override var subtitleString = "Sobota, 1 maja 2021"
+
     companion object {
 
         fun newInstance() = DashboardFragment()

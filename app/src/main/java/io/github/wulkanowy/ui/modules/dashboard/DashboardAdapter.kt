@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.wulkanowy.data.db.entities.LuckyNumber
 import io.github.wulkanowy.data.db.entities.Student
 import io.github.wulkanowy.databinding.ItemDashboardAccountBinding
+import io.github.wulkanowy.databinding.ItemDashboardAnnouncementsBinding
+import io.github.wulkanowy.databinding.ItemDashboardConferencesBinding
+import io.github.wulkanowy.databinding.ItemDashboardExamsBinding
 import io.github.wulkanowy.databinding.ItemDashboardGradesBinding
 import io.github.wulkanowy.databinding.ItemDashboardHomeworkBinding
 import io.github.wulkanowy.databinding.ItemDashboardHorizontalGroupBinding
@@ -43,6 +46,15 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             DashboardViewType.HOMEWORK.id -> HomeworkViewHolder(
                 ItemDashboardHomeworkBinding.inflate(inflater, parent, false)
             )
+            DashboardViewType.ANNOUNCEMENTS.id -> AnnouncementsViewHolder(
+                ItemDashboardAnnouncementsBinding.inflate(inflater, parent, false)
+            )
+            DashboardViewType.EXAMS.id -> ExamsViewHolder(
+                ItemDashboardExamsBinding.inflate(inflater, parent, false)
+            )
+            DashboardViewType.CONFERENCES.id -> ConferencesViewHolder(
+                ItemDashboardConferencesBinding.inflate(inflater, parent, false)
+            )
             else -> throw IllegalArgumentException()
         }
     }
@@ -54,6 +66,9 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             is GradesViewHolder -> bindGradesViewHolder(holder, position)
             is LessonsViewHolder -> bindLessonsViewHolder(holder, position)
             is HomeworkViewHolder -> bindHomeworkViewHolder(holder, position)
+            is AnnouncementsViewHolder -> bindAnnouncementsViewHolder(holder, position)
+            is ExamsViewHolder -> bindExamsViewHolder(holder, position)
+            is ConferencesViewHolder -> bindConferencesViewHolder(holder, position)
         }
     }
 
@@ -105,6 +120,33 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         }
     }
 
+    private fun bindAnnouncementsViewHolder(
+        announcementsViewHolder: AnnouncementsViewHolder,
+        position: Int
+    ) {
+        with(announcementsViewHolder.binding.dashboardAnnouncementsItemRecycler) {
+            layoutManager = LinearLayoutManager(context)
+            adapter = announcementsViewHolder.adapter
+        }
+    }
+
+    private fun bindExamsViewHolder(examsViewHolder: ExamsViewHolder, position: Int) {
+        with(examsViewHolder.binding.dashboardExamsItemRecycler) {
+            layoutManager = LinearLayoutManager(context)
+            adapter = examsViewHolder.adapter
+        }
+    }
+
+    private fun bindConferencesViewHolder(
+        conferencesViewHolder: ConferencesViewHolder,
+        position: Int
+    ) {
+        with(conferencesViewHolder.binding.dashboardConferencesItemRecycler) {
+            layoutManager = LinearLayoutManager(context)
+            adapter = conferencesViewHolder.adapter
+        }
+    }
+
     class AccountViewHolder(val binding: ItemDashboardAccountBinding) :
         RecyclerView.ViewHolder(binding.root)
 
@@ -124,5 +166,23 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         RecyclerView.ViewHolder(binding.root) {
 
         val adapter by lazy { DashboardHomeworkAdapter() }
+    }
+
+    class AnnouncementsViewHolder(val binding: ItemDashboardAnnouncementsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        val adapter by lazy { DashboardAnnouncementsAdapter() }
+    }
+
+    class ExamsViewHolder(val binding: ItemDashboardExamsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        val adapter by lazy { DashboardExamsAdapter() }
+    }
+
+    class ConferencesViewHolder(val binding: ItemDashboardConferencesBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        val adapter by lazy { DashboardConferencesAdapter() }
     }
 }

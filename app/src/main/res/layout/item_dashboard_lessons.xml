@@ -20,9 +20,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:drawablePadding="8dp"
             android:text="Lekcje"
             android:textSize="18sp"
             android:textStyle="bold"
+            app:drawableStartCompat="@drawable/ic_main_timetable"
+            app:drawableTint="?colorOnSurface"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
