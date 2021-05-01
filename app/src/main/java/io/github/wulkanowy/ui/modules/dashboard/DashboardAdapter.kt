@@ -3,8 +3,10 @@ package io.github.wulkanowy.ui.modules.dashboard
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.github.wulkanowy.data.db.entities.Grade
 import io.github.wulkanowy.data.db.entities.LuckyNumber
 import io.github.wulkanowy.data.db.entities.Student
 import io.github.wulkanowy.databinding.ItemDashboardAccountBinding
@@ -101,12 +103,21 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun bindGradesViewHolder(gradesViewHolder: GradesViewHolder, position: Int) {
-        val item = items[position]
+        val item = items[position].data as Map<String, List<Grade>>
+        val dashboardGradesAdapter = gradesViewHolder.adapter.apply {
+            this.items = item.toList()
+        }
 
-        with(gradesViewHolder.binding.dashboardGradesItemRecycler) {
-            adapter = gradesViewHolder.adapter
-            layoutManager = LinearLayoutManager(context)
+        with(gradesViewHolder.binding) {
+            dashboardGradesItemRecycler.isVisible = item.isNotEmpty()
+            dashboardGradesItemEmpty.isVisible = item.isEmpty()
+
+            with(dashboardGradesItemRecycler) {
+                adapter = dashboardGradesAdapter
+                layoutManager = LinearLayoutManager(context)
+            }
         }
     }
 

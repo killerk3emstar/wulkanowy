@@ -4,10 +4,13 @@ import io.github.wulkanowy.data.Resource
 import io.github.wulkanowy.data.Status
 import io.github.wulkanowy.data.enums.MessageFolder
 import io.github.wulkanowy.data.repositories.AttendanceSummaryRepository
+import io.github.wulkanowy.data.repositories.ConferenceRepository
+import io.github.wulkanowy.data.repositories.ExamRepository
 import io.github.wulkanowy.data.repositories.GradeRepository
 import io.github.wulkanowy.data.repositories.HomeworkRepository
 import io.github.wulkanowy.data.repositories.LuckyNumberRepository
 import io.github.wulkanowy.data.repositories.MessageRepository
+import io.github.wulkanowy.data.repositories.PreferencesRepository
 import io.github.wulkanowy.data.repositories.SemesterRepository
 import io.github.wulkanowy.data.repositories.StudentRepository
 import io.github.wulkanowy.data.repositories.TimetableRepository
@@ -31,7 +34,10 @@ class DashboardPresenter @Inject constructor(
     private val messageRepository: MessageRepository,
     private val attendanceSummaryRepository: AttendanceSummaryRepository,
     private val timetableRepository: TimetableRepository,
-    private val homeworkRepository: HomeworkRepository
+    private val homeworkRepository: HomeworkRepository,
+    private val examRepository: ExamRepository,
+    private val conferenceRepository: ConferenceRepository,
+    private val preferencesRepository: PreferencesRepository
 ) : BasePresenter<DashboardView>(errorHandler, studentRepository) {
 
     private val dashboardDataList = mutableListOf<DashboardData>()
@@ -117,9 +123,22 @@ class DashboardPresenter @Inject constructor(
                 Status.LOADING -> Timber.i("Loading dashboard grades data started")
                 Status.SUCCESS -> {
                     Timber.i("Loading dashboard grades result: Success")
-                    updateData(it.data!!.first, DashboardViewType.GRADES)
+
+                    val filteredSubjectWithGrades = it.data!!.first
+                        .filter { grade ->
+                            grade.date.isAfter(LocalDate.now().minusDays(7))
+                        }
+                        .groupBy { grade -> grade.subject }
+                        .mapValues { entry -> entry.value.take(5) }
+                        .mapValues { entry -> entry.value.sortedBy { grade -> grade.date } }
+                        .toList()
+                        .sortedBy { subjectWithGrades -> subjectWithGrades.second[0].date }
+                        .toMap()
+
+                    updateData(filteredSubjectWithGrades, DashboardViewType.GRADES)
                 }
                 Status.ERROR -> {
+                    //updateData(filteredSubjectWithGrades, DashboardViewType.GRADES)
                     Timber.i("Loading dashboard grades result: An exception occurred")
                 }
             }
@@ -168,13 +187,13 @@ class DashboardPresenter @Inject constructor(
 
         }.onEach {
             when (it.status) {
-                Status.LOADING -> Timber.i("Loading dashboard lessons data started")
+                Status.LOADING -> Timber.i("Loading dashboard homework data started")
                 Status.SUCCESS -> {
-                    Timber.i("Loading dashboard lessons result: Success")
+                    Timber.i("Loading dashboard homework result: Success")
                     updateData(it.data!!, DashboardViewType.HOMEWORK)
                 }
                 Status.ERROR -> {
-                    Timber.i("Loading dashboard lessons result: An exception occurred")
+                    Timber.i("Loading dashboard homework result: An exception occurred")
                 }
             }
         }.launch("dashboard_homework")
@@ -185,11 +204,43 @@ class DashboardPresenter @Inject constructor(
     }
 
     private fun loadExams() {
-        updateData(Any(), DashboardViewType.EXAMS)
+        flowWithResourceIn {
+            val student = studentRepository.getCurrentStudent(true)
+            val semester = semesterRepository.getCurrentSemester(student)
+
+            examRepository.getExams(student, semester, LocalDate.now(), LocalDate.now(), false)
+        }.onEach {
+            when (it.status) {
+                Status.LOADING -> Timber.i("Loading dashboard exams data started")
+                Status.SUCCESS -> {
+                    Timber.i("Loading dashboard exams result: Success")
+                    updateData(it.data!!, DashboardViewType.EXAMS)
+                }
+                Status.ERROR -> {
+                    Timber.i("Loading dashboard exams result: An exception occurred")
+                }
+            }
+        }.launch("dashboard_exams")
     }
 
     private fun loadConferences() {
-        updateData(Any(), DashboardViewType.CONFERENCES)
+        flowWithResourceIn {
+            val student = studentRepository.getCurrentStudent(true)
+            val semester = semesterRepository.getCurrentSemester(student)
+
+            conferenceRepository.getConferences(student, semester, false)
+        }.onEach {
+            when (it.status) {
+                Status.LOADING -> Timber.i("Loading dashboard conferences data started")
+                Status.SUCCESS -> {
+                    Timber.i("Loading dashboard conferences result: Success")
+                    updateData(it.data!!, DashboardViewType.EXAMS)
+                }
+                Status.ERROR -> {
+                    Timber.i("Loading dashboard conferences result: An exception occurred")
+                }
+            }
+        }.launch("dashboard_conferences")
     }
 
     private fun updateData(data: Any, dashboardViewType: DashboardViewType) {
@@ -200,4 +251,6 @@ class DashboardPresenter @Inject constructor(
 
         view?.updateData(dashboardDataList)
     }
+
+    // private fun showErrorInTile()
 }
