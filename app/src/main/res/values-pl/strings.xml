@@ -417,7 +417,7 @@
     <string name="student_info_male">Mężczyzna</string>
     <string name="student_info_female">Kobieta</string>
     <string name="student_info_last_name">Nazwisko</string>
-    <string name="student_info_guardian">Guardian</string>
+    <string name="student_info_guardian">Opiekun</string>
     <!--Account edit-->
     <string name="account_edit_nick_hint">Pseudonim</string>
     <string name="account_edit_header">Dodaj pseudonim</string>
