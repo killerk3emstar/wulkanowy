@@ -371,6 +371,7 @@
     <string name="student_info_male">Mann</string>
     <string name="student_info_female">Frau</string>
     <string name="student_info_last_name">Nachname</string>
+    <string name="student_info_guardian">Guardian</string>
     <!--Account edit-->
     <string name="account_edit_nick_hint">Nick</string>
     <string name="account_edit_header">Nick hinzufügen</string>
