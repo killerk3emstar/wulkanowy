@@ -417,6 +417,7 @@
     <string name="student_info_male">Муж</string>
     <string name="student_info_female">Женская</string>
     <string name="student_info_last_name">Фамилия</string>
+    <string name="student_info_guardian">Guardian</string>
     <!--Account edit-->
     <string name="account_edit_nick_hint">Ник</string>
     <string name="account_edit_header">Добавить ник</string>
