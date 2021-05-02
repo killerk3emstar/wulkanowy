@@ -417,6 +417,7 @@
     <string name="student_info_male">Muž</string>
     <string name="student_info_female">Žena</string>
     <string name="student_info_last_name">Priezvisko</string>
+    <string name="student_info_guardian">Guardian</string>
     <!--Account edit-->
     <string name="account_edit_nick_hint">Prezývka</string>
     <string name="account_edit_header">Pridať prezývku</string>
