@@ -42,5 +42,37 @@
             app:layout_constraintTop_toBottomOf="@id/dashboard_homework_item_title"
             tools:itemCount="4"
             tools:listitem="@layout/subitem_dashboard_homework" />
+
+        <TextView
+            android:id="@+id/dashboard_homework_item_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Brak zadań domowych"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_homework_item_title" />
+
+        <TextView
+            android:id="@+id/dashboard_homework_item_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:drawablePadding="8dp"
+            android:text="Wystąpił błąd podczas ładowania zadań domowych"
+            android:textColor="?colorError"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_homework_item_title"
+            app:drawableStartCompat="@drawable/ic_error"
+            app:drawableTint="?colorError" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

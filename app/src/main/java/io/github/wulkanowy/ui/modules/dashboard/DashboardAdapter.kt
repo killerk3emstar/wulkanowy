@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.wulkanowy.data.db.entities.Grade
+import io.github.wulkanowy.data.db.entities.Homework
 import io.github.wulkanowy.data.db.entities.LuckyNumber
 import io.github.wulkanowy.data.db.entities.Student
 import io.github.wulkanowy.databinding.ItemDashboardAccountBinding
@@ -130,10 +131,24 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     private fun bindLessonsViewHolder(lessonsViewHolder: LessonsViewHolder, position: Int) {
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun bindHomeworkViewHolder(homeworkViewHolder: HomeworkViewHolder, position: Int) {
-        with(homeworkViewHolder.binding.dashboardHomeworkItemRecycler) {
-            adapter = homeworkViewHolder.adapter
-            layoutManager = LinearLayoutManager(context)
+        val item = items[position]
+        val homeworkList = item.data as List<Homework>? ?: emptyList()
+        val homeworkAdapter = homeworkViewHolder.adapter.apply {
+            this.items = homeworkList
+        }
+
+        with(homeworkViewHolder.binding) {
+            dashboardHomeworkItemEmpty.isVisible = homeworkList.isEmpty() && item.error == null
+            dashboardHomeworkItemRecycler.isVisible =
+                homeworkList.isNotEmpty() && item.error == null
+            dashboardHomeworkItemError.isVisible = item.error != null
+
+            with(dashboardHomeworkItemRecycler) {
+                adapter = homeworkAdapter
+                layoutManager = LinearLayoutManager(context)
+            }
         }
     }
 

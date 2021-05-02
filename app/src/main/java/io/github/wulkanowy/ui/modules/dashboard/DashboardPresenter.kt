@@ -186,7 +186,7 @@ class DashboardPresenter @Inject constructor(
                 student = student,
                 semester = semester,
                 start = LocalDate.now(),
-                end = LocalDate.now(),
+                end = LocalDate.now().plusDays(7),
                 forceRefresh = false
             )
 
@@ -239,7 +239,7 @@ class DashboardPresenter @Inject constructor(
                 Status.LOADING -> Timber.i("Loading dashboard conferences data started")
                 Status.SUCCESS -> {
                     Timber.i("Loading dashboard conferences result: Success")
-                    updateData(it.data!!, DashboardViewType.EXAMS)
+                    updateData(it.data!!, DashboardViewType.CONFERENCES)
                 }
                 Status.ERROR -> {
                     Timber.i("Loading dashboard conferences result: An exception occurred")
