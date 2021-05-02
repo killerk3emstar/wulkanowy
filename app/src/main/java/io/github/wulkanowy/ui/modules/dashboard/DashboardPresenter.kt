@@ -138,6 +138,7 @@ class DashboardPresenter @Inject constructor(
                         .sortedBy { subjectWithGrades -> subjectWithGrades.second[0].date }
                         .toMap()
 
+                    updateGradeTheme()
                     updateData(filteredSubjectWithGrades, DashboardViewType.GRADES)
                 }
                 Status.ERROR -> {
@@ -269,5 +270,9 @@ class DashboardPresenter @Inject constructor(
         dashboardDataList.sortBy { it.viewType.id }
 
         view?.updateData(dashboardDataList)
+    }
+
+    private fun updateGradeTheme() {
+        view?.updateGradeTheme(preferencesRepository.gradeColorTheme)
     }
 }

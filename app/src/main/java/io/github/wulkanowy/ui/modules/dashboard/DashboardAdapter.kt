@@ -25,6 +25,8 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
     var items = emptyList<DashboardData>()
 
+    var gradeTheme = ""
+
     override fun getItemCount() = items.size
 
     override fun getItemViewType(position: Int) = items[position].viewType.id
@@ -109,6 +111,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         val subjectWithGrades = item.data as Map<String, List<Grade>>? ?: emptyMap()
         val dashboardGradesAdapter = gradesViewHolder.adapter.apply {
             this.items = subjectWithGrades.toList()
+            this.gradeTheme = this@DashboardAdapter.gradeTheme
         }
 
         with(gradesViewHolder.binding) {

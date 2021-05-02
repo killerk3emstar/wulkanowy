@@ -1,5 +1,6 @@
 package io.github.wulkanowy.ui.modules.dashboard
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,6 +9,8 @@ import io.github.wulkanowy.R
 import io.github.wulkanowy.databinding.FragmentDashboardBinding
 import io.github.wulkanowy.ui.base.BaseFragment
 import io.github.wulkanowy.ui.modules.main.MainView
+import io.github.wulkanowy.utils.toFormattedString
+import java.time.LocalDate
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -22,7 +25,8 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
 
     override val titleStringId get() = R.string.dashboard_title
 
-    override var subtitleString = "Sobota, 1 maja 2021"
+    @SuppressLint("DefaultLocale")
+    override var subtitleString = LocalDate.now().toFormattedString("EEEE, dd MMM yyy").capitalize()
 
     companion object {
 
@@ -50,6 +54,13 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
     override fun updateData(data: List<DashboardData>) {
         with(dashboardAdapter) {
             items = data
+            notifyDataSetChanged()
+        }
+    }
+
+    override fun updateGradeTheme(theme: String) {
+        with(dashboardAdapter) {
+            gradeTheme = theme
             notifyDataSetChanged()
         }
     }

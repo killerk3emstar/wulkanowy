@@ -36,7 +36,7 @@ class DashboardGradesAdapter : RecyclerView.Adapter<DashboardGradesAdapter.ViewH
 
                 with(subitemBinding.dashboardSmallGradeSubitemValue) {
                     text = it.entry
-                    setBackgroundResource(it.getBackgroundColor(""))
+                    setBackgroundResource(it.getBackgroundColor(gradeTheme))
                 }
 
                 dashboardGradesSubitemGradeContainer.addView(subitemBinding.root)
