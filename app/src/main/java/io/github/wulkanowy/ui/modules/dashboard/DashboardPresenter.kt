@@ -199,6 +199,8 @@ class DashboardPresenter @Inject constructor(
                 }
                 Status.ERROR -> {
                     Timber.i("Loading dashboard homework result: An exception occurred")
+                    errorHandler.dispatch(it.error!!)
+                    showErrorInTile(it.error, DashboardViewType.HOMEWORK)
                 }
             }
         }.launch("dashboard_homework")
