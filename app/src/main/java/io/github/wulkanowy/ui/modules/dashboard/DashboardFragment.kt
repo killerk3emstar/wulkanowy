@@ -26,7 +26,8 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
     override val titleStringId get() = R.string.dashboard_title
 
     @SuppressLint("DefaultLocale")
-    override var subtitleString = LocalDate.now().toFormattedString("EEEE, dd MMM yyy").capitalize()
+    override var subtitleString =
+        LocalDate.now().toFormattedString("EEEE, d MMMM yyyy").capitalize()
 
     companion object {
 

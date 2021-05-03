@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.github.wulkanowy.data.db.entities.Homework
 import io.github.wulkanowy.databinding.SubitemDashboardHomeworkBinding
+import io.github.wulkanowy.utils.toFormattedString
 
 class DashboardHomeworkAdapter : RecyclerView.Adapter<DashboardHomeworkAdapter.ViewHolder>() {
 
@@ -23,7 +24,7 @@ class DashboardHomeworkAdapter : RecyclerView.Adapter<DashboardHomeworkAdapter.V
 
         with(holder.binding) {
             dashboardHomeworkSubitemTitle.text = "${item.subject} - ${item.content}"
-            dashboardHomeworkSubitemTime.text = "do ${item.date}"
+            dashboardHomeworkSubitemTime.text = "do ${item.date.toFormattedString("dd.MM")}"
         }
     }
 

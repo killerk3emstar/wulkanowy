@@ -136,7 +136,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         val item = items[position]
         val homeworkList = item.data as List<Homework>? ?: emptyList()
         val homeworkAdapter = homeworkViewHolder.adapter.apply {
-            this.items = homeworkList
+            this.items = homeworkList.take(5)
         }
 
         with(homeworkViewHolder.binding) {
@@ -144,6 +144,9 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             dashboardHomeworkItemRecycler.isVisible =
                 homeworkList.isNotEmpty() && item.error == null
             dashboardHomeworkItemError.isVisible = item.error != null
+            dashboardHomeworkItemDivider.isVisible = homeworkList.size > 5
+            dashboardHomeworkItemMore.isVisible = homeworkList.size > 5
+            dashboardHomeworkItemMore.text = "Jeszcze ${homeworkList.size - 5} zadań więcej"
 
             with(dashboardHomeworkItemRecycler) {
                 adapter = homeworkAdapter
