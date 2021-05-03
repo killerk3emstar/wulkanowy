@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.wulkanowy.data.db.entities.Grade
 import io.github.wulkanowy.data.db.entities.Homework
 import io.github.wulkanowy.data.db.entities.LuckyNumber
+import io.github.wulkanowy.data.db.entities.SchoolAnnouncement
 import io.github.wulkanowy.data.db.entities.Student
 import io.github.wulkanowy.databinding.ItemDashboardAccountBinding
 import io.github.wulkanowy.databinding.ItemDashboardAnnouncementsBinding
@@ -155,13 +156,32 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun bindAnnouncementsViewHolder(
         announcementsViewHolder: AnnouncementsViewHolder,
         position: Int
     ) {
-        with(announcementsViewHolder.binding.dashboardAnnouncementsItemRecycler) {
-            layoutManager = LinearLayoutManager(context)
-            adapter = announcementsViewHolder.adapter
+        val item = items[position]
+        val schoolAnnouncementList = item.data as List<SchoolAnnouncement>? ?: emptyList()
+        val schoolAnnouncementsAdapter = announcementsViewHolder.adapter.apply {
+            this.items = schoolAnnouncementList.take(5)
+        }
+
+        with(announcementsViewHolder.binding) {
+            dashboardAnnouncementsItemEmpty.isVisible =
+                schoolAnnouncementList.isEmpty() && item.error == null
+            dashboardAnnouncementsItemRecycler.isVisible =
+                schoolAnnouncementList.isNotEmpty() && item.error == null
+            dashboardAnnouncementsItemError.isVisible = item.error != null
+            dashboardAnnouncementsItemDivider.isVisible = schoolAnnouncementList.size > 5
+            dashboardAnnouncementsItemMore.isVisible = schoolAnnouncementList.size > 5
+            dashboardAnnouncementsItemMore.text =
+                "Jeszcze ${schoolAnnouncementList.size - 5} ogłoszeń więcej"
+
+            with(dashboardAnnouncementsItemRecycler) {
+                layoutManager = LinearLayoutManager(context)
+                adapter = schoolAnnouncementsAdapter
+            }
         }
     }
 

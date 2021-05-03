@@ -11,6 +11,7 @@ import io.github.wulkanowy.data.repositories.HomeworkRepository
 import io.github.wulkanowy.data.repositories.LuckyNumberRepository
 import io.github.wulkanowy.data.repositories.MessageRepository
 import io.github.wulkanowy.data.repositories.PreferencesRepository
+import io.github.wulkanowy.data.repositories.SchoolAnnouncementRepository
 import io.github.wulkanowy.data.repositories.SemesterRepository
 import io.github.wulkanowy.data.repositories.StudentRepository
 import io.github.wulkanowy.data.repositories.TimetableRepository
@@ -37,7 +38,8 @@ class DashboardPresenter @Inject constructor(
     private val homeworkRepository: HomeworkRepository,
     private val examRepository: ExamRepository,
     private val conferenceRepository: ConferenceRepository,
-    private val preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository,
+    private val schoolAnnouncementRepository: SchoolAnnouncementRepository
 ) : BasePresenter<DashboardView>(errorHandler, studentRepository) {
 
     private val dashboardDataList = mutableListOf<DashboardData>()
@@ -52,7 +54,7 @@ class DashboardPresenter @Inject constructor(
         loadLessons()
         loadGrades()
         loadHomework()
-        loadAnnouncements()
+        loadSchoolAnnouncements()
         loadExams()
         loadConferences()
     }
@@ -206,8 +208,25 @@ class DashboardPresenter @Inject constructor(
         }.launch("dashboard_homework")
     }
 
-    private fun loadAnnouncements() {
-        updateData(Any(), DashboardViewType.ANNOUNCEMENTS)
+    private fun loadSchoolAnnouncements() {
+        flowWithResourceIn {
+            val student = studentRepository.getCurrentStudent(true)
+
+            schoolAnnouncementRepository.getSchoolAnnouncements(student, false)
+        }.onEach {
+            when (it.status) {
+                Status.LOADING -> Timber.i("Loading dashboard announcements data started")
+                Status.SUCCESS -> {
+                    Timber.i("Loading dashboard announcements result: Success")
+                    updateData(it.data!!, DashboardViewType.ANNOUNCEMENTS)
+                }
+                Status.ERROR -> {
+                    Timber.i("Loading dashboard announcements result: An exception occurred")
+                    errorHandler.dispatch(it.error!!)
+                    showErrorInTile(it.error, DashboardViewType.ANNOUNCEMENTS)
+                }
+            }
+        }.launch("dashboard_announcements")
     }
 
     private fun loadExams() {
