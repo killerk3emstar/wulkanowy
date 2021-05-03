@@ -358,8 +358,8 @@
     <string name="conferences_title">Zebrania</string>
     <string name="conference_no_items">Brak informacji o zebraniach</string>
     <!--Director information-->
-    <string name="school_announcement_title">School announcements</string>
-    <string name="school_announcement_no_items">No school announcements</string>
+    <string name="school_announcement_title">Ogłoszenia szkolne</string>
+    <string name="school_announcement_no_items">Brak ogłoszeń szkolnych</string>
     <!--Account-->
     <string name="account_add_new">Dodaj konto</string>
     <string name="account_logout">Wyloguj</string>
