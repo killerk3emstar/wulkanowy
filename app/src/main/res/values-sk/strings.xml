@@ -357,6 +357,9 @@
     <!--Conference-->
     <string name="conferences_title">Stretnutie</string>
     <string name="conference_no_items">Žiadne informácie o stretnutiach</string>
+    <!--Director information-->
+    <string name="school_announcement_title">School announcements</string>
+    <string name="school_announcement_no_items">No school announcements</string>
     <!--Account-->
     <string name="account_add_new">Pridať účet</string>
     <string name="account_logout">Odhlásiť</string>
