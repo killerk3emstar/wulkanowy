@@ -234,7 +234,13 @@ class DashboardPresenter @Inject constructor(
             val student = studentRepository.getCurrentStudent(true)
             val semester = semesterRepository.getCurrentSemester(student)
 
-            examRepository.getExams(student, semester, LocalDate.now(), LocalDate.now(), false)
+            examRepository.getExams(
+                student = student,
+                semester = semester,
+                start = LocalDate.now(),
+                end = LocalDate.now().plusDays(7),
+                forceRefresh = false
+            )
         }.onEach {
             when (it.status) {
                 Status.LOADING -> Timber.i("Loading dashboard exams data started")

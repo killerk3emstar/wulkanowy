@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.github.wulkanowy.data.db.entities.Exam
 import io.github.wulkanowy.data.db.entities.Grade
 import io.github.wulkanowy.data.db.entities.Homework
 import io.github.wulkanowy.data.db.entities.LuckyNumber
@@ -117,14 +118,13 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         }
 
         with(gradesViewHolder.binding) {
-            dashboardGradesItemRecycler.isVisible =
-                subjectWithGrades.isNotEmpty() && item.error == null
             dashboardGradesItemEmpty.isVisible = subjectWithGrades.isEmpty() && item.error == null
             dashboardGradesItemError.isVisible = item.error != null
 
             with(dashboardGradesItemRecycler) {
                 adapter = dashboardGradesAdapter
                 layoutManager = LinearLayoutManager(context)
+                isVisible = subjectWithGrades.isNotEmpty() && item.error == null
             }
         }
     }
@@ -142,8 +142,6 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
         with(homeworkViewHolder.binding) {
             dashboardHomeworkItemEmpty.isVisible = homeworkList.isEmpty() && item.error == null
-            dashboardHomeworkItemRecycler.isVisible =
-                homeworkList.isNotEmpty() && item.error == null
             dashboardHomeworkItemError.isVisible = item.error != null
             dashboardHomeworkItemDivider.isVisible = homeworkList.size > 5
             dashboardHomeworkItemMore.isVisible = homeworkList.size > 5
@@ -152,6 +150,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             with(dashboardHomeworkItemRecycler) {
                 adapter = homeworkAdapter
                 layoutManager = LinearLayoutManager(context)
+                isVisible = homeworkList.isNotEmpty() && item.error == null
             }
         }
     }
@@ -170,8 +169,6 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         with(announcementsViewHolder.binding) {
             dashboardAnnouncementsItemEmpty.isVisible =
                 schoolAnnouncementList.isEmpty() && item.error == null
-            dashboardAnnouncementsItemRecycler.isVisible =
-                schoolAnnouncementList.isNotEmpty() && item.error == null
             dashboardAnnouncementsItemError.isVisible = item.error != null
             dashboardAnnouncementsItemDivider.isVisible = schoolAnnouncementList.size > 5
             dashboardAnnouncementsItemMore.isVisible = schoolAnnouncementList.size > 5
@@ -181,14 +178,31 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             with(dashboardAnnouncementsItemRecycler) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = schoolAnnouncementsAdapter
+                isVisible = schoolAnnouncementList.isNotEmpty() && item.error == null
             }
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun bindExamsViewHolder(examsViewHolder: ExamsViewHolder, position: Int) {
-        with(examsViewHolder.binding.dashboardExamsItemRecycler) {
-            layoutManager = LinearLayoutManager(context)
-            adapter = examsViewHolder.adapter
+        val item = items[position]
+        val examList = item.data as List<Exam>? ?: emptyList()
+        val examAdapter = examsViewHolder.adapter.apply {
+            this.items = examList.take(5)
+        }
+
+        with(examsViewHolder.binding) {
+            dashboardExamsItemEmpty.isVisible = examList.isEmpty() && item.error == null
+            dashboardExamsItemError.isVisible = item.error != null
+            dashboardExamsItemDivider.isVisible = examList.size > 5
+            dashboardExamsItemMore.isVisible = examList.size > 5
+            dashboardExamsItemMore.text = "Jeszcze ${examList.size - 5} sprawdzianów więcej"
+
+            with(dashboardExamsItemRecycler) {
+                layoutManager = LinearLayoutManager(context)
+                adapter = examAdapter
+                isVisible = examList.isNotEmpty() && item.error == null
+            }
         }
     }
 
