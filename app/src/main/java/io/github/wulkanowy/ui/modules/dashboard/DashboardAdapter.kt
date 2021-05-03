@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.github.wulkanowy.data.db.entities.Conference
 import io.github.wulkanowy.data.db.entities.Exam
 import io.github.wulkanowy.data.db.entities.Grade
 import io.github.wulkanowy.data.db.entities.Homework
@@ -206,13 +207,29 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun bindConferencesViewHolder(
         conferencesViewHolder: ConferencesViewHolder,
         position: Int
     ) {
-        with(conferencesViewHolder.binding.dashboardConferencesItemRecycler) {
-            layoutManager = LinearLayoutManager(context)
-            adapter = conferencesViewHolder.adapter
+        val item = items[position]
+        val conferenceList = item.data as List<Conference>? ?: emptyList()
+        val conferenceAdapter = conferencesViewHolder.adapter.apply {
+            this.items = conferenceList.take(5)
+        }
+
+        with(conferencesViewHolder.binding) {
+            dashboardConferencesItemEmpty.isVisible = conferenceList.isEmpty() && item.error == null
+            dashboardConferencesItemError.isVisible = item.error != null
+            dashboardConferencesItemDivider.isVisible = conferenceList.size > 5
+            dashboardConferencesItemMore.isVisible = conferenceList.size > 5
+            dashboardConferencesItemMore.text = "Jeszcze ${conferenceList.size - 5} zebrań więcej"
+
+            with(dashboardConferencesItemRecycler) {
+                layoutManager = LinearLayoutManager(context)
+                adapter = conferenceAdapter
+                isVisible = conferenceList.isNotEmpty() && item.error == null
+            }
         }
     }
 
