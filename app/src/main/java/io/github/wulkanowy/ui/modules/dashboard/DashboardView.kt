@@ -9,4 +9,8 @@ interface DashboardView : BaseView {
     fun updateData(data: List<DashboardData>)
 
     fun updateGradeTheme(theme: String)
+
+    fun showProgress(show: Boolean)
+
+    fun showContent(show: Boolean)
 }

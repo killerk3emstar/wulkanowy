@@ -3,6 +3,7 @@ package io.github.wulkanowy.ui.modules.dashboard
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.wulkanowy.R
@@ -68,6 +69,14 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
     }
 
     override fun showMessage(text: String) {
+    }
+
+    override fun showProgress(show: Boolean) {
+        binding.dashboardProgress.isVisible = show
+    }
+
+    override fun showContent(show: Boolean) {
+        binding.dashboardRecycler.isVisible = show
     }
 
     override fun onStop() {

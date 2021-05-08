@@ -44,19 +44,38 @@ class DashboardPresenter @Inject constructor(
 
     private val dashboardDataList = mutableListOf<DashboardData>()
 
+    private val dashboardTilesToLoad = setOf(
+        1 to DashboardViewType.ACCOUNT,
+        2 to DashboardViewType.HORIZONTAL_GROUP,
+        3 to DashboardViewType.LESSONS,
+        4 to DashboardViewType.GRADES,
+        5 to DashboardViewType.HOMEWORK,
+        6 to DashboardViewType.ANNOUNCEMENTS,
+        7 to DashboardViewType.EXAMS,
+        8 to DashboardViewType.CONFERENCES,
+        //9 to DashboardViewType.ADS,
+    )
+
     override fun onAttachView(view: DashboardView) {
         super.onAttachView(view)
 
         view.initView()
+        view.showProgress(true)
+        view.showContent(false)
 
-        loadCurrentAccount()
-        loadHorizontalGroup()
-        loadLessons()
-        loadGrades()
-        loadHomework()
-        loadSchoolAnnouncements()
-        loadExams()
-        loadConferences()
+        dashboardTilesToLoad.forEach { (_, type) ->
+            when (type) {
+                DashboardViewType.ACCOUNT -> loadCurrentAccount()
+                DashboardViewType.HORIZONTAL_GROUP -> loadHorizontalGroup()
+                DashboardViewType.LESSONS -> loadLessons()
+                DashboardViewType.GRADES -> loadGrades()
+                DashboardViewType.HOMEWORK -> loadHomework()
+                DashboardViewType.ANNOUNCEMENTS -> loadSchoolAnnouncements()
+                DashboardViewType.EXAMS -> loadExams()
+                DashboardViewType.CONFERENCES -> loadConferences()
+                DashboardViewType.ADS -> TODO()
+            }
+        }
     }
 
     private fun loadCurrentAccount() {
@@ -279,8 +298,15 @@ class DashboardPresenter @Inject constructor(
         dashboardDataList.removeAll { it.viewType == dashboardViewType }
         dashboardDataList.add(DashboardData(viewType = dashboardViewType, data = data))
 
-        dashboardDataList.sortBy { it.viewType.id }
+        dashboardDataList.sortBy { dashboardData ->
+            dashboardTilesToLoad.single { (_, type) -> type == dashboardData.viewType }.first
+        }
 
+        val showProgress =
+            !dashboardTilesToLoad.all { (_, type) -> dashboardDataList.any { it.viewType == type } }
+
+        view?.showProgress(showProgress)
+        view?.showContent(!showProgress)
         view?.updateData(dashboardDataList)
     }
 
@@ -294,8 +320,15 @@ class DashboardPresenter @Inject constructor(
             )
         )
 
-        dashboardDataList.sortBy { it.viewType.id }
+        dashboardDataList.sortBy { dashboardData ->
+            dashboardTilesToLoad.single { (_, type) -> type == dashboardData.viewType }.first
+        }
 
+        val showProgress =
+            !dashboardTilesToLoad.all { (_, type) -> dashboardDataList.any { it.viewType == type } }
+
+        view?.showProgress(showProgress)
+        view?.showContent(!showProgress)
         view?.updateData(dashboardDataList)
     }
 

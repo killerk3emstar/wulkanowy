@@ -180,33 +180,38 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             dashboardLessonsItemError.isVisible = item.error != null
 
             val firstLesson = nextLessons.getOrNull(0)
-            dashboardLessonsItemFirstValue.text =
-                "${firstLesson?.subject}, Sala ${firstLesson?.room}"
-            dashboardLessonsItemFirstTime.text =
-                if (currentDateTime.isBefore(firstLesson?.start)) {
-                    "za ${
-                        Duration.between(currentDateTime, firstLesson?.start).toMinutes() + 1
-                    } minut"
-                } else {
-                    "jeszcze ${firstLesson?.left?.toMinutes()?.plus(1)} minut"
-                }
-
-            dashboardLessonsItemFirstTitle.text =
-                if (currentDateTime.isBefore(firstLesson?.start)) {
-                    "Za chwilę:"
-                } else {
-                    "Teraz:"
-                }
 
             dashboardLessonsItemFirstTitle.isVisible = firstLesson != null
             dashboardLessonsItemFirstTime.isVisible = firstLesson != null
             dashboardLessonsItemFirstValue.isVisible = firstLesson != null
 
+            firstLesson?.let {
+                dashboardLessonsItemFirstValue.text =
+                    "${firstLesson.subject}, Sala ${firstLesson.room}"
+                dashboardLessonsItemFirstTime.text =
+                    if (currentDateTime.isBefore(firstLesson.start)) {
+                        "za ${
+                            Duration.between(currentDateTime, firstLesson.start).toMinutes() + 1
+                        } minut"
+                    } else {
+                        "jeszcze ${firstLesson.left?.toMinutes()?.plus(1)} minut"
+                    }
+
+                dashboardLessonsItemFirstTitle.text =
+                    if (currentDateTime.isBefore(firstLesson.start)) {
+                        "Za chwilę:"
+                    } else {
+                        "Teraz:"
+                    }
+            }
+
             val secondLesson = nextLessons.getOrNull(1)
 
             dashboardLessonsItemSecondTime.isVisible = secondLesson != null
-            dashboardLessonsItemSecondTitle.isVisible = secondLesson != null
-            dashboardLessonsItemSecondValue.isVisible = secondLesson != null
+            dashboardLessonsItemSecondTitle.isVisible =
+                !(secondLesson == null && firstLesson == null)
+            dashboardLessonsItemSecondValue.isVisible =
+                !(secondLesson == null && firstLesson == null)
 
             dashboardLessonsItemSecondValue.text =
                 if (secondLesson != null) {
@@ -223,10 +228,11 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             dashboardLessonsItemThirdTitle.isVisible = nextLessons.size > 2
             dashboardLessonsItemThirdValue.isVisible = nextLessons.size > 2
             dashboardLessonsItemDivider.isVisible = nextLessons.size > 2
+
             dashboardLessonsItemThirdValue.text =
                 "jeszcze ${nextLessons.size - 2} kolejnych lekcji"
             dashboardLessonsItemThirdTime.text =
-                "do ${nextLessons.last().end.toFormattedString("HH:mm")}"
+                "do ${nextLessons.lastOrNull()?.end?.toFormattedString("HH:mm")}"
         }
     }
 
