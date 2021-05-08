@@ -61,14 +61,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:background="?colorPrimary"
+            android:background="@drawable/background_timetable_time_left"
             android:paddingStart="6dp"
-            android:paddingTop="1dp"
             android:paddingEnd="6dp"
             android:paddingBottom="1dp"
             android:text="jeszcze 15 minut"
             android:textColor="@android:color/white"
             android:textSize="13sp"
+            app:backgroundTint="?colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_first_title" />
 
@@ -89,11 +89,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="12dp"
+            android:layout_marginBottom="16dp"
             android:text="Matematyka, Sala 28"
             android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/dashboard_lessons_item_second_time"
             app:layout_constraintStart_toEndOf="@id/dashboard_lessons_item_second_title"
-            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_second_title" />
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_second_title"
+            app:layout_constraintVertical_bias="0" />
 
         <TextView
             android:id="@+id/dashboard_lessons_item_second_time"
@@ -148,5 +151,37 @@
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_third_title" />
+
+        <TextView
+            android:id="@+id/dashboard_lessons_item_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Brak lekcji"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_title" />
+
+        <TextView
+            android:id="@+id/dashboard_lessons_item_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:drawablePadding="8dp"
+            android:text="Wystąpił błąd podczas ładowania lekcji"
+            android:textColor="?colorError"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:drawableStartCompat="@drawable/ic_error"
+            app:drawableTint="?colorError"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_title" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

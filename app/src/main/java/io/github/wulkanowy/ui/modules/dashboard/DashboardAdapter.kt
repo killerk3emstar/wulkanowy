@@ -1,6 +1,8 @@
 package io.github.wulkanowy.ui.modules.dashboard
 
 import android.annotation.SuppressLint
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -13,6 +15,8 @@ import io.github.wulkanowy.data.db.entities.Homework
 import io.github.wulkanowy.data.db.entities.LuckyNumber
 import io.github.wulkanowy.data.db.entities.SchoolAnnouncement
 import io.github.wulkanowy.data.db.entities.Student
+import io.github.wulkanowy.data.db.entities.Timetable
+import io.github.wulkanowy.data.pojos.TimetableFull
 import io.github.wulkanowy.databinding.ItemDashboardAccountBinding
 import io.github.wulkanowy.databinding.ItemDashboardAnnouncementsBinding
 import io.github.wulkanowy.databinding.ItemDashboardConferencesBinding
@@ -22,14 +26,22 @@ import io.github.wulkanowy.databinding.ItemDashboardHomeworkBinding
 import io.github.wulkanowy.databinding.ItemDashboardHorizontalGroupBinding
 import io.github.wulkanowy.databinding.ItemDashboardLessonsBinding
 import io.github.wulkanowy.utils.createNameInitialsDrawable
+import io.github.wulkanowy.utils.left
 import io.github.wulkanowy.utils.nickOrName
+import io.github.wulkanowy.utils.toFormattedString
+import java.time.Duration
+import java.time.LocalDateTime
+import java.util.Timer
 import javax.inject.Inject
+import kotlin.concurrent.timer
 
 class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var items = emptyList<DashboardData>()
 
     var gradeTheme = ""
+
+    var lessonsTimer: Timer? = null
 
     override fun getItemCount() = items.size
 
@@ -78,6 +90,14 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             is ExamsViewHolder -> bindExamsViewHolder(holder, position)
             is ConferencesViewHolder -> bindConferencesViewHolder(holder, position)
         }
+    }
+
+    fun onStopFragment() {
+        lessonsTimer?.let {
+            it.cancel()
+            it.purge()
+        }
+        lessonsTimer = null
     }
 
     private fun bindAccountViewHolder(accountViewHolder: AccountViewHolder, position: Int) {
@@ -131,6 +151,83 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     private fun bindLessonsViewHolder(lessonsViewHolder: LessonsViewHolder, position: Int) {
+        val item = items[position]
+        val timetableFull = item.data as TimetableFull
+        val currentTimetable = timetableFull.lessons.filterNot { it.canceled }
+
+        updateLessonView(item, currentTimetable, lessonsViewHolder.binding)
+
+        lessonsTimer?.cancel()
+        lessonsTimer = timer(period = 1000) {
+            Handler(Looper.getMainLooper()).post {
+                updateLessonView(item, currentTimetable, lessonsViewHolder.binding)
+            }
+        }
+    }
+
+    fun updateLessonView(
+        item: DashboardData,
+        currentTimetable: List<Timetable>,
+        binding: ItemDashboardLessonsBinding
+    ) {
+        val currentDateTime = LocalDateTime.now()
+        val nextLessons = currentTimetable.filter { it.end.isAfter(currentDateTime) }
+            .sortedBy { it.start }
+
+        with(binding) {
+            dashboardLessonsItemEmpty.isVisible =
+                (currentTimetable.isEmpty() || nextLessons.isEmpty()) && item.error == null
+            dashboardLessonsItemError.isVisible = item.error != null
+
+            val firstLesson = nextLessons.getOrNull(0)
+            dashboardLessonsItemFirstValue.text =
+                "${firstLesson?.subject}, Sala ${firstLesson?.room}"
+            dashboardLessonsItemFirstTime.text =
+                if (currentDateTime.isBefore(firstLesson?.start)) {
+                    "za ${
+                        Duration.between(currentDateTime, firstLesson?.start).toMinutes() + 1
+                    } minut"
+                } else {
+                    "jeszcze ${firstLesson?.left?.toMinutes()?.plus(1)} minut"
+                }
+
+            dashboardLessonsItemFirstTitle.text =
+                if (currentDateTime.isBefore(firstLesson?.start)) {
+                    "Za chwilę:"
+                } else {
+                    "Teraz:"
+                }
+
+            dashboardLessonsItemFirstTitle.isVisible = firstLesson != null
+            dashboardLessonsItemFirstTime.isVisible = firstLesson != null
+            dashboardLessonsItemFirstValue.isVisible = firstLesson != null
+
+            val secondLesson = nextLessons.getOrNull(1)
+
+            dashboardLessonsItemSecondTime.isVisible = secondLesson != null
+            dashboardLessonsItemSecondTitle.isVisible = secondLesson != null
+            dashboardLessonsItemSecondValue.isVisible = secondLesson != null
+
+            dashboardLessonsItemSecondValue.text =
+                if (secondLesson != null) {
+                    "${secondLesson.subject}, Sala ${secondLesson.room}"
+                } else {
+                    "Koniec lekcji"
+                }
+            dashboardLessonsItemSecondTime.text =
+                "${secondLesson?.start?.toFormattedString("HH:mm")}-${
+                    secondLesson?.end?.toFormattedString("HH:mm")
+                }"
+
+            dashboardLessonsItemThirdTime.isVisible = nextLessons.size > 2
+            dashboardLessonsItemThirdTitle.isVisible = nextLessons.size > 2
+            dashboardLessonsItemThirdValue.isVisible = nextLessons.size > 2
+            dashboardLessonsItemDivider.isVisible = nextLessons.size > 2
+            dashboardLessonsItemThirdValue.text =
+                "jeszcze ${nextLessons.size - 2} kolejnych lekcji"
+            dashboardLessonsItemThirdTime.text =
+                "do ${nextLessons.last().end.toFormattedString("HH:mm")}"
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

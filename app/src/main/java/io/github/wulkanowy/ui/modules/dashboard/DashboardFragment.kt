@@ -9,6 +9,7 @@ import io.github.wulkanowy.R
 import io.github.wulkanowy.databinding.FragmentDashboardBinding
 import io.github.wulkanowy.ui.base.BaseFragment
 import io.github.wulkanowy.ui.modules.main.MainView
+import io.github.wulkanowy.utils.capitalise
 import io.github.wulkanowy.utils.toFormattedString
 import java.time.LocalDate
 import javax.inject.Inject
@@ -27,7 +28,7 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
 
     @SuppressLint("DefaultLocale")
     override var subtitleString =
-        LocalDate.now().toFormattedString("EEEE, d MMMM yyyy").capitalize()
+        LocalDate.now().toFormattedString("EEEE, d MMMM yyyy").capitalise()
 
     companion object {
 
@@ -67,6 +68,11 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
     }
 
     override fun showMessage(text: String) {
+    }
+
+    override fun onStop() {
+        dashboardAdapter.onStopFragment()
+        super.onStop()
     }
 
     override fun onDestroyView() {

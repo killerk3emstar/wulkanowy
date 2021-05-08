@@ -1,6 +1,5 @@
 package io.github.wulkanowy.utils
 
-import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek.FRIDAY
 import java.time.DayOfWeek.MONDAY
@@ -38,7 +37,6 @@ fun LocalDate.toFormattedString(pattern: String = DEFAULT_DATE_PATTERN): String 
 fun LocalDateTime.toFormattedString(pattern: String = DEFAULT_DATE_PATTERN): String =
     format(DateTimeFormatter.ofPattern(pattern))
 
-@SuppressLint("DefaultLocale")
 fun Month.getFormattedName(): String {
     val formatter = SimpleDateFormat("LLLL", Locale.getDefault())
 
