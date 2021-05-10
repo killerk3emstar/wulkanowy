@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:textSize="13sp"
+        android:textColor="?android:textColorSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="do 18.05" />
