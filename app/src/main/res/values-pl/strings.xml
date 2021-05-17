@@ -358,43 +358,43 @@
     <string name="conferences_title">Zebrania</string>
     <string name="conference_no_items">Brak informacji o zebraniach</string>
     <plurals name="conference_number_item">
-        <item quantity="one">%d conference</item>
-        <item quantity="few">%d conferences</item>
-        <item quantity="many">%d conferences</item>
-        <item quantity="other">%d conferences</item>
+        <item quantity="one">%d zebranie</item>
+        <item quantity="few">%d zebrania</item>
+        <item quantity="many">%d zebrań</item>
+        <item quantity="other">%d zebrań</item>
     </plurals>
     <plurals name="conference_notify_new_item_title">
-        <item quantity="one">New conference</item>
-        <item quantity="few">New conferences</item>
-        <item quantity="many">New conferences</item>
-        <item quantity="other">New conferences</item>
+        <item quantity="one">Nowe zebranie</item>
+        <item quantity="few">Nowe zebrania</item>
+        <item quantity="many">Nowe zebrania</item>
+        <item quantity="other">Nowe zebrania</item>
     </plurals>
     <plurals name="conference_notify_new_items">
-        <item quantity="one">You have %1$d new conference</item>
-        <item quantity="few">You have %1$d new conferences</item>
-        <item quantity="many">You have %1$d new conferences</item>
-        <item quantity="other">You have %1$d new conferences</item>
+        <item quantity="one">Masz %1$d nowe zebranie</item>
+        <item quantity="few">Masz %1$d nowe zebrania</item>
+        <item quantity="many">Masz %1$d nowych zebrań</item>
+        <item quantity="other">Masz %1$d nowych zebrań</item>
     </plurals>
     <!--Director information-->
     <string name="school_announcement_title">Ogłoszenia szkolne</string>
     <string name="school_announcement_no_items">Brak ogłoszeń szkolnych</string>
     <plurals name="school_announcement_number_item">
-        <item quantity="one">%d school announcement</item>
-        <item quantity="few">%d school announcements</item>
-        <item quantity="many">%d school announcements</item>
-        <item quantity="other">%d school announcements</item>
+        <item quantity="one">%d ogłoszenie szkolne</item>
+        <item quantity="few">%d ogłoszenia szkolne</item>
+        <item quantity="many">%d ogłoszeń szkolnych</item>
+        <item quantity="other">%d ogłoszeń szkolnych</item>
     </plurals>
     <plurals name="school_announcement_notify_new_item_title">
-        <item quantity="one">New school announcement</item>
-        <item quantity="few">New school announcements</item>
-        <item quantity="many">New school announcements</item>
-        <item quantity="other">New school announcements</item>
+        <item quantity="one">Nowe ogłoszenie szkolne</item>
+        <item quantity="few">Nowe ogłoszenia szkolne</item>
+        <item quantity="many">Nowe ogłoszenia szkolne</item>
+        <item quantity="other">Nowe ogłoszenia szkolne</item>
     </plurals>
     <plurals name="school_announcement_notify_new_items">
-        <item quantity="one">You have %1$d new school announcement</item>
-        <item quantity="few">You have %1$d new school announcements</item>
-        <item quantity="many">You have %1$d new school announcements</item>
-        <item quantity="other">You have %1$d new school announcements</item>
+        <item quantity="one">Masz %1$d nowe ogłoszenie szkolne</item>
+        <item quantity="few">Masz %1$d nowe ogłoszenia szkolne</item>
+        <item quantity="many">Masz %1$d nowych ogłoszeń szkolnych</item>
+        <item quantity="other">Masz %1$d nowych ogłoszeń szkolnych</item>
     </plurals>
     <!--Account-->
     <string name="account_add_new">Dodaj konto</string>
@@ -552,12 +552,12 @@
     <!--Notification Channels-->
     <string name="channel_new_grades">Nowe oceny</string>
     <string name="channel_new_homework">Nowe zadania domowe</string>
-    <string name="channel_new_conference">New conferences</string>
+    <string name="channel_new_conference">Nowe zebrania</string>
     <string name="channel_new_exam">Nowe sprawdziany</string>
     <string name="channel_lucky_number">Szczęśliwy numerek</string>
     <string name="channel_new_message">Nowe wiadomości</string>
     <string name="channel_new_notes">Nowe uwagi</string>
-    <string name="channel_new_school_announcement">New school announcements</string>
+    <string name="channel_new_school_announcement">Nowe ogłoszenia szkolne</string>
     <string name="channel_push">Powiadomienia push</string>
     <string name="channel_upcoming_lessons">Nadchodzące lekcje</string>
     <string name="channel_debug">Debugowanie</string>
