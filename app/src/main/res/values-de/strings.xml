@@ -311,9 +311,33 @@
     <!--Conference-->
     <string name="conferences_title">Sitzungen</string>
     <string name="conference_no_items">Keine Informationen über Sitzungen</string>
+    <plurals name="conference_number_item">
+        <item quantity="one">%d conference</item>
+        <item quantity="other">%d conferences</item>
+    </plurals>
+    <plurals name="conference_notify_new_item_title">
+        <item quantity="one">New conference</item>
+        <item quantity="other">New conferences</item>
+    </plurals>
+    <plurals name="conference_notify_new_items">
+        <item quantity="one">You have %1$d new conference</item>
+        <item quantity="other">You have %1$d new conferences</item>
+    </plurals>
     <!--Director information-->
     <string name="school_announcement_title">School announcements</string>
     <string name="school_announcement_no_items">No school announcements</string>
+    <plurals name="school_announcement_number_item">
+        <item quantity="one">%d school announcement</item>
+        <item quantity="other">%d school announcements</item>
+    </plurals>
+    <plurals name="school_announcement_notify_new_item_title">
+        <item quantity="one">New school announcement</item>
+        <item quantity="other">New school announcements</item>
+    </plurals>
+    <plurals name="school_announcement_notify_new_items">
+        <item quantity="one">You have %1$d new school announcement</item>
+        <item quantity="other">You have %1$d new school announcements</item>
+    </plurals>
     <!--Account-->
     <string name="account_add_new">Konto hinzufügen</string>
     <string name="account_logout">Abmelden</string>
@@ -470,10 +494,12 @@
     <!--Notification Channels-->
     <string name="channel_new_grades">Neue Noten</string>
     <string name="channel_new_homework">New homework</string>
+    <string name="channel_new_conference">New conferences</string>
     <string name="channel_new_exam">New exams</string>
     <string name="channel_lucky_number">Glückliche Nummer</string>
     <string name="channel_new_message">Neue Nachrichten</string>
     <string name="channel_new_notes">Neue Eintragen</string>
+    <string name="channel_new_school_announcement">New school announcements</string>
     <string name="channel_push">Push-Benachrichtigungen</string>
     <string name="channel_upcoming_lessons">Bevorstehende Lektionen</string>
     <string name="channel_debug">Debuggen</string>
