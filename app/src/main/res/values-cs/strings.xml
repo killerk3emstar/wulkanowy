@@ -358,43 +358,43 @@
     <string name="conferences_title">Setkání</string>
     <string name="conference_no_items">Žádné informace o setkáních</string>
     <plurals name="conference_number_item">
-        <item quantity="one">%d conference</item>
-        <item quantity="few">%d conferences</item>
-        <item quantity="many">%d conferences</item>
-        <item quantity="other">%d conferences</item>
+        <item quantity="one">%d setkání</item>
+        <item quantity="few">%d setkání</item>
+        <item quantity="many">%d setkání</item>
+        <item quantity="other">%d setkání</item>
     </plurals>
     <plurals name="conference_notify_new_item_title">
-        <item quantity="one">New conference</item>
-        <item quantity="few">New conferences</item>
-        <item quantity="many">New conferences</item>
-        <item quantity="other">New conferences</item>
+        <item quantity="one">Nové setkání</item>
+        <item quantity="few">Nová setkání</item>
+        <item quantity="many">Nová setkání</item>
+        <item quantity="other">Nová setkání</item>
     </plurals>
     <plurals name="conference_notify_new_items">
-        <item quantity="one">You have %1$d new conference</item>
-        <item quantity="few">You have %1$d new conferences</item>
-        <item quantity="many">You have %1$d new conferences</item>
-        <item quantity="other">You have %1$d new conferences</item>
+        <item quantity="one">Máte %1$d nové setkání</item>
+        <item quantity="few">Máte %1$d nová setkání</item>
+        <item quantity="many">Máte %1$d nová setkání</item>
+        <item quantity="other">Máte %1$d nová setkání</item>
     </plurals>
     <!--Director information-->
     <string name="school_announcement_title">Školní oznámení</string>
     <string name="school_announcement_no_items">Žádná školní oznámení</string>
     <plurals name="school_announcement_number_item">
-        <item quantity="one">%d school announcement</item>
-        <item quantity="few">%d school announcements</item>
-        <item quantity="many">%d school announcements</item>
-        <item quantity="other">%d school announcements</item>
+        <item quantity="one">%d školní oznámení</item>
+        <item quantity="few">%d školní oznámení</item>
+        <item quantity="many">%d školní oznámení</item>
+        <item quantity="other">%d školní oznámení</item>
     </plurals>
     <plurals name="school_announcement_notify_new_item_title">
-        <item quantity="one">New school announcement</item>
-        <item quantity="few">New school announcements</item>
-        <item quantity="many">New school announcements</item>
-        <item quantity="other">New school announcements</item>
+        <item quantity="one">Nové školní oznámení</item>
+        <item quantity="few">Nová školní oznámení</item>
+        <item quantity="many">Nová školní oznámení</item>
+        <item quantity="other">Nová školní oznámení</item>
     </plurals>
     <plurals name="school_announcement_notify_new_items">
-        <item quantity="one">You have %1$d new school announcement</item>
-        <item quantity="few">You have %1$d new school announcements</item>
-        <item quantity="many">You have %1$d new school announcements</item>
-        <item quantity="other">You have %1$d new school announcements</item>
+        <item quantity="one">Máte %1$d nové školní oznámení</item>
+        <item quantity="few">Máte %1$d nová školní oznámení</item>
+        <item quantity="many">Máte %1$d nová školní oznámení</item>
+        <item quantity="other">Máte %1$d nová školní oznámení</item>
     </plurals>
     <!--Account-->
     <string name="account_add_new">Přidat účet</string>
@@ -552,12 +552,12 @@
     <!--Notification Channels-->
     <string name="channel_new_grades">Nové známky</string>
     <string name="channel_new_homework">Nové domácí úkoly</string>
-    <string name="channel_new_conference">New conferences</string>
+    <string name="channel_new_conference">Nová setkání</string>
     <string name="channel_new_exam">Nové zkoušky</string>
     <string name="channel_lucky_number">Šťastné číslo</string>
     <string name="channel_new_message">Nové zprávy</string>
     <string name="channel_new_notes">Nové poznámky</string>
-    <string name="channel_new_school_announcement">New school announcements</string>
+    <string name="channel_new_school_announcement">Nová školní oznámení</string>
     <string name="channel_push">Push upozornění</string>
     <string name="channel_upcoming_lessons">Nadcházející lekce</string>
     <string name="channel_debug">Ladění</string>
