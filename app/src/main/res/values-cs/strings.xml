@@ -371,9 +371,9 @@
     </plurals>
     <plurals name="conference_notify_new_items">
         <item quantity="one">Máte %1$d nové setkání</item>
-        <item quantity="few">Máte %1$d nová setkání</item>
-        <item quantity="many">Máte %1$d nová setkání</item>
-        <item quantity="other">Máte %1$d nová setkání</item>
+        <item quantity="few">Máte %1$d nové setkání</item>
+        <item quantity="many">Máte %1$d nových setkání</item>
+        <item quantity="other">Máte %1$d nových setkání</item>
     </plurals>
     <!--Director information-->
     <string name="school_announcement_title">Školní oznámení</string>
@@ -392,9 +392,9 @@
     </plurals>
     <plurals name="school_announcement_notify_new_items">
         <item quantity="one">Máte %1$d nové školní oznámení</item>
-        <item quantity="few">Máte %1$d nová školní oznámení</item>
-        <item quantity="many">Máte %1$d nová školní oznámení</item>
-        <item quantity="other">Máte %1$d nová školní oznámení</item>
+        <item quantity="few">Máte %1$d nové školní oznámení</item>
+        <item quantity="many">Máte %1$d nových školních oznámení</item>
+        <item quantity="other">Máte %1$d nových školních oznámení</item>
     </plurals>
     <!--Account-->
     <string name="account_add_new">Přidat účet</string>
@@ -557,16 +557,16 @@
     <string name="channel_lucky_number">Šťastné číslo</string>
     <string name="channel_new_message">Nové zprávy</string>
     <string name="channel_new_notes">Nové poznámky</string>
-    <string name="channel_new_school_announcement">Nová školní oznámení</string>
+    <string name="channel_new_school_announcement">Nové školní oznámení</string>
     <string name="channel_push">Push upozornění</string>
     <string name="channel_upcoming_lessons">Nadcházející lekce</string>
     <string name="channel_debug">Ladění</string>
     <!--Colors-->
-    <string name="all_black">Černý</string>
-    <string name="all_red">Červený</string>
-    <string name="all_blue">Modrý</string>
-    <string name="all_green">Zelený</string>
-    <string name="all_purple">Fialový</string>
+    <string name="all_black">Černá</string>
+    <string name="all_red">Červená</string>
+    <string name="all_blue">Modrá</string>
+    <string name="all_green">Zelená</string>
+    <string name="all_purple">Fialová</string>
     <string name="all_empty_color">Žádná barva</string>
     <!--Others-->
     <string name="all_copied">Zkopírováno</string>
