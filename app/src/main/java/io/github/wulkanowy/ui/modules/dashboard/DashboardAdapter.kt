@@ -327,7 +327,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
                                     Typeface.create("sans-serif", Typeface.NORMAL)
                                 dashboardLessonsItemFirstValue.typeface =
                                     Typeface.create("sans-serif", Typeface.NORMAL)
-                                "Niebawem"
+                                "Niebawem:"
                             }
                             else -> {
                                 dashboardLessonsItemFirstTitle.setTextColor(
