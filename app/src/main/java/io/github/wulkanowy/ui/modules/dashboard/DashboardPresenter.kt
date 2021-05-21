@@ -180,7 +180,7 @@ class DashboardPresenter @Inject constructor(
                 student = student,
                 semester = semester,
                 start = LocalDate.now(),
-                end = LocalDate.now(),
+                end = LocalDate.now().plusDays(1),
                 forceRefresh = false
             )
 

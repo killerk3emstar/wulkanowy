@@ -1,6 +1,8 @@
 package io.github.wulkanowy.ui.modules.dashboard
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -8,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.github.wulkanowy.R
 import io.github.wulkanowy.data.db.entities.Conference
 import io.github.wulkanowy.data.db.entities.Exam
 import io.github.wulkanowy.data.db.entities.Grade
@@ -26,10 +29,12 @@ import io.github.wulkanowy.databinding.ItemDashboardHomeworkBinding
 import io.github.wulkanowy.databinding.ItemDashboardHorizontalGroupBinding
 import io.github.wulkanowy.databinding.ItemDashboardLessonsBinding
 import io.github.wulkanowy.utils.createNameInitialsDrawable
+import io.github.wulkanowy.utils.getCompatColor
 import io.github.wulkanowy.utils.left
 import io.github.wulkanowy.utils.nickOrName
 import io.github.wulkanowy.utils.toFormattedString
 import java.time.Duration
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.Timer
 import javax.inject.Inject
@@ -153,53 +158,195 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     private fun bindLessonsViewHolder(lessonsViewHolder: LessonsViewHolder, position: Int) {
         val item = items[position]
         val timetableFull = item.data as TimetableFull
-        val currentTimetable = timetableFull.lessons.filterNot { it.canceled }
+        val binding = lessonsViewHolder.binding
+        val currentDateTime = LocalDateTime.now()
+        val currentDate = LocalDate.now()
 
-        updateLessonView(item, currentTimetable, lessonsViewHolder.binding)
+        val currentTimetable = timetableFull.lessons
+            .filter { it.date == currentDate }
+            .filter { it.end.isAfter(currentDateTime) }
+            .filterNot { it.canceled }
+        val currentDayHeader =
+            timetableFull.headers.singleOrNull { it.date == currentDate }
+
+        val tomorrowTimetable = timetableFull.lessons
+            .filter { it.date == currentDate.plusDays(1) }
+            .filterNot { it.canceled }
+        val tomorrowDayHeader =
+            timetableFull.headers.singleOrNull { it.date == currentDate.plusDays(1) }
+
+        when {
+            currentTimetable.isNotEmpty() -> {
+                updateLessonView(item, currentTimetable, binding)
+                binding.dashboardLessonsItemTitleTomorrow.isVisible = false
+            }
+            currentDayHeader != null && currentDayHeader.content.isNotBlank() -> {
+                updateLessonView(item, emptyList(), binding)
+                binding.dashboardLessonsItemTitleTomorrow.isVisible = false
+            }
+            tomorrowTimetable.isNotEmpty() -> {
+                updateLessonView(item, tomorrowTimetable, binding)
+                binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+            }
+            tomorrowDayHeader != null && tomorrowDayHeader.content.isNotBlank() -> {
+                updateLessonView(item, emptyList(), binding)
+                binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+            }
+            else -> {
+                updateLessonView(item, emptyList(), binding)
+                binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+            }
+        }
 
         lessonsTimer?.cancel()
         lessonsTimer = timer(period = 1000) {
+            val currentDateTime = LocalDateTime.now()
+            val currentDate = LocalDate.now()
+
             Handler(Looper.getMainLooper()).post {
-                updateLessonView(item, currentTimetable, lessonsViewHolder.binding)
+                val currentTimetable = timetableFull.lessons
+                    .filter { it.date == currentDate }
+                    .filter { it.end.isAfter(currentDateTime) }
+                    .filterNot { it.canceled }
+                val currentDayHeader =
+                    timetableFull.headers.singleOrNull { it.date == currentDate }
+
+                val tomorrowTimetable = timetableFull.lessons
+                    .filter { it.date == currentDate.plusDays(1) }
+                    .filterNot { it.canceled }
+                val tomorrowDayHeader =
+                    timetableFull.headers.singleOrNull { it.date == currentDate.plusDays(1) }
+
+                when {
+                    currentTimetable.isNotEmpty() -> {
+                        updateLessonView(item, currentTimetable, binding)
+                        binding.dashboardLessonsItemTitleTomorrow.isVisible = false
+                    }
+                    currentDayHeader != null && currentDayHeader.content.isNotBlank() -> {
+                        updateLessonView(item, emptyList(), binding)
+                        binding.dashboardLessonsItemTitleTomorrow.isVisible = false
+                    }
+                    tomorrowTimetable.isNotEmpty() -> {
+                        updateLessonView(item, tomorrowTimetable, binding)
+                        binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+                    }
+                    tomorrowDayHeader != null && tomorrowDayHeader.content.isNotBlank() -> {
+                        updateLessonView(item, emptyList(), binding)
+                        binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+                    }
+                    else -> {
+                        updateLessonView(item, emptyList(), binding)
+                        binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+                    }
+                }
             }
         }
     }
 
-    fun updateLessonView(
+    private fun updateLessonView(
         item: DashboardData,
-        currentTimetable: List<Timetable>,
-        binding: ItemDashboardLessonsBinding
+        timetableToShow: List<Timetable>,
+        binding: ItemDashboardLessonsBinding,
     ) {
         val currentDateTime = LocalDateTime.now()
-        val nextLessons = currentTimetable.filter { it.end.isAfter(currentDateTime) }
+        val nextLessons = timetableToShow.filter { it.end.isAfter(currentDateTime) }
             .sortedBy { it.start }
 
         with(binding) {
             dashboardLessonsItemEmpty.isVisible =
-                (currentTimetable.isEmpty() || nextLessons.isEmpty()) && item.error == null
+                (timetableToShow.isEmpty() || nextLessons.isEmpty()) && item.error == null
             dashboardLessonsItemError.isVisible = item.error != null
 
             val firstLesson = nextLessons.getOrNull(0)
 
             dashboardLessonsItemFirstTitle.isVisible = firstLesson != null
             dashboardLessonsItemFirstTime.isVisible = firstLesson != null
+            dashboardLessonsItemFirstTimeRange.isVisible = firstLesson != null
             dashboardLessonsItemFirstValue.isVisible = firstLesson != null
 
             firstLesson?.let {
                 dashboardLessonsItemFirstValue.text =
                     "${firstLesson.subject}, Sala ${firstLesson.room}"
-                dashboardLessonsItemFirstTime.text =
-                    if (currentDateTime.isBefore(firstLesson.start)) {
-                        "za ${
-                            Duration.between(currentDateTime, firstLesson.start).toMinutes() + 1
-                        } minut"
+
+                if (currentDateTime.isBefore(firstLesson.start)) {
+                    val duration =
+                        Duration.between(currentDateTime, firstLesson.start).toMinutes() + 1
+
+                    if (duration > 60) {
+                        dashboardLessonsItemFirstTimeRange.text =
+                            "${firstLesson.start.toFormattedString("HH:mm")}-${
+                                firstLesson.end.toFormattedString("HH:mm")
+                            }"
+                        dashboardLessonsItemFirstTimeRange.isVisible = true
+                        dashboardLessonsItemFirstTime.isVisible = false
                     } else {
-                        "jeszcze ${firstLesson.left?.toMinutes()?.plus(1)} minut"
+                        dashboardLessonsItemFirstTime.text = "za $duration minut"
+                        dashboardLessonsItemFirstTime.isVisible = true
+                        dashboardLessonsItemFirstTimeRange.isVisible = false
                     }
+                } else {
+                    dashboardLessonsItemFirstTime.isVisible = true
+                    dashboardLessonsItemFirstTimeRange.isVisible = false
+                    dashboardLessonsItemFirstTime.text =
+                        "jeszcze ${firstLesson.left?.toMinutes()?.plus(1)} minut"
+                }
 
                 dashboardLessonsItemFirstTitle.text =
                     if (currentDateTime.isBefore(firstLesson.start)) {
-                        "Za chwilę:"
+                        val duration =
+                            Duration.between(currentDateTime, firstLesson.start).toMinutes() + 1
+                        when {
+                            duration < 60 -> {
+                                dashboardLessonsItemFirstTitle.setTextColor(
+                                    binding.root.context.getCompatColor(
+                                        R.color.colorPrimary
+                                    )
+                                )
+                                dashboardLessonsItemFirstValue.setTextColor(
+                                    binding.root.context.getCompatColor(
+                                        R.color.colorPrimary
+                                    )
+                                )
+
+                                dashboardLessonsItemFirstTitle.typeface =
+                                    Typeface.create("sans-serif-medium", Typeface.NORMAL)
+                                dashboardLessonsItemFirstValue.typeface =
+                                    Typeface.create("sans-serif-medium", Typeface.NORMAL)
+                                "Za chwilę:"
+                            }
+                            duration < 240 -> {
+                                dashboardLessonsItemFirstTitle.setTextColor(
+                                    Color.BLACK
+
+                                )
+                                dashboardLessonsItemFirstValue.setTextColor(
+                                    Color.BLACK
+                                )
+
+                                dashboardLessonsItemFirstTitle.typeface =
+                                    Typeface.create("sans-serif", Typeface.NORMAL)
+                                dashboardLessonsItemFirstValue.typeface =
+                                    Typeface.create("sans-serif", Typeface.NORMAL)
+                                "Niebawem"
+                            }
+                            else -> {
+                                dashboardLessonsItemFirstTitle.setTextColor(
+                                    Color.BLACK
+
+                                )
+                                dashboardLessonsItemFirstValue.setTextColor(
+                                    Color.BLACK
+
+                                )
+
+                                dashboardLessonsItemFirstTitle.typeface =
+                                    Typeface.create("sans-serif", Typeface.NORMAL)
+                                dashboardLessonsItemFirstValue.typeface =
+                                    Typeface.create("sans-serif", Typeface.NORMAL)
+
+                                "Najpierw:"
+                            }
+                        }
                     } else {
                         "Teraz:"
                     }
