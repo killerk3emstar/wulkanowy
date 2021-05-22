@@ -22,7 +22,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:drawablePadding="8dp"
-            android:text="Lekcje"
+            android:text="@string/dashboard_timetable_title"
             android:textSize="18sp"
             android:textStyle="bold"
             app:drawableStartCompat="@drawable/ic_main_timetable"
@@ -35,11 +35,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="1dp"
-            android:text="(Jutro)"
+            android:text="@string/dashboard_timetable_title_tomorrow"
             android:textColor="?colorOnSurface"
             android:textSize="14sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/dashboard_lessons_item_title"
             app:layout_constraintBottom_toBottomOf="@id/dashboard_lessons_item_title"
             app:layout_constraintStart_toEndOf="@id/dashboard_lessons_item_title" />
 
@@ -50,11 +49,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="6dp"
             android:fontFamily="sans-serif-medium"
-            android:text="Teraz:"
             android:textColor="?colorPrimary"
             android:textSize="13sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_title" />
+            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_title"
+            tools:text="Teraz:" />
 
         <TextView
             android:id="@+id/dashboard_lessons_item_first_value"
@@ -63,13 +62,13 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="12dp"
             android:fontFamily="sans-serif-medium"
-            android:text="Matematyka, Sala 28"
             android:textColor="?colorPrimary"
             android:textSize="13sp"
             app:layout_constraintEnd_toStartOf="@id/dashboard_lessons_item_first_time"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/dashboard_lessons_item_first_title"
-            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_first_title" />
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_first_title"
+            tools:text="Matematyka, Sala 28" />
 
         <TextView
             android:id="@+id/dashboard_lessons_item_first_time"
@@ -80,22 +79,22 @@
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
             android:paddingBottom="1dp"
-            android:text="jeszcze 15 minut"
             android:textColor="@android:color/white"
             android:textSize="13sp"
             app:backgroundTint="?colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_first_title" />
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_first_title"
+            tools:text="jeszcze 15 minut" />
 
         <TextView
             android:id="@+id/dashboard_lessons_item_first_time_range"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="10:45 - 11:45"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_first_title"
+            tools:text="10:45 - 11:45"
             tools:visibility="gone" />
 
         <TextView
@@ -104,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="6dp"
-            android:text="Następnie:"
+            android:text="@string/dashboard_timetable_second_lessons_title"
             android:textSize="13sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_first_value" />
@@ -116,23 +115,23 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="16dp"
-            android:text="Matematyka, Sala 28"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/dashboard_lessons_item_second_time"
             app:layout_constraintStart_toEndOf="@id/dashboard_lessons_item_second_title"
             app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_second_title"
-            app:layout_constraintVertical_bias="0" />
+            app:layout_constraintVertical_bias="0"
+            tools:text="Matematyka, Sala 28" />
 
         <TextView
             android:id="@+id/dashboard_lessons_item_second_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="10:45 - 11:45"
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_second_title" />
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_second_title"
+            tools:text="10:45 - 11:45" />
 
         <View
             android:id="@+id/dashboard_lessons_item_divider"
@@ -150,12 +149,13 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
-            android:text="Później:"
+            android:text="@string/dashboard_timetable_third_title"
             android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_divider" />
+            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_divider"
+            tools:text="Poźniej" />
 
         <TextView
             android:id="@+id/dashboard_lessons_item_third_value"
@@ -163,23 +163,23 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="12dp"
-            android:text="jeszcze 5 kolejnych lekcji"
             android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/dashboard_lessons_item_third_time"
             app:layout_constraintStart_toEndOf="@id/dashboard_lessons_item_third_title"
-            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_third_title" />
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_third_title"
+            tools:text="jeszcze 5 kolejnych lekcji" />
 
         <TextView
             android:id="@+id/dashboard_lessons_item_third_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="do 15:55"
             android:textSize="13sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_third_title" />
+            app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_third_title"
+            tools:text="do 15:55" />
 
         <TextView
             android:id="@+id/dashboard_lessons_item_empty"
@@ -188,7 +188,20 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:text="Brak lekcji"
+            android:text="@string/dashboard_timetable_no_lessons"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_title" />
+
+        <TextView
+            android:id="@+id/dashboard_lessons_item_day_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:textSize="14sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -203,7 +216,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:drawablePadding="8dp"
-            android:text="Wystąpił błąd podczas ładowania lekcji"
+            android:text="@string/dashboard_timetable_error"
             android:textColor="?colorError"
             android:textSize="14sp"
             android:visibility="gone"

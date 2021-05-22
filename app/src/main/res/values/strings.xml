@@ -468,6 +468,29 @@
     <string name="logviewer_refresh">Refresh</string>
 
 
+    <!--Dashboard-->
+    <string name="dashboard_timetable_title">Lessons</string>
+    <string name="dashboard_timetable_title_tomorrow">(Tomorrow)</string>
+    <string name="dashboard_timetable_lesson_value">%1$s, Room %2$s</string>
+    <string name="dashboard_timetable_first_lesson_title_moment">In a moment:</string>
+    <string name="dashboard_timetable_first_lesson_title_soon">Soon:</string>
+    <string name="dashboard_timetable_first_lesson_title_first">First:</string>
+    <string name="dashboard_timetable_first_lesson_title_now">Now:</string>
+    <plurals name="dashboard_timetable_first_lesson_time_in_minutes">
+        <item quantity="one">in %1$d minute</item>
+        <item quantity="other">in %1$d minutes</item>
+    </plurals>
+    <plurals name="dashboard_timetable_first_lesson_time_more_minutes">
+        <item quantity="one">%1$d more minute</item>
+        <item quantity="other">%1$d more minutes</item>
+    </plurals>
+    <string name="dashboard_timetable_second_lesson_value_end">End of lessons</string>
+    <string name="dashboard_timetable_second_lessons_title">Next:</string>
+    <string name="dashboard_timetable_third_title">Later:</string>
+    <string name="dashboard_timetable_no_lessons">No lessons</string>
+    <string name="dashboard_timetable_error">An error occurred while loading the lesson</string>
+
+
     <!--Error dialog-->
     <string name="dialog_error_check_update">Check for updates</string>
     <string name="dialog_error_check_update_message">Before reporting a bug, check first if an update with the bug fix is available</string>

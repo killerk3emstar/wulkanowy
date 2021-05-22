@@ -1,7 +1,6 @@
 package io.github.wulkanowy.ui.modules.dashboard
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Handler
 import android.os.Looper
@@ -29,7 +28,7 @@ import io.github.wulkanowy.databinding.ItemDashboardHomeworkBinding
 import io.github.wulkanowy.databinding.ItemDashboardHorizontalGroupBinding
 import io.github.wulkanowy.databinding.ItemDashboardLessonsBinding
 import io.github.wulkanowy.utils.createNameInitialsDrawable
-import io.github.wulkanowy.utils.getCompatColor
+import io.github.wulkanowy.utils.getThemeAttrColor
 import io.github.wulkanowy.utils.left
 import io.github.wulkanowy.utils.nickOrName
 import io.github.wulkanowy.utils.toFormattedString
@@ -202,11 +201,12 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         lessonsTimer = timer(period = 1000) {
             val currentDateTime = LocalDateTime.now()
             val currentDate = LocalDate.now()
+            val emptyThreshold =
+                LocalDateTime.of(currentDate.year, currentDate.month, currentDate.dayOfMonth, 15, 0)
 
             Handler(Looper.getMainLooper()).post {
                 val currentTimetable = timetableFull.lessons
                     .filter { it.date == currentDate }
-                    .filter { it.end.isAfter(currentDateTime) }
                     .filterNot { it.canceled }
                 val currentDayHeader =
                     timetableFull.headers.singleOrNull { it.date == currentDate }
@@ -218,22 +218,45 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
                     timetableFull.headers.singleOrNull { it.date == currentDate.plusDays(1) }
 
                 when {
-                    currentTimetable.isNotEmpty() -> {
+                    currentTimetable.isNotEmpty() &&
+                        currentTimetable.any { currentDateTime.isBefore(it.end) } -> {
+
                         updateLessonView(item, currentTimetable, binding)
                         binding.dashboardLessonsItemTitleTomorrow.isVisible = false
                     }
+
+                    currentDayHeader != null && currentDayHeader.content.isNotBlank() && currentDateTime.isBefore(
+                        emptyThreshold
+                    ) -> {
+                        updateLessonView(item, emptyList(), binding)
+                        binding.dashboardLessonsItemTitleTomorrow.isVisible = false
+                    }
+
+                    currentTimetable.isEmpty() && currentDateTime.isBefore(emptyThreshold) -> {
+                        updateLessonView(item, currentTimetable, binding)
+                        binding.dashboardLessonsItemTitleTomorrow.isVisible = false
+                    }
+
+                    currentTimetable.isEmpty() && currentDateTime.isAfter(emptyThreshold) -> {
+                        updateLessonView(item, tomorrowTimetable, binding)
+                        binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+                    }
+
                     currentDayHeader != null && currentDayHeader.content.isNotBlank() -> {
                         updateLessonView(item, emptyList(), binding)
                         binding.dashboardLessonsItemTitleTomorrow.isVisible = false
                     }
+
                     tomorrowTimetable.isNotEmpty() -> {
                         updateLessonView(item, tomorrowTimetable, binding)
                         binding.dashboardLessonsItemTitleTomorrow.isVisible = true
                     }
+
                     tomorrowDayHeader != null && tomorrowDayHeader.content.isNotBlank() -> {
                         updateLessonView(item, emptyList(), binding)
                         binding.dashboardLessonsItemTitleTomorrow.isVisible = true
                     }
+
                     else -> {
                         updateLessonView(item, emptyList(), binding)
                         binding.dashboardLessonsItemTitleTomorrow.isVisible = true
@@ -257,119 +280,11 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
                 (timetableToShow.isEmpty() || nextLessons.isEmpty()) && item.error == null
             dashboardLessonsItemError.isVisible = item.error != null
 
+            val secondLesson = nextLessons.getOrNull(1)
             val firstLesson = nextLessons.getOrNull(0)
 
-            dashboardLessonsItemFirstTitle.isVisible = firstLesson != null
-            dashboardLessonsItemFirstTime.isVisible = firstLesson != null
-            dashboardLessonsItemFirstTimeRange.isVisible = firstLesson != null
-            dashboardLessonsItemFirstValue.isVisible = firstLesson != null
-
-            firstLesson?.let {
-                dashboardLessonsItemFirstValue.text =
-                    "${firstLesson.subject}, Sala ${firstLesson.room}"
-
-                if (currentDateTime.isBefore(firstLesson.start)) {
-                    val duration =
-                        Duration.between(currentDateTime, firstLesson.start).toMinutes() + 1
-
-                    if (duration > 60) {
-                        dashboardLessonsItemFirstTimeRange.text =
-                            "${firstLesson.start.toFormattedString("HH:mm")}-${
-                                firstLesson.end.toFormattedString("HH:mm")
-                            }"
-                        dashboardLessonsItemFirstTimeRange.isVisible = true
-                        dashboardLessonsItemFirstTime.isVisible = false
-                    } else {
-                        dashboardLessonsItemFirstTime.text = "za $duration minut"
-                        dashboardLessonsItemFirstTime.isVisible = true
-                        dashboardLessonsItemFirstTimeRange.isVisible = false
-                    }
-                } else {
-                    dashboardLessonsItemFirstTime.isVisible = true
-                    dashboardLessonsItemFirstTimeRange.isVisible = false
-                    dashboardLessonsItemFirstTime.text =
-                        "jeszcze ${firstLesson.left?.toMinutes()?.plus(1)} minut"
-                }
-
-                dashboardLessonsItemFirstTitle.text =
-                    if (currentDateTime.isBefore(firstLesson.start)) {
-                        val duration =
-                            Duration.between(currentDateTime, firstLesson.start).toMinutes() + 1
-                        when {
-                            duration < 60 -> {
-                                dashboardLessonsItemFirstTitle.setTextColor(
-                                    binding.root.context.getCompatColor(
-                                        R.color.colorPrimary
-                                    )
-                                )
-                                dashboardLessonsItemFirstValue.setTextColor(
-                                    binding.root.context.getCompatColor(
-                                        R.color.colorPrimary
-                                    )
-                                )
-
-                                dashboardLessonsItemFirstTitle.typeface =
-                                    Typeface.create("sans-serif-medium", Typeface.NORMAL)
-                                dashboardLessonsItemFirstValue.typeface =
-                                    Typeface.create("sans-serif-medium", Typeface.NORMAL)
-                                "Za chwilę:"
-                            }
-                            duration < 240 -> {
-                                dashboardLessonsItemFirstTitle.setTextColor(
-                                    Color.BLACK
-
-                                )
-                                dashboardLessonsItemFirstValue.setTextColor(
-                                    Color.BLACK
-                                )
-
-                                dashboardLessonsItemFirstTitle.typeface =
-                                    Typeface.create("sans-serif", Typeface.NORMAL)
-                                dashboardLessonsItemFirstValue.typeface =
-                                    Typeface.create("sans-serif", Typeface.NORMAL)
-                                "Niebawem:"
-                            }
-                            else -> {
-                                dashboardLessonsItemFirstTitle.setTextColor(
-                                    Color.BLACK
-
-                                )
-                                dashboardLessonsItemFirstValue.setTextColor(
-                                    Color.BLACK
-
-                                )
-
-                                dashboardLessonsItemFirstTitle.typeface =
-                                    Typeface.create("sans-serif", Typeface.NORMAL)
-                                dashboardLessonsItemFirstValue.typeface =
-                                    Typeface.create("sans-serif", Typeface.NORMAL)
-
-                                "Najpierw:"
-                            }
-                        }
-                    } else {
-                        "Teraz:"
-                    }
-            }
-
-            val secondLesson = nextLessons.getOrNull(1)
-
-            dashboardLessonsItemSecondTime.isVisible = secondLesson != null
-            dashboardLessonsItemSecondTitle.isVisible =
-                !(secondLesson == null && firstLesson == null)
-            dashboardLessonsItemSecondValue.isVisible =
-                !(secondLesson == null && firstLesson == null)
-
-            dashboardLessonsItemSecondValue.text =
-                if (secondLesson != null) {
-                    "${secondLesson.subject}, Sala ${secondLesson.room}"
-                } else {
-                    "Koniec lekcji"
-                }
-            dashboardLessonsItemSecondTime.text =
-                "${secondLesson?.start?.toFormattedString("HH:mm")}-${
-                    secondLesson?.end?.toFormattedString("HH:mm")
-                }"
+            updateFirstLessonView(binding, firstLesson, currentDateTime)
+            updateSecondLesson(binding, firstLesson, secondLesson)
 
             dashboardLessonsItemThirdTime.isVisible = nextLessons.size > 2
             dashboardLessonsItemThirdTitle.isVisible = nextLessons.size > 2
@@ -380,7 +295,155 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
                 "jeszcze ${nextLessons.size - 2} kolejnych lekcji"
             dashboardLessonsItemThirdTime.text =
                 "do ${nextLessons.lastOrNull()?.end?.toFormattedString("HH:mm")}"
+
         }
+    }
+
+    private fun updateFirstLessonView(
+        binding: ItemDashboardLessonsBinding,
+        firstLesson: Timetable?,
+        currentDateTime: LocalDateTime
+    ) {
+        val context = binding.root.context
+        val sansSerifFont = Typeface.create("sans-serif", Typeface.NORMAL)
+        val sansSerifMediumFont = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+
+        with(binding) {
+            dashboardLessonsItemFirstTitle.isVisible = firstLesson != null
+            dashboardLessonsItemFirstTime.isVisible = firstLesson != null
+            dashboardLessonsItemFirstTimeRange.isVisible = firstLesson != null
+            dashboardLessonsItemFirstValue.isVisible = firstLesson != null
+        }
+
+        firstLesson ?: return
+
+        val minutesToStartLesson =
+            Duration.between(currentDateTime, firstLesson.start).toMinutes()
+        val isFirstTimeVisible: Boolean
+        val isFirstTimeRangeVisible: Boolean
+        val firstTimeText: String
+        val firstTimeRangeText: String
+        val firstTitleText: String
+        val firstTitleAndValueTextColor: Int
+        val firstTitleAndValueTextFont: Typeface
+
+        if (currentDateTime.isBefore(firstLesson.start)) {
+            if (minutesToStartLesson > 60) {
+                val formattedStartTime = firstLesson.start.toFormattedString("HH:mm")
+                val formattedEndTime = firstLesson.end.toFormattedString("HH:mm")
+
+                firstTimeRangeText = "${formattedStartTime}-${formattedEndTime}"
+                firstTimeText = ""
+
+                isFirstTimeRangeVisible = true
+                isFirstTimeVisible = false
+            } else {
+                firstTimeText = context.resources.getQuantityString(
+                    R.plurals.dashboard_timetable_first_lesson_time_in_minutes,
+                    minutesToStartLesson.toInt(),
+                    minutesToStartLesson
+                )
+                firstTimeRangeText = ""
+
+                isFirstTimeRangeVisible = false
+                isFirstTimeVisible = true
+            }
+
+            when {
+                minutesToStartLesson < 60 -> {
+                    firstTitleAndValueTextColor = context.getThemeAttrColor(R.attr.colorPrimary)
+                    firstTitleAndValueTextFont = sansSerifMediumFont
+                    firstTitleText =
+                        context.getString(R.string.dashboard_timetable_first_lesson_title_moment)
+                }
+                minutesToStartLesson < 240 -> {
+                    firstTitleAndValueTextColor =
+                        context.getThemeAttrColor(R.attr.colorOnSurface)
+                    firstTitleAndValueTextFont = sansSerifFont
+                    firstTitleText =
+                        context.getString(R.string.dashboard_timetable_first_lesson_title_soon)
+                }
+                else -> {
+                    firstTitleAndValueTextColor =
+                        context.getThemeAttrColor(R.attr.colorOnSurface)
+                    firstTitleAndValueTextFont = sansSerifFont
+                    firstTitleText =
+                        context.getString(R.string.dashboard_timetable_first_lesson_title_first)
+                }
+            }
+        } else {
+            val minutesToEndLesson = firstLesson.left!!.toMinutes()
+
+            firstTimeText = context.resources.getQuantityString(
+                R.plurals.dashboard_timetable_first_lesson_time_more_minutes,
+                minutesToEndLesson.toInt(),
+                minutesToEndLesson
+            )
+            firstTimeRangeText = ""
+
+            isFirstTimeRangeVisible = false
+            isFirstTimeVisible = true
+
+            firstTitleAndValueTextColor = context.getThemeAttrColor(R.attr.colorPrimary)
+            firstTitleAndValueTextFont = sansSerifMediumFont
+            firstTitleText = context.getString(R.string.dashboard_timetable_first_lesson_title_now)
+        }
+
+        with(binding.dashboardLessonsItemFirstTime) {
+            isVisible = isFirstTimeVisible
+            text = firstTimeText
+        }
+        with(binding.dashboardLessonsItemFirstTimeRange) {
+            isVisible = isFirstTimeRangeVisible
+            text = firstTimeRangeText
+        }
+        with(binding.dashboardLessonsItemFirstTitle) {
+            setTextColor(firstTitleAndValueTextColor)
+            typeface = firstTitleAndValueTextFont
+            text = firstTitleText
+        }
+        with(binding.dashboardLessonsItemFirstValue) {
+            setTextColor(firstTitleAndValueTextColor)
+            typeface = firstTitleAndValueTextFont
+            text = context.getString(
+                R.string.dashboard_timetable_lesson_value,
+                firstLesson.subject,
+                firstLesson.room
+            )
+        }
+    }
+
+    private fun updateSecondLesson(
+        binding: ItemDashboardLessonsBinding,
+        firstLesson: Timetable?,
+        secondLesson: Timetable?
+    ) {
+        val context = binding.root.context
+
+        val formattedStartTime = secondLesson?.start?.toFormattedString("HH:mm")
+        val formattedEndTime = secondLesson?.end?.toFormattedString("HH:mm")
+
+        val secondTimeText = "${formattedStartTime}-${formattedEndTime}"
+        val secondValueText = if (secondLesson != null) {
+            context.getString(
+                R.string.dashboard_timetable_lesson_value,
+                secondLesson.subject,
+                secondLesson.room
+            )
+        } else {
+            context.getString(R.string.dashboard_timetable_second_lesson_value_end)
+        }
+
+        with(binding.dashboardLessonsItemSecondTime) {
+            isVisible = secondLesson != null
+            text = secondTimeText
+        }
+        with(binding.dashboardLessonsItemSecondValue) {
+            isVisible = !(secondLesson == null && firstLesson == null)
+            text = secondValueText
+        }
+        binding.dashboardLessonsItemSecondTitle.isVisible =
+            !(secondLesson == null && firstLesson == null)
     }
 
     @Suppress("UNCHECKED_CAST")
