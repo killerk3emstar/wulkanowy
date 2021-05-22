@@ -7,5 +7,23 @@
         android:orderInCategory="100"
         android:title="@string/grade_menu_read"
         app:iconTint="@color/material_on_surface_emphasis_medium"
-        app:showAsAction="never" />
+        app:showAsAction="never">
+        <menu>
+            <item
+                android:id="@+id/gradeDetailsMenuReadAll"
+                android:title="Wszystkie" />
+            <item
+                android:id="@+id/gradeDetailsMenuReadOneDay"
+                android:title="Starsze niż 1 dzień" />
+            <item
+                android:id="@+id/gradeDetailsMenuReadThreeDays"
+                android:title="Starsze niż 3 dni" />
+            <item
+                android:id="@+id/gradeDetailsMenuReadOneWeek"
+                android:title="Starsze niż tydzień" />
+            <item
+                android:id="@+id/gradeDetailsMenuReadTwoWeeks"
+                android:title="Starsze niż 2 tygodnie" />
+        </menu>
+    </item>
 </menu>
