@@ -177,12 +177,12 @@
     <string name="exam_type">Form</string>
     <string name="exam_entry_date">Eintrittsdatum</string>
     <plurals name="exam_notify_new_item_title">
-        <item quantity="one">Neue Prüfung</item>
-        <item quantity="other">Neue Prüfungen</item>
+        <item quantity="one">Neue prüfung</item>
+        <item quantity="other">Neue prüfungen</item>
     </plurals>
     <plurals name="exam_number_item">
-        <item quantity="one">%d Prüfung</item>
-        <item quantity="other">%d Prüfungen</item>
+        <item quantity="one">%d prüfung</item>
+        <item quantity="other">%d prüfungen</item>
     </plurals>
     <!--Message-->
     <string name="message_inbox">Posteingang</string>
@@ -266,12 +266,12 @@
     <string name="homework_mark_as_undone">Unvollständig</string>
     <string name="homework_attachments">Anhänge</string>
     <plurals name="homework_notify_new_item_title">
-        <item quantity="one">Neue Hausaufgaben</item>
-        <item quantity="other">Neue Hausaufgaben</item>
+        <item quantity="one">Neue hausaufgaben</item>
+        <item quantity="other">Neue hausaufgaben</item>
     </plurals>
     <plurals name="homework_number_item">
-        <item quantity="one">%d Hausaufgaben</item>
-        <item quantity="other">%d homework</item>
+        <item quantity="one">%d hausaufgaben</item>
+        <item quantity="other">%d hausaufgaben</item>
     </plurals>
     <!--Lucky number-->
     <string name="lucky_number_title">Glückliche Nummer</string>
@@ -312,31 +312,31 @@
     <string name="conferences_title">Sitzungen</string>
     <string name="conference_no_items">Keine Informationen über Sitzungen</string>
     <plurals name="conference_number_item">
-        <item quantity="one">%d conference</item>
-        <item quantity="other">%d conferences</item>
+        <item quantity="one">%d konferenz</item>
+        <item quantity="other">%d konferenzen</item>
     </plurals>
     <plurals name="conference_notify_new_item_title">
-        <item quantity="one">New conference</item>
-        <item quantity="other">New conferences</item>
+        <item quantity="one">Neue konferenz</item>
+        <item quantity="other">Neue konferenzen</item>
     </plurals>
     <plurals name="conference_notify_new_items">
-        <item quantity="one">You have %1$d new conference</item>
-        <item quantity="other">You have %1$d new conferences</item>
+        <item quantity="one">Sie haben %1$d neue konferenz</item>
+        <item quantity="other">Sie haben %1$d neue konferenzen</item>
     </plurals>
     <!--Director information-->
-    <string name="school_announcement_title">School announcements</string>
-    <string name="school_announcement_no_items">No school announcements</string>
+    <string name="school_announcement_title">Schulankündigungen</string>
+    <string name="school_announcement_no_items">Keine schulankündigungen</string>
     <plurals name="school_announcement_number_item">
-        <item quantity="one">%d school announcement</item>
-        <item quantity="other">%d school announcements</item>
+        <item quantity="one">%d schulankündigung</item>
+        <item quantity="other">%d schulankündigungen</item>
     </plurals>
     <plurals name="school_announcement_notify_new_item_title">
-        <item quantity="one">New school announcement</item>
-        <item quantity="other">New school announcements</item>
+        <item quantity="one">Ankündigung der neuen schule</item>
+        <item quantity="other">Neue schulankündigungen</item>
     </plurals>
     <plurals name="school_announcement_notify_new_items">
-        <item quantity="one">You have %1$d new school announcement</item>
-        <item quantity="other">You have %1$d new school announcements</item>
+        <item quantity="one">Sie haben %1$d neue schulmitteilungen</item>
+        <item quantity="other">Sie haben %1$d neue schulankündigungen</item>
     </plurals>
     <!--Account-->
     <string name="account_add_new">Konto hinzufügen</string>
