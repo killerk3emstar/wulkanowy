@@ -9,13 +9,14 @@ import io.github.wulkanowy.R
 import io.github.wulkanowy.data.db.entities.SchoolAnnouncement
 import io.github.wulkanowy.data.db.entities.Semester
 import io.github.wulkanowy.data.db.entities.Student
-import io.github.wulkanowy.data.repositories.SchoolAnnouncementRepository
 import io.github.wulkanowy.data.repositories.PreferencesRepository
+import io.github.wulkanowy.data.repositories.SchoolAnnouncementRepository
 import io.github.wulkanowy.services.sync.channels.NewSchoolAnnouncementsChannel
 import io.github.wulkanowy.ui.modules.main.MainActivity
 import io.github.wulkanowy.ui.modules.main.MainView
 import io.github.wulkanowy.utils.getCompatBitmap
 import io.github.wulkanowy.utils.getCompatColor
+import io.github.wulkanowy.utils.nickOrName
 import io.github.wulkanowy.utils.waitForResult
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -30,31 +31,36 @@ class SchoolAnnouncementWork @Inject constructor(
 
     override suspend fun doWork(student: Student, semester: Semester) {
         schoolAnnouncementRepository.getSchoolAnnouncements(
-            student,
-            true,
+            student = student,
+            forceRefresh = true,
             notify = preferencesRepository.isNotificationsEnable
         ).waitForResult()
 
 
         schoolAnnouncementRepository.getNotNotifiedSchoolAnnouncement(semester).first().let {
-            if (it.isNotEmpty()) notify(it)
+            if (it.isNotEmpty()) it.forEach { item ->
+                sendNotification(student, item)
+            }
 
-            schoolAnnouncementRepository.updateSchoolAnnouncement(it.onEach { schoolAnnouncement -> schoolAnnouncement.isNotified = true })
+            schoolAnnouncementRepository.updateSchoolAnnouncement(it.onEach { schoolAnnouncement ->
+                schoolAnnouncement.isNotified = true
+            })
+        }
     }
-}
 
-    private fun notify(schoolAnnouncement: List<SchoolAnnouncement>) {
+    private fun sendNotification(student: Student, announcement: SchoolAnnouncement) {
         notificationManager.notify(
             Random.nextInt(Int.MAX_VALUE),
             NotificationCompat.Builder(context, NewSchoolAnnouncementsChannel.CHANNEL_ID)
-                .setContentTitle(context.resources.getQuantityString(
-                        R.plurals.school_announcement_notify_new_item_title,
-                        schoolAnnouncement.size,
-                        schoolAnnouncement.size
-                    ))
-                .setContentText(context.resources.getQuantityString(R.plurals.school_announcement_notify_new_items, schoolAnnouncement.size, schoolAnnouncement.size))
+                .setContentTitle(context.getString(R.string.school_announcement_notify_new_item_title))
+                .setContentText("${announcement.subject}: ${announcement.content}")
                 .setSmallIcon(R.drawable.ic_stat_all)
-                .setLargeIcon(context.getCompatBitmap(R.drawable.ic_all_about, R.color.colorPrimary))
+                .setLargeIcon(
+                    context.getCompatBitmap(
+                        R.drawable.ic_all_about,
+                        R.color.colorPrimary
+                    )
+                )
                 .setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -62,19 +68,17 @@ class SchoolAnnouncementWork @Inject constructor(
                 .setContentIntent(
                     PendingIntent.getActivity(
                         context, MainView.Section.SCHOOL_ANNOUNCEMENT.id,
-                        MainActivity.getStartIntent(context, MainView.Section.SCHOOL_ANNOUNCEMENT, true),
+                        MainActivity.getStartIntent(
+                            context,
+                            MainView.Section.SCHOOL_ANNOUNCEMENT,
+                            true
+                        ),
                         PendingIntent.FLAG_UPDATE_CURRENT
                     )
                 )
                 .setStyle(NotificationCompat.InboxStyle().run {
-                    setSummaryText(
-                        context.resources.getQuantityString(
-                            R.plurals.school_announcement_number_item,
-                            schoolAnnouncement.size,
-                            schoolAnnouncement.size
-                        )
-                    )
-                    schoolAnnouncement.forEach { addLine("${it.subject}: ${it.content}") }
+                    setSummaryText(student.nickOrName)
+                    addLine("${announcement.subject}: ${announcement.content}")
                     this
                 })
                 .build()

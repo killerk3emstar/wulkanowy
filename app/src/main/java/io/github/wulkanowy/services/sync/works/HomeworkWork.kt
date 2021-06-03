@@ -17,6 +17,7 @@ import io.github.wulkanowy.ui.modules.main.MainView
 import io.github.wulkanowy.utils.getCompatBitmap
 import io.github.wulkanowy.utils.getCompatColor
 import io.github.wulkanowy.utils.monday
+import io.github.wulkanowy.utils.nickOrName
 import io.github.wulkanowy.utils.sunday
 import io.github.wulkanowy.utils.waitForResult
 import kotlinx.coroutines.flow.first
@@ -43,7 +44,9 @@ class HomeworkWork @Inject constructor(
 
         homeworkRepository.getNotNotifiedHomework(semester, now().monday, now().sunday).first()
             .let {
-                if (it.isNotEmpty()) notify(it)
+                if (it.isNotEmpty()) it.forEach { item ->
+                    setNotification(student, item)
+                }
 
                 homeworkRepository.updateHomework(it.onEach { homework ->
                     homework.isNotified = true
@@ -51,15 +54,12 @@ class HomeworkWork @Inject constructor(
             }
     }
 
-    private fun notify(homework: List<Homework>) {
+    private fun setNotification(student: Student, homework: Homework) {
         notificationManager.notify(
             Random.nextInt(Int.MAX_VALUE),
             NotificationCompat.Builder(context, NewHomeworkChannel.CHANNEL_ID)
-                .setContentTitle(
-                    context.resources.getQuantityString(
-                        R.plurals.homework_notify_new_item_title, homework.size, homework.size
-                    )
-                )
+                .setContentTitle(context.getString(R.string.homework_notify_new_item_title))
+                .setContentText("${homework.subject}: ${homework.content}")
                 .setSmallIcon(R.drawable.ic_stat_all)
                 .setLargeIcon(
                     context.getCompatBitmap(R.drawable.ic_more_homework, R.color.colorPrimary)
@@ -76,12 +76,8 @@ class HomeworkWork @Inject constructor(
                     )
                 )
                 .setStyle(NotificationCompat.InboxStyle().run {
-                    setSummaryText(
-                        context.resources.getQuantityString(
-                            R.plurals.homework_number_item, homework.size, homework.size
-                        )
-                    )
-                    homework.forEach { addLine("${it.subject}: ${it.content}") }
+                    setSummaryText(student.nickOrName)
+                    addLine("${homework.subject}: ${homework.content}")
                     this
                 })
                 .build()

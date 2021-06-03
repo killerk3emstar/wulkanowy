@@ -101,45 +101,11 @@
     <plurals name="grade_number_item">
         <item quantity="one">%d známka</item>
         <item quantity="few">%d známky</item>
-        <item quantity="many">%d známok</item>
         <item quantity="other">%d známok</item>
     </plurals>
-    <plurals name="grade_new_items">
-        <item quantity="one">Nová známka</item>
-        <item quantity="few">Nové známky</item>
-        <item quantity="many">Nové známky</item>
-        <item quantity="other">Nové známky</item>
-    </plurals>
-    <plurals name="grade_new_items_predicted">
-        <item quantity="one">Nová predpokladaná známka</item>
-        <item quantity="few">Nové predpokladané známky</item>
-        <item quantity="many">Nové predpokladané známky</item>
-        <item quantity="other">Nové predpokladané známky</item>
-    </plurals>
-    <plurals name="grade_new_items_final">
-        <item quantity="one">Nová konečná známka</item>
-        <item quantity="few">Nové konečné známky</item>
-        <item quantity="many">Nové konečné známky</item>
-        <item quantity="other">Nové konečné známky</item>
-    </plurals>
-    <plurals name="grade_notify_new_items">
-        <item quantity="one">Máte %1$d novú známku</item>
-        <item quantity="few">Máte %1$d nové známky</item>
-        <item quantity="many">Máte %1$d nových známok</item>
-        <item quantity="other">Máte %1$d nových známok</item>
-    </plurals>
-    <plurals name="grade_notify_new_items_predicted">
-        <item quantity="one">Máte %1$d novú predpokladanú známku</item>
-        <item quantity="few">Máte %1$d nové predpokladané známky</item>
-        <item quantity="many">Máte %1$d nových predpokladaných známok</item>
-        <item quantity="other">Máte %1$d nových predpokladaných známok</item>
-    </plurals>
-    <plurals name="grade_notify_new_items_final">
-        <item quantity="one">Máte %1$d novú konečnú známku</item>
-        <item quantity="few">Máte %1$d nové konečnej známky</item>
-        <item quantity="many">Máte %1$d nových konečných známok</item>
-        <item quantity="other">Máte %1$d nových konečných známok</item>
-    </plurals>
+    <string name="grade_new_item">Nová známka</string>
+    <string name="grade_new_items_predicted">Nová predpokladaná známka</string>
+    <string name="grade_new_items_final">Nová konečná známka</string>
     <!--Timetable-->
     <string name="timetable_lesson">Lekcia</string>
     <string name="timetable_room">Učebňa</string>
@@ -190,18 +156,7 @@
     <string name="exam_no_items">Tento týždeň žiadne testy</string>
     <string name="exam_type">Typ</string>
     <string name="exam_entry_date">Dátum vstupu</string>
-    <plurals name="exam_notify_new_item_title">
-        <item quantity="one">Nová skúška</item>
-        <item quantity="few">Nové skúšky</item>
-        <item quantity="many">Nové skúšky</item>
-        <item quantity="other">Nové skúšky</item>
-    </plurals>
-    <plurals name="exam_number_item">
-        <item quantity="one">%d skúška</item>
-        <item quantity="few">%d skúšky</item>
-        <item quantity="many">%d skúšok</item>
-        <item quantity="other">%d skúšok</item>
-    </plurals>
+    <string name="exam_notify_new_item_title">Nová skúška</string>
     <!--Message-->
     <string name="message_inbox">Doručená pošta</string>
     <string name="message_sent">Odoslané</string>
@@ -225,100 +180,19 @@
     <string name="message_not_exists">Správa neexistuje</string>
     <string name="message_required_recipients">Musíte vybrať aspoň 1 príjemca</string>
     <string name="message_content_min_length">Obsah správy musí mať aspoň 3 znaky</string>
-    <plurals name="message_number_item">
-        <item quantity="one">%d správa</item>
-        <item quantity="few">%d správy</item>
-        <item quantity="many">%d správ</item>
-        <item quantity="other">%d správ</item>
-    </plurals>
-    <plurals name="message_new_items">
-        <item quantity="one">Nová správa</item>
-        <item quantity="few">Nové správy</item>
-        <item quantity="many">Nové správy</item>
-        <item quantity="other">Nové správy</item>
-    </plurals>
-    <plurals name="message_notify_new_items">
-        <item quantity="one">Máte %1$d novú správu</item>
-        <item quantity="few">Máte %1$d nové správy</item>
-        <item quantity="many">Máte %1$d nových správ</item>
-        <item quantity="other">Máte %1$d nových správ</item>
-    </plurals>
+    <string name="message_new_item">Nová správa</string>
     <!--Note-->
     <string name="note_no_items">Žiadne informácie o poznámkach</string>
     <string name="note_points">Body</string>
-    <plurals name="note_number_item">
-        <item quantity="one">%d poznámka</item>
-        <item quantity="few">%d poznámky</item>
-        <item quantity="many">%d poznámok</item>
-        <item quantity="other">%d poznámok</item>
-    </plurals>
-    <plurals name="note_new_items">
-        <item quantity="one">Nová poznámka</item>
-        <item quantity="few">Nové poznámky</item>
-        <item quantity="many">Nové poznámky</item>
-        <item quantity="other">Nové poznámky</item>
-    </plurals>
-    <plurals name="note_notify_new_items">
-        <item quantity="one">Máte %1$d novú poznámku</item>
-        <item quantity="few">Máte %1$d nové poznámky</item>
-        <item quantity="many">Máte %1$d nových poznámok</item>
-        <item quantity="other">Máte %1$d nových poznámok</item>
-    </plurals>
-    <!--Praise-->
-    <plurals name="praise_number_item">
-        <item quantity="one">%d chvála</item>
-        <item quantity="few">%d chvály</item>
-        <item quantity="many">%d chvál</item>
-        <item quantity="other">%d chvál</item>
-    </plurals>
-    <plurals name="praise_new_items">
-        <item quantity="one">Nová chvála</item>
-        <item quantity="few">Nové chvály</item>
-        <item quantity="many">Nové chvály</item>
-        <item quantity="other">Nové chvály</item>
-    </plurals>
-    <plurals name="praise_notify_new_items">
-        <item quantity="one">Máte %1$d novú chválu</item>
-        <item quantity="few">Máte %1$d nové chvály</item>
-        <item quantity="many">Máte %1$d nových chvál</item>
-        <item quantity="other">Máte %1$d nových chvál</item>
-    </plurals>
-    <!--Neutral notes-->
-    <plurals name="neutral_note_number_item">
-        <item quantity="one">%d neutrálny poznámka</item>
-        <item quantity="few">%d neutrálne poznámky</item>
-        <item quantity="many">%d neutrálne poznámky</item>
-        <item quantity="other">%d neutrálne poznámky</item>
-    </plurals>
-    <plurals name="neutral_note_new_items">
-        <item quantity="one">Nová neutrálny poznámka</item>
-        <item quantity="few">Nové neutrálne poznámky</item>
-        <item quantity="many">Nové neutrálne poznámky</item>
-        <item quantity="other">Nové neutrálne poznámky</item>
-    </plurals>
-    <plurals name="neutral_note_notify_new_items">
-        <item quantity="one">Máte %1$d novú neutrálny poznámku</item>
-        <item quantity="few">Máte %1$d nové neutrálne poznámky</item>
-        <item quantity="many">Máte %1$d nových neutrálne poznámok</item>
-        <item quantity="other">Máte %1$d nových neutrálne poznámok</item>
-    </plurals>
+    <string name="note_new_item">Nová poznámka</string>
+    <string name="praise_new_item">Nová chvála</string>
+    <string name="neutral_note_new_item">Nová neutrálny poznámka</string>
     <!--Homework-->
     <string name="homework_no_items">Žiadne informácie o domácich úlohách</string>
     <string name="homework_mark_as_done">Označiť ako hotové</string>
     <string name="homework_mark_as_undone">Nevyrobené</string>
     <string name="homework_attachments">Prílohy</string>
-    <plurals name="homework_notify_new_item_title">
-        <item quantity="one">Nový domáci úloh</item>
-        <item quantity="few">Nové domáce úlohy</item>
-        <item quantity="many">Nové domáce úlohy</item>
-        <item quantity="other">Nové domáce úlohy</item>
-    </plurals>
-    <plurals name="homework_number_item">
-        <item quantity="one">%d domáci úloh</item>
-        <item quantity="few">%d domáce úlohy</item>
-        <item quantity="many">%d domácich úloh</item>
-        <item quantity="other">%d domácich úloh</item>
-    </plurals>
+    <string name="homework_notify_new_item_title">Nový domáci úloh</string>
     <!--Lucky number-->
     <string name="lucky_number_title">Šťastné číslo</string>
     <string name="lucky_number_header">Dnešné šťastné číslo je</string>

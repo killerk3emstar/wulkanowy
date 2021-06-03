@@ -16,6 +16,7 @@ import io.github.wulkanowy.ui.modules.main.MainActivity
 import io.github.wulkanowy.ui.modules.main.MainView
 import io.github.wulkanowy.utils.getCompatBitmap
 import io.github.wulkanowy.utils.getCompatColor
+import io.github.wulkanowy.utils.nickOrName
 import io.github.wulkanowy.utils.waitForResult
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -37,20 +38,26 @@ class ConferenceWork @Inject constructor(
         ).waitForResult()
 
         conferenceRepository.getNotNotifiedConference(semester).first().let {
-            if (it.isNotEmpty()) notify(it)
+            if (it.isNotEmpty()) it.forEach { item ->
+                sendNotification(student, item)
+            }
 
-            conferenceRepository.updateConference(it.onEach { conference -> conference.isNotified = true })
+            conferenceRepository.updateConference(it.onEach { conference ->
+                conference.isNotified = true
+            })
         }
     }
 
-    private fun notify(conference: List<Conference>) {
+    private fun sendNotification(student: Student, conference: Conference) {
         notificationManager.notify(
             Random.nextInt(Int.MAX_VALUE),
             NotificationCompat.Builder(context, NewConferencesChannel.CHANNEL_ID)
-                .setContentTitle(context.resources.getQuantityString(R.plurals.conference_notify_new_item_title, conference.size, conference.size))
-                .setContentText(context.resources.getQuantityString(R.plurals.conference_notify_new_items, conference.size, conference.size))
+                .setContentTitle(context.getString(R.string.conference_notify_new_item_title))
+                .setContentText("${conference.title}: ${conference.subject}")
                 .setSmallIcon(R.drawable.ic_stat_all)
-                .setLargeIcon(context.getCompatBitmap(R.drawable.ic_more_conferences, R.color.colorPrimary))
+                .setLargeIcon(
+                    context.getCompatBitmap(R.drawable.ic_more_conferences, R.color.colorPrimary)
+                )
                 .setAutoCancel(true)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -63,14 +70,8 @@ class ConferenceWork @Inject constructor(
                     )
                 )
                 .setStyle(NotificationCompat.InboxStyle().run {
-                    setSummaryText(
-                        context.resources.getQuantityString(
-                            R.plurals.conference_number_item,
-                            conference.size,
-                            conference.size
-                        )
-                    )
-                    conference.forEach { addLine("${it.title}: ${it.subject}") }
+                    setSummaryText(student.nickOrName)
+                    addLine("${conference.title}: ${conference.subject}")
                     this
                 })
                 .build()

@@ -102,30 +102,9 @@
         <item quantity="one">%d Note</item>
         <item quantity="other">%d Noten</item>
     </plurals>
-    <plurals name="grade_new_items">
-        <item quantity="one">Neue Note</item>
-        <item quantity="other">Neue Noten</item>
-    </plurals>
-    <plurals name="grade_new_items_predicted">
-        <item quantity="one">Neue vorhergesagte Note</item>
-        <item quantity="other">Neue vorhergesagte Noten</item>
-    </plurals>
-    <plurals name="grade_new_items_final">
-        <item quantity="one">Neue Abschlussnote</item>
-        <item quantity="other">Neue Abschlussnoten</item>
-    </plurals>
-    <plurals name="grade_notify_new_items">
-        <item quantity="one">Du hast %1$d Note bekommen</item>
-        <item quantity="other">Du hast %1$d Noten bekommen</item>
-    </plurals>
-    <plurals name="grade_notify_new_items_predicted">
-        <item quantity="one">Sie haben %1$d vorhergesagte Note bekommen</item>
-        <item quantity="other">Sie haben %1$d vorhergesagte Noten bekommen</item>
-    </plurals>
-    <plurals name="grade_notify_new_items_final">
-        <item quantity="one">Sie haben %1$d Abschlussnote bekommen</item>
-        <item quantity="other">Sie haben %1$d Abschlussnoten bekommen</item>
-    </plurals>
+    <string name="grade_new_item">Neue Note</string>
+    <string name="grade_new_items_predicted">Neue vorhergesagte Note</string>
+    <string name="grade_new_items_final">Neue Abschlussnote</string>
     <!--Timetable-->
     <string name="timetable_lesson">Lektion</string>
     <string name="timetable_room">Klassenzimmer</string>
@@ -176,14 +155,7 @@
     <string name="exam_no_items">Diese Woche keine Prüfungen</string>
     <string name="exam_type">Form</string>
     <string name="exam_entry_date">Eintrittsdatum</string>
-    <plurals name="exam_notify_new_item_title">
-        <item quantity="one">New exam</item>
-        <item quantity="other">New exams</item>
-    </plurals>
-    <plurals name="exam_number_item">
-        <item quantity="one">%d exam</item>
-        <item quantity="other">%d exams</item>
-    </plurals>
+    <string name="exam_notify_new_item_title">New exam</string>
     <!--Message-->
     <string name="message_inbox">Posteingang</string>
     <string name="message_sent">Gesendet</string>
@@ -207,72 +179,19 @@
     <string name="message_not_exists">Nachricht existiert nicht</string>
     <string name="message_required_recipients">Sie müssen mindestens 1 Empfänger auswählen.</string>
     <string name="message_content_min_length">Der Inhalt der Nachricht muss mindestens 3 Zeichen lang sein.</string>
-    <plurals name="message_number_item">
-        <item quantity="one">%d nachricht</item>
-        <item quantity="other">%d nachrichten</item>
-    </plurals>
-    <plurals name="message_new_items">
-        <item quantity="one">Neu nachricht</item>
-        <item quantity="other">Neue nachrichten</item>
-    </plurals>
-    <plurals name="message_notify_new_items">
-        <item quantity="one">Du hast %1$d nachricht bekommen</item>
-        <item quantity="other">Du hast %1$d nachrichten bekommen</item>
-    </plurals>
+    <string name="message_new_item">Neu nachricht</string>
     <!--Note-->
     <string name="note_no_items">Keine Informationen über Eintragen</string>
     <string name="note_points">Punkte</string>
-    <plurals name="note_number_item">
-        <item quantity="one">%d Eintrag</item>
-        <item quantity="other">%d Eintragen</item>
-    </plurals>
-    <plurals name="note_new_items">
-        <item quantity="one">Neu Eintrag</item>
-        <item quantity="other">Neue Eintragen</item>
-    </plurals>
-    <plurals name="note_notify_new_items">
-        <item quantity="one">Du hast %1$d Eintrag bekommen</item>
-        <item quantity="other">Du hast %1$d Eintragen bekommen</item>
-    </plurals>
-    <!--Praise-->
-    <plurals name="praise_number_item">
-        <item quantity="one">%d Lob</item>
-        <item quantity="other">%d Lob</item>
-    </plurals>
-    <plurals name="praise_new_items">
-        <item quantity="one">Neues Lob</item>
-        <item quantity="other">Neues Lob</item>
-    </plurals>
-    <plurals name="praise_notify_new_items">
-        <item quantity="one">Du hast %1$d Lob erhalten</item>
-        <item quantity="other">Du hast %1$d Lob erhalten</item>
-    </plurals>
-    <!--Neutral notes-->
-    <plurals name="neutral_note_number_item">
-        <item quantity="one">%d neutrale Notiz</item>
-        <item quantity="other">%d neutrale Notizen</item>
-    </plurals>
-    <plurals name="neutral_note_new_items">
-        <item quantity="one">Neue neutrale Notiz</item>
-        <item quantity="other">Neue neutrale Notizen</item>
-    </plurals>
-    <plurals name="neutral_note_notify_new_items">
-        <item quantity="one">Du hast %1$d neutrale Notiz erhalten</item>
-        <item quantity="other">Du hast %1$d neutrale Notizen erhalten</item>
-    </plurals>
+    <string name="note_new_item">Neu Eintrag</string>
+    <string name="praise_new_item">Neues Lob</string>
+    <string name="neutral_note_new_item">Neue neutrale Notiz</string>
     <!--Homework-->
     <string name="homework_no_items">Keine Informationen über Hausaufgaben</string>
     <string name="homework_mark_as_done">Gemacht</string>
     <string name="homework_mark_as_undone">Unvollständig</string>
     <string name="homework_attachments">Anhänge</string>
-    <plurals name="homework_notify_new_item_title">
-        <item quantity="one">New homework</item>
-        <item quantity="other">New homework</item>
-    </plurals>
-    <plurals name="homework_number_item">
-        <item quantity="one">%d homework</item>
-        <item quantity="other">%d homework</item>
-    </plurals>
+    <string name="homework_notify_new_item_title">New homework</string>
     <!--Lucky number-->
     <string name="lucky_number_title">Glückliche Nummer</string>
     <string name="lucky_number_header">Die heutige Glücksnummer ist </string>

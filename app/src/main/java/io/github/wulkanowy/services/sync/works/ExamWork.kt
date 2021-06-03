@@ -16,6 +16,7 @@ import io.github.wulkanowy.ui.modules.main.MainActivity
 import io.github.wulkanowy.ui.modules.main.MainView
 import io.github.wulkanowy.utils.getCompatBitmap
 import io.github.wulkanowy.utils.getCompatColor
+import io.github.wulkanowy.utils.nickOrName
 import io.github.wulkanowy.utils.waitForResult
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate.now
@@ -40,21 +41,20 @@ class ExamWork @Inject constructor(
         ).waitForResult()
 
         examRepository.getNotNotifiedExam(semester, now()).first().let {
-            if (it.isNotEmpty()) notify(it)
+            if (it.isNotEmpty()) it.forEach { item ->
+                sendNotification(student, item)
+            }
 
             examRepository.updateExam(it.onEach { exam -> exam.isNotified = true })
         }
     }
 
-    private fun notify(exam: List<Exam>) {
+    private fun sendNotification(student: Student, exam: Exam) {
         notificationManager.notify(
             Random.nextInt(Int.MAX_VALUE),
             NotificationCompat.Builder(context, NewExamChannel.CHANNEL_ID)
-                .setContentTitle(
-                    context.resources.getQuantityString(
-                        R.plurals.exam_notify_new_item_title, exam.size, exam.size
-                    )
-                )
+                .setContentTitle(context.getString(R.string.exam_notify_new_item_title))
+                .setContentText("${exam.subject}: ${exam.description}")
                 .setSmallIcon(R.drawable.ic_stat_all)
                 .setLargeIcon(
                     context.getCompatBitmap(R.drawable.ic_main_exam, R.color.colorPrimary)
@@ -71,14 +71,8 @@ class ExamWork @Inject constructor(
                     )
                 )
                 .setStyle(NotificationCompat.InboxStyle().run {
-                    setSummaryText(
-                        context.resources.getQuantityString(
-                            R.plurals.exam_number_item,
-                            exam.size,
-                            exam.size
-                        )
-                    )
-                    exam.forEach { addLine("${it.subject}: ${it.description}") }
+                    setSummaryText(student.nickOrName)
+                    addLine("${exam.subject}: ${exam.description}")
                     this
                 })
                 .build()

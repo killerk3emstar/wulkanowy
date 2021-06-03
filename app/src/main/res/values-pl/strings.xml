@@ -104,42 +104,9 @@
         <item quantity="many">%d ocen</item>
         <item quantity="other">%d ocen</item>
     </plurals>
-    <plurals name="grade_new_items">
-        <item quantity="one">Nowa ocena</item>
-        <item quantity="few">Nowe oceny</item>
-        <item quantity="many">Nowe oceny</item>
-        <item quantity="other">Nowe oceny</item>
-    </plurals>
-    <plurals name="grade_new_items_predicted">
-        <item quantity="one">Nowa ocena przewidywana</item>
-        <item quantity="few">Nowe oceny przewidywane</item>
-        <item quantity="many">Nowe oceny przewidywane</item>
-        <item quantity="other">Nowe oceny przewidywane</item>
-    </plurals>
-    <plurals name="grade_new_items_final">
-        <item quantity="one">Nowa ocena końcowa</item>
-        <item quantity="few">Nowe oceny końcowe</item>
-        <item quantity="many">Nowe oceny końcowe</item>
-        <item quantity="other">Nowe oceny końcowe</item>
-    </plurals>
-    <plurals name="grade_notify_new_items">
-        <item quantity="one">Masz %1$d nową ocenę</item>
-        <item quantity="few">Masz %1$d nowe oceny</item>
-        <item quantity="many">Masz %1$d nowych ocen</item>
-        <item quantity="other">Masz %1$d nowych ocen</item>
-    </plurals>
-    <plurals name="grade_notify_new_items_predicted">
-        <item quantity="one">Masz %1$d nową przewidywaną ocenę</item>
-        <item quantity="few">Masz %1$d nowe przewidywane oceny</item>
-        <item quantity="many">Masz %1$d nowych przewidywanych ocen</item>
-        <item quantity="other">Masz %1$d nowych przewidywanych ocen</item>
-    </plurals>
-    <plurals name="grade_notify_new_items_final">
-        <item quantity="one">Masz %1$d nową końcową ocenę</item>
-        <item quantity="few">Masz %1$d nowe końcowe oceny</item>
-        <item quantity="many">Masz %1$d nowych końcowych ocen</item>
-        <item quantity="other">Masz %1$d nowych końcowych ocen</item>
-    </plurals>
+    <string name="grade_new_item">Nowa ocena</string>
+    <string name="grade_new_items_predicted">Nowa ocena przewidywana</string>
+    <string name="grade_new_items_final">Nowa ocena końcowa</string>
     <!--Timetable-->
     <string name="timetable_lesson">Lekcja</string>
     <string name="timetable_room">Sala</string>
@@ -190,18 +157,7 @@
     <string name="exam_no_items">Brak sprawdzianów w tym tygodniu</string>
     <string name="exam_type">Typ</string>
     <string name="exam_entry_date">Data wpisu</string>
-    <plurals name="exam_notify_new_item_title">
-        <item quantity="one">Nowy sprawdzian</item>
-        <item quantity="few">Nowe sprawdziany</item>
-        <item quantity="many">Nowe sprawdziany</item>
-        <item quantity="other">Nowe sprawdziany</item>
-    </plurals>
-    <plurals name="exam_number_item">
-        <item quantity="one">%d sprawdzian</item>
-        <item quantity="few">%d sprawdziany</item>
-        <item quantity="many">%d sprawdzianów</item>
-        <item quantity="other">%d sprawdzianów</item>
-    </plurals>
+    <string name="exam_notify_new_item_title">Nowy sprawdzian</string>
     <!--Message-->
     <string name="message_inbox">Odebrane</string>
     <string name="message_sent">Wysłane</string>
@@ -225,100 +181,19 @@
     <string name="message_not_exists">Wiadomość nie istnieje</string>
     <string name="message_required_recipients">Musisz wybrać co najmniej 1 adresata</string>
     <string name="message_content_min_length">Treść wiadomości musi zawierać co najmniej 3 znaki</string>
-    <plurals name="message_number_item">
-        <item quantity="one">%d wiadomość</item>
-        <item quantity="few">%d wiadomości</item>
-        <item quantity="many">%d wiadomości</item>
-        <item quantity="other">%d wiadomości</item>
-    </plurals>
-    <plurals name="message_new_items">
-        <item quantity="one">Nowa wiadomość</item>
-        <item quantity="few">Nowe wiadomości</item>
-        <item quantity="many">Nowe wiadomości</item>
-        <item quantity="other">Nowe wiadomości</item>
-    </plurals>
-    <plurals name="message_notify_new_items">
-        <item quantity="one">Masz %1$d nową wiadomość</item>
-        <item quantity="few">Masz %1$d nowe wiadomości</item>
-        <item quantity="many">Masz %1$d nowych wiadomości</item>
-        <item quantity="other">Masz %1$d nowych wiadomości</item>
-    </plurals>
+    <string name="message_new_item">Nowa wiadomość</string>
     <!--Note-->
     <string name="note_no_items">Brak informacji o uwagach</string>
     <string name="note_points">Punkty</string>
-    <plurals name="note_number_item">
-        <item quantity="one">%d uwaga</item>
-        <item quantity="few">%d uwagi</item>
-        <item quantity="many">%d uwag</item>
-        <item quantity="other">%d uwag</item>
-    </plurals>
-    <plurals name="note_new_items">
-        <item quantity="one">Nowa uwaga</item>
-        <item quantity="few">Nowe uwagi</item>
-        <item quantity="many">Nowe uwagi</item>
-        <item quantity="other">Nowe uwagi</item>
-    </plurals>
-    <plurals name="note_notify_new_items">
-        <item quantity="one">Masz %1$d nową uwagę</item>
-        <item quantity="few">Masz %1$d nowe uwagi</item>
-        <item quantity="many">Masz %1$d nowych uwag</item>
-        <item quantity="other">Masz %1$d nowych uwag</item>
-    </plurals>
-    <!--Praise-->
-    <plurals name="praise_number_item">
-        <item quantity="one">%d pochwała</item>
-        <item quantity="few">%d pochwały</item>
-        <item quantity="many">%d pochwał</item>
-        <item quantity="other">%d pochwał</item>
-    </plurals>
-    <plurals name="praise_new_items">
-        <item quantity="one">Nowa pochwała</item>
-        <item quantity="few">Nowe pochwały</item>
-        <item quantity="many">Nowe pochwały</item>
-        <item quantity="other">Nowe pochwały</item>
-    </plurals>
-    <plurals name="praise_notify_new_items">
-        <item quantity="one">Masz %1$d nową pochwałę</item>
-        <item quantity="few">Masz %1$d nowe pochwały</item>
-        <item quantity="many">Masz %1$d nowych pochwał</item>
-        <item quantity="other">Masz %1$d nowych pochwał</item>
-    </plurals>
-    <!--Neutral notes-->
-    <plurals name="neutral_note_number_item">
-        <item quantity="one">%d neutralna uwaga</item>
-        <item quantity="few">%d neutralne uwagi</item>
-        <item quantity="many">%d neutralnych uwag</item>
-        <item quantity="other">%d neutralnych uwag</item>
-    </plurals>
-    <plurals name="neutral_note_new_items">
-        <item quantity="one">Nowa neutralna uwaga</item>
-        <item quantity="few">Nowe neutralne uwagi</item>
-        <item quantity="many">Nowe neutralne uwagi</item>
-        <item quantity="other">Nowe neutralne uwagi</item>
-    </plurals>
-    <plurals name="neutral_note_notify_new_items">
-        <item quantity="one">Masz %1$d nową neutralną uwagę</item>
-        <item quantity="few">Masz %1$d nowe neutralne uwagi</item>
-        <item quantity="many">Masz %1$d nowych neutralnych uwag</item>
-        <item quantity="other">Masz %1$d nowych neutralnych uwag</item>
-    </plurals>
+    <string name="note_new_item">Nowa uwaga</string>
+    <string name="praise_new_item">Nowa pochwała</string>
+    <string name="neutral_note_new_item">Nowa neutralna uwaga</string>
     <!--Homework-->
     <string name="homework_no_items">Brak zadań domowych</string>
     <string name="homework_mark_as_done">Wykonane</string>
     <string name="homework_mark_as_undone">Niewykonane</string>
     <string name="homework_attachments">Załączniki</string>
-    <plurals name="homework_notify_new_item_title">
-        <item quantity="one">Nowe zadanie domowe</item>
-        <item quantity="few">Nowe zadania domowe</item>
-        <item quantity="many">Nowe zadania domowe</item>
-        <item quantity="other">Nowe zadania domowe</item>
-    </plurals>
-    <plurals name="homework_number_item">
-        <item quantity="one">%d zadanie domowe</item>
-        <item quantity="few">%d zadania domowe</item>
-        <item quantity="many">%d zadań domowych</item>
-        <item quantity="other">%d zadań domowych</item>
-    </plurals>
+    <string name="homework_notify_new_item_title">Nowe zadanie domowe</string>
     <!--Lucky number-->
     <string name="lucky_number_title">Szczęśliwy numerek</string>
     <string name="lucky_number_header">Dzisiejszym szczęśliwym numerkiem jest</string>

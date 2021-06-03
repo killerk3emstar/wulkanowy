@@ -20,6 +20,7 @@ import io.github.wulkanowy.ui.modules.main.MainActivity
 import io.github.wulkanowy.ui.modules.main.MainView
 import io.github.wulkanowy.utils.getCompatBitmap
 import io.github.wulkanowy.utils.getCompatColor
+import io.github.wulkanowy.utils.nickOrName
 import io.github.wulkanowy.utils.waitForResult
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -33,35 +34,50 @@ class MessageWork @Inject constructor(
 ) : Work {
 
     override suspend fun doWork(student: Student, semester: Semester) {
-        messageRepository.getMessages(student, semester, RECEIVED, true, preferencesRepository.isNotificationsEnable).waitForResult()
+        messageRepository.getMessages(
+            student = student,
+            semester = semester,
+            folder = RECEIVED,
+            forceRefresh = true,
+            notify = preferencesRepository.isNotificationsEnable
+        ).waitForResult()
 
         messageRepository.getNotNotifiedMessages(student).first().let {
-            if (it.isNotEmpty()) notify(it)
+            if (it.isNotEmpty()) it.forEach { item ->
+                sendNotification(student, item)
+            }
             messageRepository.updateMessages(it.onEach { message -> message.isNotified = true })
         }
     }
 
-    private fun notify(messages: List<Message>) {
-        notificationManager.notify(Random.nextInt(Int.MAX_VALUE), NotificationCompat.Builder(context, NewMessagesChannel.CHANNEL_ID)
-            .setContentTitle(context.resources.getQuantityString(R.plurals.message_new_items, messages.size, messages.size))
-            .setContentText(context.resources.getQuantityString(R.plurals.message_notify_new_items, messages.size, messages.size))
-            .setSmallIcon(R.drawable.ic_stat_all)
-            .setLargeIcon(
-                context.getCompatBitmap(R.drawable.ic_stat_message, R.color.colorPrimary)
-            )
-            .setAutoCancel(true)
-            .setDefaults(DEFAULT_ALL)
-            .setPriority(PRIORITY_HIGH)
-            .setColor(context.getCompatColor(R.color.colorPrimary))
-            .setContentIntent(
-                PendingIntent.getActivity(context, MainView.Section.MESSAGE.id,
-                    MainActivity.getStartIntent(context, MainView.Section.MESSAGE, true), FLAG_UPDATE_CURRENT)
-            )
-            .setStyle(NotificationCompat.InboxStyle().run {
-                setSummaryText(context.resources.getQuantityString(R.plurals.message_number_item, messages.size, messages.size))
-                messages.forEach { addLine("${it.sender}: ${it.subject}") }
-                this
-            })
-            .build())
+    private fun sendNotification(student: Student, message: Message) {
+        notificationManager.notify(
+            Random.nextInt(Int.MAX_VALUE),
+            NotificationCompat.Builder(context, NewMessagesChannel.CHANNEL_ID)
+                .setContentTitle(context.getString(R.string.message_new_item))
+                .setContentText("${message.sender}: ${message.subject}")
+                .setSmallIcon(R.drawable.ic_stat_all)
+                .setLargeIcon(
+                    context.getCompatBitmap(R.drawable.ic_stat_message, R.color.colorPrimary)
+                )
+                .setAutoCancel(true)
+                .setDefaults(DEFAULT_ALL)
+                .setPriority(PRIORITY_HIGH)
+                .setColor(context.getCompatColor(R.color.colorPrimary))
+                .setContentIntent(
+                    PendingIntent.getActivity(
+                        context,
+                        MainView.Section.MESSAGE.id,
+                        MainActivity.getStartIntent(context, MainView.Section.MESSAGE, true),
+                        FLAG_UPDATE_CURRENT
+                    )
+                )
+                .setStyle(NotificationCompat.InboxStyle().run {
+                    setSummaryText(student.nickOrName)
+                    addLine("${message.sender}: ${message.subject}")
+                    this
+                })
+                .build()
+        )
     }
 }

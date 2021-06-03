@@ -22,6 +22,7 @@ import io.github.wulkanowy.ui.modules.main.MainActivity
 import io.github.wulkanowy.ui.modules.main.MainView
 import io.github.wulkanowy.utils.getCompatBitmap
 import io.github.wulkanowy.utils.getCompatColor
+import io.github.wulkanowy.utils.nickOrName
 import io.github.wulkanowy.utils.waitForResult
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -35,53 +36,55 @@ class NoteWork @Inject constructor(
 ) : Work {
 
     override suspend fun doWork(student: Student, semester: Semester) {
-        noteRepository.getNotes(student, semester, true, preferencesRepository.isNotificationsEnable).waitForResult()
+        noteRepository.getNotes(
+            student = student,
+            semester = semester,
+            forceRefresh = true,
+            notify = preferencesRepository.isNotificationsEnable
+        ).waitForResult()
 
         noteRepository.getNotNotifiedNotes(student).first().let {
-            if (it.isNotEmpty()) notify(it)
+            if (it.isNotEmpty()) it.forEach { item ->
+                sendNotification(student, item)
+            }
             noteRepository.updateNotes(it.onEach { note -> note.isNotified = true })
         }
     }
 
-    private fun notify(notes: List<Note>) {
-        notificationManager.notify(Random.nextInt(Int.MAX_VALUE), NotificationCompat.Builder(context, NewNotesChannel.CHANNEL_ID)
-            .setContentTitle(
-                when (NoteCategory.getByValue(notes.first().categoryType)) {
-                    POSITIVE -> context.resources.getQuantityString(R.plurals.praise_new_items, notes.size, notes.size)
-                    NEUTRAL -> context.resources.getQuantityString(R.plurals.neutral_note_new_items, notes.size, notes.size)
-                    else -> context.resources.getQuantityString(R.plurals.note_new_items, notes.size, notes.size)
-                }
-            )
-            .setContentText(
-                when (NoteCategory.getByValue(notes.first().categoryType)) {
-                    POSITIVE -> context.resources.getQuantityString(R.plurals.praise_notify_new_items, notes.size, notes.size)
-                    NEUTRAL -> context.resources.getQuantityString(R.plurals.neutral_note_notify_new_items, notes.size, notes.size)
-                    else -> context.resources.getQuantityString(R.plurals.note_notify_new_items, notes.size, notes.size)
-                }
-            )
-            .setSmallIcon(R.drawable.ic_stat_all)
-            .setLargeIcon(
-                context.getCompatBitmap(R.drawable.ic_stat_note, R.color.colorPrimary)
-            )
-            .setAutoCancel(true)
-            .setDefaults(DEFAULT_ALL)
-            .setPriority(PRIORITY_HIGH)
-            .setColor(context.getCompatColor(R.color.colorPrimary))
-            .setContentIntent(
-                PendingIntent.getActivity(context, MainView.Section.NOTE.id,
-                    MainActivity.getStartIntent(context, MainView.Section.NOTE, true), FLAG_UPDATE_CURRENT))
-            .setStyle(NotificationCompat.InboxStyle().run {
-                setSummaryText(
-                    when (NoteCategory.getByValue(notes.first().categoryType)) {
-                        POSITIVE -> context.resources.getQuantityString(R.plurals.praise_number_item, notes.size, notes.size)
-                        NEUTRAL -> context.resources.getQuantityString(R.plurals.neutral_note_number_item, notes.size, notes.size)
-                        else -> context.resources.getQuantityString(R.plurals.note_number_item, notes.size, notes.size)
+    private fun sendNotification(student: Student, note: Note) {
+        notificationManager.notify(
+            Random.nextInt(Int.MAX_VALUE),
+            NotificationCompat.Builder(context, NewNotesChannel.CHANNEL_ID)
+                .setContentTitle(
+                    when (NoteCategory.getByValue(note.categoryType)) {
+                        POSITIVE -> context.getString(R.string.praise_new_item)
+                        NEUTRAL -> context.getString(R.string.neutral_note_new_item)
+                        else -> context.getString(R.string.note_new_item)
                     }
                 )
-                notes.forEach { addLine("${it.teacher}: ${it.category}") }
-                this
-            })
-            .build())
+                .setContentText("${note.teacher}: ${note.category}")
+                .setSmallIcon(R.drawable.ic_stat_all)
+                .setLargeIcon(
+                    context.getCompatBitmap(R.drawable.ic_stat_note, R.color.colorPrimary)
+                )
+                .setAutoCancel(true)
+                .setDefaults(DEFAULT_ALL)
+                .setPriority(PRIORITY_HIGH)
+                .setColor(context.getCompatColor(R.color.colorPrimary))
+                .setContentIntent(
+                    PendingIntent.getActivity(
+                        context,
+                        MainView.Section.NOTE.id,
+                        MainActivity.getStartIntent(context, MainView.Section.NOTE, true),
+                        FLAG_UPDATE_CURRENT
+                    )
+                )
+                .setStyle(NotificationCompat.InboxStyle().run {
+                    setSummaryText(student.nickOrName)
+                    addLine("${note.teacher}: ${note.category}")
+                    this
+                })
+                .build()
+        )
     }
 }
-

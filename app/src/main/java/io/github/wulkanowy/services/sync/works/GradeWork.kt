@@ -20,6 +20,7 @@ import io.github.wulkanowy.ui.modules.main.MainActivity
 import io.github.wulkanowy.ui.modules.main.MainView
 import io.github.wulkanowy.utils.getCompatBitmap
 import io.github.wulkanowy.utils.getCompatColor
+import io.github.wulkanowy.utils.nickOrName
 import io.github.wulkanowy.utils.waitForResult
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
@@ -33,60 +34,78 @@ class GradeWork @Inject constructor(
 ) : Work {
 
     override suspend fun doWork(student: Student, semester: Semester) {
-        gradeRepository.getGrades(student, semester, true, preferencesRepository.isNotificationsEnable).waitForResult()
+        gradeRepository.getGrades(
+            student = student,
+            semester = semester,
+            forceRefresh = true,
+            notify = preferencesRepository.isNotificationsEnable
+        ).waitForResult()
 
         gradeRepository.getNotNotifiedGrades(semester).first().let {
-            if (it.isNotEmpty()) notifyDetails(it)
+            if (it.isNotEmpty()) it.forEach { item ->
+                sendDetailNotification(student, item)
+            }
             gradeRepository.updateGrades(it.onEach { grade -> grade.isNotified = true })
         }
 
         gradeRepository.getNotNotifiedPredictedGrades(semester).first().let {
-            if (it.isNotEmpty()) notifyPredicted(it)
-            gradeRepository.updateGradesSummary(it.onEach { grade -> grade.isPredictedGradeNotified = true })
+            if (it.isNotEmpty()) it.forEach { item ->
+                sendPredictedNotification(student, item)
+            }
+            gradeRepository.updateGradesSummary(it.onEach { grade ->
+                grade.isPredictedGradeNotified = true
+            })
         }
 
         gradeRepository.getNotNotifiedFinalGrades(semester).first().let {
-            if (it.isNotEmpty()) notifyFinal(it)
-            gradeRepository.updateGradesSummary(it.onEach { grade -> grade.isFinalGradeNotified = true })
+            if (it.isNotEmpty()) it.forEach { item ->
+                setFinalNotification(student, item)
+            }
+            gradeRepository.updateGradesSummary(it.onEach { grade ->
+                grade.isFinalGradeNotified = true
+            })
         }
     }
 
-    private fun notifyDetails(grades: List<Grade>) {
-        notificationManager.notify(Random.nextInt(Int.MAX_VALUE), getNotificationBuilder()
-            .setContentTitle(context.resources.getQuantityString(R.plurals.grade_new_items, grades.size, grades.size))
-            .setContentText(context.resources.getQuantityString(R.plurals.grade_notify_new_items, grades.size, grades.size))
-            .setStyle(NotificationCompat.InboxStyle().run {
-                setSummaryText(context.resources.getQuantityString(R.plurals.grade_number_item, grades.size, grades.size))
-                grades.forEach { addLine("${it.subject}: ${it.entry}") }
-                this
-            })
-            .build()
+    private fun sendDetailNotification(student: Student, grade: Grade) {
+        notificationManager.notify(
+            Random.nextInt(Int.MAX_VALUE), getNotificationBuilder()
+                .setContentTitle(context.getString(R.string.grade_new_item))
+                .setContentText("${grade.subject}: ${grade.entry}")
+                .setStyle(NotificationCompat.InboxStyle().run {
+                    setSummaryText(student.nickOrName)
+                    addLine("${grade.subject}: ${grade.entry}")
+                    this
+                })
+                .build()
         )
     }
 
-    private fun notifyPredicted(gradesSummary: List<GradeSummary>) {
-        notificationManager.notify(Random.nextInt(Int.MAX_VALUE), getNotificationBuilder()
-            .setContentTitle(context.resources.getQuantityString(R.plurals.grade_new_items_predicted, gradesSummary.size, gradesSummary.size))
-            .setContentText(context.resources.getQuantityString(R.plurals.grade_notify_new_items_predicted, gradesSummary.size, gradesSummary.size))
-            .setStyle(NotificationCompat.InboxStyle().run {
-                setSummaryText(context.resources.getQuantityString(R.plurals.grade_number_item, gradesSummary.size, gradesSummary.size))
-                gradesSummary.forEach { addLine("${it.subject}: ${it.predictedGrade}") }
-                this
-            })
-            .build()
+    private fun sendPredictedNotification(student: Student, gradesSummary: GradeSummary) {
+        notificationManager.notify(
+            Random.nextInt(Int.MAX_VALUE), getNotificationBuilder()
+                .setContentTitle(context.getString(R.string.grade_new_items_predicted))
+                .setContentText("${gradesSummary.subject}: ${gradesSummary.predictedGrade}")
+                .setStyle(NotificationCompat.InboxStyle().run {
+                    setSummaryText(student.nickOrName)
+                    addLine("${gradesSummary.subject}: ${gradesSummary.predictedGrade}")
+                    this
+                })
+                .build()
         )
     }
 
-    private fun notifyFinal(gradesSummary: List<GradeSummary>) {
-        notificationManager.notify(Random.nextInt(Int.MAX_VALUE), getNotificationBuilder()
-            .setContentTitle(context.resources.getQuantityString(R.plurals.grade_new_items_final, gradesSummary.size, gradesSummary.size))
-            .setContentText(context.resources.getQuantityString(R.plurals.grade_notify_new_items_final, gradesSummary.size, gradesSummary.size))
-            .setStyle(NotificationCompat.InboxStyle().run {
-                setSummaryText(context.resources.getQuantityString(R.plurals.grade_number_item, gradesSummary.size, gradesSummary.size))
-                gradesSummary.forEach { addLine("${it.subject}: ${it.finalGrade}") }
-                this
-            })
-            .build()
+    private fun setFinalNotification(student: Student, gradesSummary: GradeSummary) {
+        notificationManager.notify(
+            Random.nextInt(Int.MAX_VALUE), getNotificationBuilder()
+                .setContentTitle(context.getString(R.string.grade_new_items_final))
+                .setContentText("${gradesSummary.subject}: ${gradesSummary.finalGrade}")
+                .setStyle(NotificationCompat.InboxStyle().run {
+                    setSummaryText(student.nickOrName)
+                    addLine("${gradesSummary.subject}: ${gradesSummary.finalGrade}")
+                    this
+                })
+                .build()
         )
     }
 
