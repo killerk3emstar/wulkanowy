@@ -27,7 +27,7 @@ class DashboardAnnouncementsAdapter :
 
         with(holder.binding) {
             dashboardHomeworkSubitemTime.text = item.date.toFormattedString()
-            dashboardHomeworkSubitemTitle.text
+            dashboardHomeworkSubitemTitle.text = item.subject
         }
     }
 

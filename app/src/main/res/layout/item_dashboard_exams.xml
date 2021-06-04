@@ -22,7 +22,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:drawablePadding="8dp"
-            android:text="Sprawdziany"
+            android:text="@string/dashboard_exams_title"
             android:textSize="18sp"
             android:textStyle="bold"
             app:drawableStartCompat="@drawable/ic_main_exam"
@@ -61,11 +61,11 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             android:fontFamily="sans-serif-medium"
-            android:text="Jeszcze 5 sprawdzianów więcej"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dashboard_exams_item_divider" />
+            app:layout_constraintTop_toBottomOf="@id/dashboard_exams_item_divider"
+            tools:text="Jeszcze 5 sprawdzianów więcej" />
 
         <TextView
             android:id="@+id/dashboard_exams_item_empty"
@@ -74,7 +74,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:text="Brak sprawdzianów"
+            android:text="@string/dashboard_exams_no_exams"
             android:textSize="14sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -89,7 +89,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:drawablePadding="8dp"
-            android:text="Wystąpił błąd podczas ładowania sprawdzianów"
+            android:text="@string/dashboard_exams_error"
             android:textColor="?colorError"
             android:textSize="14sp"
             android:visibility="gone"

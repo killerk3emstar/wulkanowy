@@ -21,9 +21,11 @@ import io.github.wulkanowy.utils.calculatePercentage
 import io.github.wulkanowy.utils.flowWithResource
 import io.github.wulkanowy.utils.flowWithResourceIn
 import kotlinx.coroutines.flow.combineTransform
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 class DashboardPresenter @Inject constructor(
@@ -280,6 +282,14 @@ class DashboardPresenter @Inject constructor(
             val semester = semesterRepository.getCurrentSemester(student)
 
             conferenceRepository.getConferences(student, semester, false)
+        }.map { conferencesResource ->
+            val currentDateTime = LocalDateTime.now()
+
+            val filteredConferences = conferencesResource.data?.filter {
+                it.date.isAfter(currentDateTime)
+            }
+
+            conferencesResource.copy(data = filteredConferences)
         }.onEach {
             when (it.status) {
                 Status.LOADING -> Timber.i("Loading dashboard conferences data started")

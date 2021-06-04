@@ -18,6 +18,7 @@ import io.github.wulkanowy.data.db.entities.LuckyNumber
 import io.github.wulkanowy.data.db.entities.SchoolAnnouncement
 import io.github.wulkanowy.data.db.entities.Student
 import io.github.wulkanowy.data.db.entities.Timetable
+import io.github.wulkanowy.data.db.entities.TimetableHeader
 import io.github.wulkanowy.data.pojos.TimetableFull
 import io.github.wulkanowy.databinding.ItemDashboardAccountBinding
 import io.github.wulkanowy.databinding.ItemDashboardAnnouncementsBinding
@@ -125,9 +126,20 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         position: Int
     ) {
         val (luckyNumber, messageCount, attendancePercentage) = items[position].data as Triple<LuckyNumber?, Int?, Double?>
+        val binding = horizontalGroupViewHolder.binding
+        val context = binding.root.context
+        val attendanceColor = when {
+            attendancePercentage ?: 0.0 <= 50.0 -> context.getThemeAttrColor(R.attr.colorPrimary)
+            attendancePercentage ?: 0.0 <= 75.0 -> context.getThemeAttrColor(R.attr.colorTimetableChange)
+            else -> context.getThemeAttrColor(R.attr.colorOnSurface)
+        }
 
-        with(horizontalGroupViewHolder.binding) {
-            dashboardHorizontalGroupItemAttendanceValue.text = "%.2f%%".format(attendancePercentage)
+        with(binding.dashboardHorizontalGroupItemAttendanceValue) {
+            text = "%.2f%%".format(attendancePercentage)
+            setTextColor(attendanceColor)
+        }
+
+        with(binding) {
             dashboardHorizontalGroupItemLuckyValue.text = luckyNumber?.luckyNumber.toString()
             dashboardHorizontalGroupItemMessageValue.text = messageCount.toString()
         }
@@ -158,111 +170,53 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         val item = items[position]
         val timetableFull = item.data as TimetableFull
         val binding = lessonsViewHolder.binding
-        val currentDateTime = LocalDateTime.now()
-        val currentDate = LocalDate.now()
 
-        val currentTimetable = timetableFull.lessons
-            .filter { it.date == currentDate }
-            .filter { it.end.isAfter(currentDateTime) }
-            .filterNot { it.canceled }
-        val currentDayHeader =
-            timetableFull.headers.singleOrNull { it.date == currentDate }
+        fun updateLessonState() {
+            val currentDateTime = LocalDateTime.now()
+            val currentDate = LocalDate.now()
 
-        val tomorrowTimetable = timetableFull.lessons
-            .filter { it.date == currentDate.plusDays(1) }
-            .filterNot { it.canceled }
-        val tomorrowDayHeader =
-            timetableFull.headers.singleOrNull { it.date == currentDate.plusDays(1) }
+            val currentTimetable = timetableFull.lessons
+                .filter { it.date == currentDate }
+                .filter { it.end.isAfter(currentDateTime) }
+                .filterNot { it.canceled }
+            val currentDayHeader =
+                timetableFull.headers.singleOrNull { it.date == currentDate }
 
-        when {
-            currentTimetable.isNotEmpty() -> {
-                updateLessonView(item, currentTimetable, binding)
-                binding.dashboardLessonsItemTitleTomorrow.isVisible = false
-            }
-            currentDayHeader != null && currentDayHeader.content.isNotBlank() -> {
-                updateLessonView(item, emptyList(), binding)
-                binding.dashboardLessonsItemTitleTomorrow.isVisible = false
-            }
-            tomorrowTimetable.isNotEmpty() -> {
-                updateLessonView(item, tomorrowTimetable, binding)
-                binding.dashboardLessonsItemTitleTomorrow.isVisible = true
-            }
-            tomorrowDayHeader != null && tomorrowDayHeader.content.isNotBlank() -> {
-                updateLessonView(item, emptyList(), binding)
-                binding.dashboardLessonsItemTitleTomorrow.isVisible = true
-            }
-            else -> {
-                updateLessonView(item, emptyList(), binding)
-                binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+            val tomorrowTimetable = timetableFull.lessons
+                .filter { it.date == currentDate.plusDays(1) }
+                .filterNot { it.canceled }
+            val tomorrowDayHeader =
+                timetableFull.headers.singleOrNull { it.date == currentDate.plusDays(1) }
+
+            when {
+                currentTimetable.isNotEmpty() -> {
+                    updateLessonView(item, currentTimetable, binding)
+                    binding.dashboardLessonsItemTitleTomorrow.isVisible = false
+                }
+                currentDayHeader != null && currentDayHeader.content.isNotBlank() -> {
+                    updateLessonView(item, emptyList(), binding, currentDayHeader)
+                    binding.dashboardLessonsItemTitleTomorrow.isVisible = false
+                }
+                tomorrowTimetable.isNotEmpty() -> {
+                    updateLessonView(item, tomorrowTimetable, binding)
+                    binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+                }
+                tomorrowDayHeader != null && tomorrowDayHeader.content.isNotBlank() -> {
+                    updateLessonView(item, emptyList(), binding, tomorrowDayHeader)
+                    binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+                }
+                else -> {
+                    updateLessonView(item, emptyList(), binding)
+                    binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+                }
             }
         }
 
+        updateLessonState()
+
         lessonsTimer?.cancel()
         lessonsTimer = timer(period = 1000) {
-            val currentDateTime = LocalDateTime.now()
-            val currentDate = LocalDate.now()
-            val emptyThreshold =
-                LocalDateTime.of(currentDate.year, currentDate.month, currentDate.dayOfMonth, 15, 0)
-
-            Handler(Looper.getMainLooper()).post {
-                val currentTimetable = timetableFull.lessons
-                    .filter { it.date == currentDate }
-                    .filterNot { it.canceled }
-                val currentDayHeader =
-                    timetableFull.headers.singleOrNull { it.date == currentDate }
-
-                val tomorrowTimetable = timetableFull.lessons
-                    .filter { it.date == currentDate.plusDays(1) }
-                    .filterNot { it.canceled }
-                val tomorrowDayHeader =
-                    timetableFull.headers.singleOrNull { it.date == currentDate.plusDays(1) }
-
-                when {
-                    currentTimetable.isNotEmpty() &&
-                        currentTimetable.any { currentDateTime.isBefore(it.end) } -> {
-
-                        updateLessonView(item, currentTimetable, binding)
-                        binding.dashboardLessonsItemTitleTomorrow.isVisible = false
-                    }
-
-                    currentDayHeader != null && currentDayHeader.content.isNotBlank() && currentDateTime.isBefore(
-                        emptyThreshold
-                    ) -> {
-                        updateLessonView(item, emptyList(), binding)
-                        binding.dashboardLessonsItemTitleTomorrow.isVisible = false
-                    }
-
-                    currentTimetable.isEmpty() && currentDateTime.isBefore(emptyThreshold) -> {
-                        updateLessonView(item, currentTimetable, binding)
-                        binding.dashboardLessonsItemTitleTomorrow.isVisible = false
-                    }
-
-                    currentTimetable.isEmpty() && currentDateTime.isAfter(emptyThreshold) -> {
-                        updateLessonView(item, tomorrowTimetable, binding)
-                        binding.dashboardLessonsItemTitleTomorrow.isVisible = true
-                    }
-
-                    currentDayHeader != null && currentDayHeader.content.isNotBlank() -> {
-                        updateLessonView(item, emptyList(), binding)
-                        binding.dashboardLessonsItemTitleTomorrow.isVisible = false
-                    }
-
-                    tomorrowTimetable.isNotEmpty() -> {
-                        updateLessonView(item, tomorrowTimetable, binding)
-                        binding.dashboardLessonsItemTitleTomorrow.isVisible = true
-                    }
-
-                    tomorrowDayHeader != null && tomorrowDayHeader.content.isNotBlank() -> {
-                        updateLessonView(item, emptyList(), binding)
-                        binding.dashboardLessonsItemTitleTomorrow.isVisible = true
-                    }
-
-                    else -> {
-                        updateLessonView(item, emptyList(), binding)
-                        binding.dashboardLessonsItemTitleTomorrow.isVisible = true
-                    }
-                }
-            }
+            Handler(Looper.getMainLooper()).post { updateLessonState() }
         }
     }
 
@@ -270,6 +224,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         item: DashboardData,
         timetableToShow: List<Timetable>,
         binding: ItemDashboardLessonsBinding,
+        header: TimetableHeader? = null,
     ) {
         val currentDateTime = LocalDateTime.now()
         val nextLessons = timetableToShow.filter { it.end.isAfter(currentDateTime) }
@@ -277,7 +232,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
         with(binding) {
             dashboardLessonsItemEmpty.isVisible =
-                (timetableToShow.isEmpty() || nextLessons.isEmpty()) && item.error == null
+                (timetableToShow.isEmpty() || nextLessons.isEmpty()) && item.error == null && header == null
             dashboardLessonsItemError.isVisible = item.error != null
 
             val secondLesson = nextLessons.getOrNull(1)
@@ -285,17 +240,8 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
             updateFirstLessonView(binding, firstLesson, currentDateTime)
             updateSecondLesson(binding, firstLesson, secondLesson)
-
-            dashboardLessonsItemThirdTime.isVisible = nextLessons.size > 2
-            dashboardLessonsItemThirdTitle.isVisible = nextLessons.size > 2
-            dashboardLessonsItemThirdValue.isVisible = nextLessons.size > 2
-            dashboardLessonsItemDivider.isVisible = nextLessons.size > 2
-
-            dashboardLessonsItemThirdValue.text =
-                "jeszcze ${nextLessons.size - 2} kolejnych lekcji"
-            dashboardLessonsItemThirdTime.text =
-                "do ${nextLessons.lastOrNull()?.end?.toFormattedString("HH:mm")}"
-
+            updateLessonSummary(binding, nextLessons)
+            updateLessonHeader(binding, header)
         }
     }
 
@@ -446,9 +392,43 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             !(secondLesson == null && firstLesson == null)
     }
 
+    private fun updateLessonSummary(
+        binding: ItemDashboardLessonsBinding,
+        nextLessons: List<Timetable>
+    ) {
+        val context = binding.root.context
+        val formattedEndTime = nextLessons.lastOrNull()?.end?.toFormattedString("HH:mm")
+
+        with(binding) {
+            dashboardLessonsItemThirdTime.isVisible = nextLessons.size > 2
+            dashboardLessonsItemThirdTitle.isVisible = nextLessons.size > 2
+            dashboardLessonsItemThirdValue.isVisible = nextLessons.size > 2
+            dashboardLessonsItemDivider.isVisible = nextLessons.size > 2
+
+            dashboardLessonsItemThirdValue.text = context.resources.getQuantityString(
+                R.plurals.dashboard_timetable_third_value,
+                nextLessons.size - 2,
+                nextLessons.size - 2
+            )
+            dashboardLessonsItemThirdTime.text =
+                context.getString(R.string.dashboard_timetable_third_time, formattedEndTime)
+        }
+    }
+
+    private fun updateLessonHeader(
+        binding: ItemDashboardLessonsBinding,
+        header: TimetableHeader?
+    ) {
+        with(binding.dashboardLessonsItemDayHeader) {
+            isVisible = header != null
+            text = header?.content
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun bindHomeworkViewHolder(homeworkViewHolder: HomeworkViewHolder, position: Int) {
         val item = items[position]
+        val context = homeworkViewHolder.binding.root.context
         val homeworkList = item.data as List<Homework>? ?: emptyList()
         val homeworkAdapter = homeworkViewHolder.adapter.apply {
             this.items = homeworkList.take(5)
@@ -459,7 +439,11 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             dashboardHomeworkItemError.isVisible = item.error != null
             dashboardHomeworkItemDivider.isVisible = homeworkList.size > 5
             dashboardHomeworkItemMore.isVisible = homeworkList.size > 5
-            dashboardHomeworkItemMore.text = "Jeszcze ${homeworkList.size - 5} zadań więcej"
+            dashboardHomeworkItemMore.text = context.resources.getQuantityString(
+                R.plurals.dashboard_homework_more,
+                homeworkList.size - 5,
+                homeworkList.size - 5
+            )
 
             with(dashboardHomeworkItemRecycler) {
                 adapter = homeworkAdapter
@@ -475,6 +459,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         position: Int
     ) {
         val item = items[position]
+        val context = announcementsViewHolder.binding.root.context
         val schoolAnnouncementList = item.data as List<SchoolAnnouncement>? ?: emptyList()
         val schoolAnnouncementsAdapter = announcementsViewHolder.adapter.apply {
             this.items = schoolAnnouncementList.take(5)
@@ -486,9 +471,11 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             dashboardAnnouncementsItemError.isVisible = item.error != null
             dashboardAnnouncementsItemDivider.isVisible = schoolAnnouncementList.size > 5
             dashboardAnnouncementsItemMore.isVisible = schoolAnnouncementList.size > 5
-            dashboardAnnouncementsItemMore.text =
-                "Jeszcze ${schoolAnnouncementList.size - 5} ogłoszeń więcej"
-
+            dashboardAnnouncementsItemMore.text = context.resources.getQuantityString(
+                R.plurals.dashboard_announcements_more,
+                schoolAnnouncementList.size - 5,
+                schoolAnnouncementList.size - 5
+            )
             with(dashboardAnnouncementsItemRecycler) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = schoolAnnouncementsAdapter
@@ -500,6 +487,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     @Suppress("UNCHECKED_CAST")
     private fun bindExamsViewHolder(examsViewHolder: ExamsViewHolder, position: Int) {
         val item = items[position]
+        val context = examsViewHolder.binding.root.context
         val examList = item.data as List<Exam>? ?: emptyList()
         val examAdapter = examsViewHolder.adapter.apply {
             this.items = examList.take(5)
@@ -510,7 +498,11 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             dashboardExamsItemError.isVisible = item.error != null
             dashboardExamsItemDivider.isVisible = examList.size > 5
             dashboardExamsItemMore.isVisible = examList.size > 5
-            dashboardExamsItemMore.text = "Jeszcze ${examList.size - 5} sprawdzianów więcej"
+            dashboardExamsItemMore.text = context.resources.getQuantityString(
+                R.plurals.dashboard_exams_more,
+                examList.size - 5,
+                examList.size - 5
+            )
 
             with(dashboardExamsItemRecycler) {
                 layoutManager = LinearLayoutManager(context)
@@ -526,6 +518,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         position: Int
     ) {
         val item = items[position]
+        val context = conferencesViewHolder.binding.root.context
         val conferenceList = item.data as List<Conference>? ?: emptyList()
         val conferenceAdapter = conferencesViewHolder.adapter.apply {
             this.items = conferenceList.take(5)
@@ -536,7 +529,11 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             dashboardConferencesItemError.isVisible = item.error != null
             dashboardConferencesItemDivider.isVisible = conferenceList.size > 5
             dashboardConferencesItemMore.isVisible = conferenceList.size > 5
-            dashboardConferencesItemMore.text = "Jeszcze ${conferenceList.size - 5} zebrań więcej"
+            dashboardConferencesItemMore.text = context.resources.getQuantityString(
+                R.plurals.dashboard_conference_more,
+                conferenceList.size - 5,
+                conferenceList.size - 5
+            )
 
             with(dashboardConferencesItemRecycler) {
                 layoutManager = LinearLayoutManager(context)
