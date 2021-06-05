@@ -46,6 +46,8 @@ class DashboardPresenter @Inject constructor(
 
     private val dashboardDataList = mutableListOf<DashboardData>()
 
+    private lateinit var lastError: Throwable
+
     private val dashboardTilesToLoad = setOf(
         1 to DashboardViewType.ACCOUNT,
         2 to DashboardViewType.HORIZONTAL_GROUP,
@@ -80,6 +82,17 @@ class DashboardPresenter @Inject constructor(
         }
     }
 
+    fun onRetry() {
+        view?.run {
+            showErrorView(false)
+            showProgress(true)
+        }
+    }
+
+    fun onDetailsClick() {
+        view?.showErrorDetailsDialog(lastError)
+    }
+
     private fun loadCurrentAccount() {
         flowWithResource { studentRepository.getCurrentStudent(false) }
             .onEach {
@@ -91,6 +104,8 @@ class DashboardPresenter @Inject constructor(
                     }
                     Status.ERROR -> {
                         Timber.i("Loading dashboard account result: An exception occurred")
+                        errorHandler.dispatch(it.error!!)
+                        showErrorInTile(it.error, DashboardViewType.ACCOUNT)
                     }
                 }
             }
@@ -103,10 +118,10 @@ class DashboardPresenter @Inject constructor(
             val semester = semesterRepository.getCurrentSemester(student)
 
             val messageFlow =
-                messageRepository.getMessages(student, semester, MessageFolder.RECEIVED, false)
-            val luckyNumberFlow = luckyNumberRepository.getLuckyNumber(student, false)
+                messageRepository.getMessages(student, semester, MessageFolder.RECEIVED, true)
+            val luckyNumberFlow = luckyNumberRepository.getLuckyNumber(student, true)
             val attendanceSummaryFlow =
-                attendanceSummaryRepository.getAttendanceSummary(student, semester, -1, false)
+                attendanceSummaryRepository.getAttendanceSummary(student, semester, -1, true)
 
             combineTransform(
                 messageFlow,
@@ -130,6 +145,8 @@ class DashboardPresenter @Inject constructor(
                 }
                 Status.ERROR -> {
                     Timber.i("Loading dashboard horizontal group result: An exception occurred")
+                    errorHandler.dispatch(it.error!!)
+                    showErrorInTile(it.error, DashboardViewType.HORIZONTAL_GROUP)
                 }
             }
         }.launch("dashboard_horizontal_group")
@@ -195,6 +212,8 @@ class DashboardPresenter @Inject constructor(
                 }
                 Status.ERROR -> {
                     Timber.i("Loading dashboard lessons result: An exception occurred")
+                    errorHandler.dispatch(it.error!!)
+                    showErrorInTile(it.error, DashboardViewType.LESSONS)
                 }
             }
         }.launch("dashboard_lessons")
@@ -271,6 +290,8 @@ class DashboardPresenter @Inject constructor(
                 }
                 Status.ERROR -> {
                     Timber.i("Loading dashboard exams result: An exception occurred")
+                    errorHandler.dispatch(it.error!!)
+                    showErrorInTile(it.error, DashboardViewType.EXAMS)
                 }
             }
         }.launch("dashboard_exams")
@@ -299,6 +320,8 @@ class DashboardPresenter @Inject constructor(
                 }
                 Status.ERROR -> {
                     Timber.i("Loading dashboard conferences result: An exception occurred")
+                    errorHandler.dispatch(it.error!!)
+                    showErrorInTile(it.error, DashboardViewType.CONFERENCES)
                 }
             }
         }.launch("dashboard_conferences")
@@ -312,12 +335,14 @@ class DashboardPresenter @Inject constructor(
             dashboardTilesToLoad.single { (_, type) -> type == dashboardData.viewType }.first
         }
 
-        val showProgress =
-            !dashboardTilesToLoad.all { (_, type) -> dashboardDataList.any { it.viewType == type } }
+        val isTilesLoaded =
+            dashboardTilesToLoad.all { (_, type) -> dashboardDataList.any { it.viewType == type } }
 
-        view?.showProgress(showProgress)
-        view?.showContent(!showProgress)
-        view?.updateData(dashboardDataList)
+        view?.run {
+            showProgress(!isTilesLoaded)
+            showContent(isTilesLoaded)
+            updateData(dashboardDataList)
+        }
     }
 
     private fun showErrorInTile(exception: Throwable?, dashboardViewType: DashboardViewType) {
@@ -334,12 +359,29 @@ class DashboardPresenter @Inject constructor(
             dashboardTilesToLoad.single { (_, type) -> type == dashboardData.viewType }.first
         }
 
-        val showProgress =
-            !dashboardTilesToLoad.all { (_, type) -> dashboardDataList.any { it.viewType == type } }
+        val isTilesLoaded =
+            dashboardTilesToLoad.all { (_, type) -> dashboardDataList.any { it.viewType == type } }
 
-        view?.showProgress(showProgress)
-        view?.showContent(!showProgress)
-        view?.updateData(dashboardDataList)
+        view?.run {
+            showProgress(!isTilesLoaded)
+            showContent(isTilesLoaded)
+            updateData(dashboardDataList)
+        }
+
+        if (isTilesLoaded) {
+            val filteredTiles = dashboardDataList.filterNot {
+                it.viewType == DashboardViewType.HORIZONTAL_GROUP || it.viewType == DashboardViewType.ACCOUNT
+            }
+            val isGeneralError = filteredTiles.all { it.error != null }
+            val errorMessage = filteredTiles.map { it.error?.stackTraceToString() }.toString()
+
+            lastError = Exception(errorMessage)
+
+            view?.run {
+                showContent(!isGeneralError)
+                showErrorView(isGeneralError)
+            }
+        }
     }
 
     private fun updateGradeTheme() {

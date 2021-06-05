@@ -6,7 +6,9 @@ import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.wulkanowy.R
@@ -142,6 +144,10 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         with(binding) {
             dashboardHorizontalGroupItemLuckyValue.text = luckyNumber?.luckyNumber.toString()
             dashboardHorizontalGroupItemMessageValue.text = messageCount.toString()
+            dashboardHorizontalGroupItemLuckyContainer.isVisible = luckyNumber != null
+            dashboardHorizontalGroupItemAttendanceContainer.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                matchConstraintPercentWidth = if (luckyNumber == null) 0.5f else 0.4f
+            }
         }
     }
 
@@ -168,25 +174,26 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
     private fun bindLessonsViewHolder(lessonsViewHolder: LessonsViewHolder, position: Int) {
         val item = items[position]
-        val timetableFull = item.data as TimetableFull
+        val timetableFull = item.data as TimetableFull?
         val binding = lessonsViewHolder.binding
 
         fun updateLessonState() {
             val currentDateTime = LocalDateTime.now()
             val currentDate = LocalDate.now()
 
-            val currentTimetable = timetableFull.lessons
+            val currentTimetable = timetableFull?.lessons
+                .orEmpty()
                 .filter { it.date == currentDate }
                 .filter { it.end.isAfter(currentDateTime) }
                 .filterNot { it.canceled }
             val currentDayHeader =
-                timetableFull.headers.singleOrNull { it.date == currentDate }
+                timetableFull?.headers.orEmpty().singleOrNull { it.date == currentDate }
 
-            val tomorrowTimetable = timetableFull.lessons
+            val tomorrowTimetable = timetableFull?.lessons.orEmpty()
                 .filter { it.date == currentDate.plusDays(1) }
                 .filterNot { it.canceled }
             val tomorrowDayHeader =
-                timetableFull.headers.singleOrNull { it.date == currentDate.plusDays(1) }
+                timetableFull?.headers.orEmpty().singleOrNull { it.date == currentDate.plusDays(1) }
 
             when {
                 currentTimetable.isNotEmpty() -> {

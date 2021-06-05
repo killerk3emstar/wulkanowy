@@ -13,4 +13,8 @@ interface DashboardView : BaseView {
     fun showProgress(show: Boolean)
 
     fun showContent(show: Boolean)
+
+    fun showErrorView(show: Boolean)
+
+    fun setErrorDetails(message: String)
 }

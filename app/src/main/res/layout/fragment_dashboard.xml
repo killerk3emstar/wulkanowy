@@ -36,7 +36,7 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            app:srcCompat="@drawable/ic_main_dashboard"
+            app:srcCompat="@drawable/ic_error"
             app:tint="?colorOnBackground"
             tools:ignore="contentDescription" />
 

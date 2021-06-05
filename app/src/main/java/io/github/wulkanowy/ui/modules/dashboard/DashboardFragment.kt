@@ -48,9 +48,14 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
     }
 
     override fun initView() {
-        with(binding.dashboardRecycler) {
-            layoutManager = LinearLayoutManager(context)
-            adapter = dashboardAdapter
+        with(binding) {
+            dashboardErrorRetry.setOnClickListener { presenter.onRetry() }
+            dashboardErrorDetails.setOnClickListener { presenter.onDetailsClick() }
+
+            with(dashboardRecycler) {
+                layoutManager = LinearLayoutManager(context)
+                adapter = dashboardAdapter
+            }
         }
     }
 
@@ -77,6 +82,14 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
 
     override fun showContent(show: Boolean) {
         binding.dashboardRecycler.isVisible = show
+    }
+
+    override fun showErrorView(show: Boolean) {
+        binding.dashboardErrorContainer.isVisible = show
+    }
+
+    override fun setErrorDetails(message: String) {
+        binding.dashboardErrorMessage.text = message
     }
 
     override fun onStop() {
