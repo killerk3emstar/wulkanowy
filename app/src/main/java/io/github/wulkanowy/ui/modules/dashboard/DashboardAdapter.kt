@@ -12,16 +12,8 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.wulkanowy.R
-import io.github.wulkanowy.data.db.entities.Conference
-import io.github.wulkanowy.data.db.entities.Exam
-import io.github.wulkanowy.data.db.entities.Grade
-import io.github.wulkanowy.data.db.entities.Homework
-import io.github.wulkanowy.data.db.entities.LuckyNumber
-import io.github.wulkanowy.data.db.entities.SchoolAnnouncement
-import io.github.wulkanowy.data.db.entities.Student
 import io.github.wulkanowy.data.db.entities.Timetable
 import io.github.wulkanowy.data.db.entities.TimetableHeader
-import io.github.wulkanowy.data.pojos.TimetableFull
 import io.github.wulkanowy.databinding.ItemDashboardAccountBinding
 import io.github.wulkanowy.databinding.ItemDashboardAnnouncementsBinding
 import io.github.wulkanowy.databinding.ItemDashboardConferencesBinding
@@ -44,7 +36,7 @@ import kotlin.concurrent.timer
 
 class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var items = emptyList<DashboardData>()
+    var items = emptyList<DashboardTile>()
 
     var gradeTheme = ""
 
@@ -52,34 +44,34 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
     override fun getItemCount() = items.size
 
-    override fun getItemViewType(position: Int) = items[position].viewType.id
+    override fun getItemViewType(position: Int) = items[position].type.id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
         return when (viewType) {
-            DashboardViewType.ACCOUNT.id -> AccountViewHolder(
+            DashboardTile.Type.ACCOUNT.id -> AccountViewHolder(
                 ItemDashboardAccountBinding.inflate(inflater, parent, false)
             )
-            DashboardViewType.HORIZONTAL_GROUP.id -> HorizontalGroupViewHolder(
+            DashboardTile.Type.HORIZONTAL_GROUP.id -> HorizontalGroupViewHolder(
                 ItemDashboardHorizontalGroupBinding.inflate(inflater, parent, false)
             )
-            DashboardViewType.GRADES.id -> GradesViewHolder(
+            DashboardTile.Type.GRADES.id -> GradesViewHolder(
                 ItemDashboardGradesBinding.inflate(inflater, parent, false)
             )
-            DashboardViewType.LESSONS.id -> LessonsViewHolder(
+            DashboardTile.Type.LESSONS.id -> LessonsViewHolder(
                 ItemDashboardLessonsBinding.inflate(inflater, parent, false)
             )
-            DashboardViewType.HOMEWORK.id -> HomeworkViewHolder(
+            DashboardTile.Type.HOMEWORK.id -> HomeworkViewHolder(
                 ItemDashboardHomeworkBinding.inflate(inflater, parent, false)
             )
-            DashboardViewType.ANNOUNCEMENTS.id -> AnnouncementsViewHolder(
+            DashboardTile.Type.ANNOUNCEMENTS.id -> AnnouncementsViewHolder(
                 ItemDashboardAnnouncementsBinding.inflate(inflater, parent, false)
             )
-            DashboardViewType.EXAMS.id -> ExamsViewHolder(
+            DashboardTile.Type.EXAMS.id -> ExamsViewHolder(
                 ItemDashboardExamsBinding.inflate(inflater, parent, false)
             )
-            DashboardViewType.CONFERENCES.id -> ConferencesViewHolder(
+            DashboardTile.Type.CONFERENCES.id -> ConferencesViewHolder(
                 ItemDashboardConferencesBinding.inflate(inflater, parent, false)
             )
             else -> throw IllegalArgumentException()
@@ -108,26 +100,25 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     private fun bindAccountViewHolder(accountViewHolder: AccountViewHolder, position: Int) {
-        val item = items[position].data as Student
+        val student = (items[position] as DashboardTile.Account).student ?: return
         val avatar = accountViewHolder.binding.root.context.createNameInitialsDrawable(
-            text = item.nickOrName,
-            backgroundColor = item.avatarColor
+            text = student.nickOrName,
+            backgroundColor = student.avatarColor
         )
 
         with(accountViewHolder.binding) {
             dashboardAccountItemAvatar.setImageDrawable(avatar)
-            dashboardAccountItemName.text = item.nickOrName
-            dashboardAccountItemSchoolName.text = item.schoolName
+            dashboardAccountItemName.text = student.nickOrName
+            dashboardAccountItemSchoolName.text = student.schoolName
         }
     }
 
     @SuppressLint("SetTextI18n")
-    @Suppress("UNCHECKED_CAST")
     private fun bindHorizontalGroupViewHolder(
         horizontalGroupViewHolder: HorizontalGroupViewHolder,
         position: Int
     ) {
-        val (luckyNumber, messageCount, attendancePercentage) = items[position].data as Triple<LuckyNumber?, Int?, Double?>
+        val (unreadMessagesCount, attendancePercentage, luckyNumber, error) = items[position] as DashboardTile.HorizontalGroup
         val binding = horizontalGroupViewHolder.binding
         val context = binding.root.context
         val attendanceColor = when {
@@ -143,38 +134,40 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
         with(binding) {
             dashboardHorizontalGroupItemLuckyValue.text = luckyNumber?.luckyNumber.toString()
-            dashboardHorizontalGroupItemMessageValue.text = messageCount.toString()
-            dashboardHorizontalGroupItemLuckyContainer.isVisible = luckyNumber != null
+            dashboardHorizontalGroupItemMessageValue.text = unreadMessagesCount.toString()
+            dashboardHorizontalGroupItemLuckyContainer.isVisible =
+                luckyNumber != null && error == null
+            dashboardHorizontalGroupItemAttendanceContainer.isVisible = error == null
+            dashboardHorizontalGroupItemMessageContainer.isVisible = error == null
+            dashboardHorizontalGroupItemErrorContainer.isVisible = error != null
             dashboardHorizontalGroupItemAttendanceContainer.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 matchConstraintPercentWidth = if (luckyNumber == null) 0.5f else 0.4f
             }
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun bindGradesViewHolder(gradesViewHolder: GradesViewHolder, position: Int) {
-        val item = items[position]
-        val subjectWithGrades = item.data as Map<String, List<Grade>>? ?: emptyMap()
+        val (subjectWithGrades, error) = items[position] as DashboardTile.Grades
         val dashboardGradesAdapter = gradesViewHolder.adapter.apply {
             this.items = subjectWithGrades.toList()
             this.gradeTheme = this@DashboardAdapter.gradeTheme
         }
 
         with(gradesViewHolder.binding) {
-            dashboardGradesItemEmpty.isVisible = subjectWithGrades.isEmpty() && item.error == null
-            dashboardGradesItemError.isVisible = item.error != null
+            dashboardGradesItemEmpty.isVisible = subjectWithGrades.isEmpty() && error == null
+            dashboardGradesItemError.isVisible = error != null
 
             with(dashboardGradesItemRecycler) {
                 adapter = dashboardGradesAdapter
                 layoutManager = LinearLayoutManager(context)
-                isVisible = subjectWithGrades.isNotEmpty() && item.error == null
+                isVisible = subjectWithGrades.isNotEmpty() && error == null
             }
         }
     }
 
     private fun bindLessonsViewHolder(lessonsViewHolder: LessonsViewHolder, position: Int) {
-        val item = items[position]
-        val timetableFull = item.data as TimetableFull?
+        val item = items[position] as DashboardTile.Lessons
+        val timetableFull = item.lessons
         val binding = lessonsViewHolder.binding
 
         fun updateLessonState() {
@@ -228,7 +221,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     private fun updateLessonView(
-        item: DashboardData,
+        item: DashboardTile.Lessons,
         timetableToShow: List<Timetable>,
         binding: ItemDashboardLessonsBinding,
         header: TimetableHeader? = null,
@@ -432,18 +425,16 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun bindHomeworkViewHolder(homeworkViewHolder: HomeworkViewHolder, position: Int) {
-        val item = items[position]
+        val (homeworkList, error) = items[position] as DashboardTile.Homework
         val context = homeworkViewHolder.binding.root.context
-        val homeworkList = item.data as List<Homework>? ?: emptyList()
         val homeworkAdapter = homeworkViewHolder.adapter.apply {
             this.items = homeworkList.take(5)
         }
 
         with(homeworkViewHolder.binding) {
-            dashboardHomeworkItemEmpty.isVisible = homeworkList.isEmpty() && item.error == null
-            dashboardHomeworkItemError.isVisible = item.error != null
+            dashboardHomeworkItemEmpty.isVisible = homeworkList.isEmpty() && error == null
+            dashboardHomeworkItemError.isVisible = error != null
             dashboardHomeworkItemDivider.isVisible = homeworkList.size > 5
             dashboardHomeworkItemMore.isVisible = homeworkList.size > 5
             dashboardHomeworkItemMore.text = context.resources.getQuantityString(
@@ -455,27 +446,25 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             with(dashboardHomeworkItemRecycler) {
                 adapter = homeworkAdapter
                 layoutManager = LinearLayoutManager(context)
-                isVisible = homeworkList.isNotEmpty() && item.error == null
+                isVisible = homeworkList.isNotEmpty() && error == null
             }
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun bindAnnouncementsViewHolder(
         announcementsViewHolder: AnnouncementsViewHolder,
         position: Int
     ) {
-        val item = items[position]
+        val (schoolAnnouncementList, error) = items[position] as DashboardTile.Announcements
         val context = announcementsViewHolder.binding.root.context
-        val schoolAnnouncementList = item.data as List<SchoolAnnouncement>? ?: emptyList()
         val schoolAnnouncementsAdapter = announcementsViewHolder.adapter.apply {
             this.items = schoolAnnouncementList.take(5)
         }
 
         with(announcementsViewHolder.binding) {
             dashboardAnnouncementsItemEmpty.isVisible =
-                schoolAnnouncementList.isEmpty() && item.error == null
-            dashboardAnnouncementsItemError.isVisible = item.error != null
+                schoolAnnouncementList.isEmpty() && error == null
+            dashboardAnnouncementsItemError.isVisible = error != null
             dashboardAnnouncementsItemDivider.isVisible = schoolAnnouncementList.size > 5
             dashboardAnnouncementsItemMore.isVisible = schoolAnnouncementList.size > 5
             dashboardAnnouncementsItemMore.text = context.resources.getQuantityString(
@@ -486,66 +475,62 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
             with(dashboardAnnouncementsItemRecycler) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = schoolAnnouncementsAdapter
-                isVisible = schoolAnnouncementList.isNotEmpty() && item.error == null
+                isVisible = schoolAnnouncementList.isNotEmpty() && error == null
             }
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun bindExamsViewHolder(examsViewHolder: ExamsViewHolder, position: Int) {
-        val item = items[position]
+        val (exams, error) = items[position] as DashboardTile.Exams
         val context = examsViewHolder.binding.root.context
-        val examList = item.data as List<Exam>? ?: emptyList()
         val examAdapter = examsViewHolder.adapter.apply {
-            this.items = examList.take(5)
+            this.items = exams.take(5)
         }
 
         with(examsViewHolder.binding) {
-            dashboardExamsItemEmpty.isVisible = examList.isEmpty() && item.error == null
-            dashboardExamsItemError.isVisible = item.error != null
-            dashboardExamsItemDivider.isVisible = examList.size > 5
-            dashboardExamsItemMore.isVisible = examList.size > 5
+            dashboardExamsItemEmpty.isVisible = exams.isEmpty() && error == null
+            dashboardExamsItemError.isVisible = error != null
+            dashboardExamsItemDivider.isVisible = exams.size > 5
+            dashboardExamsItemMore.isVisible = exams.size > 5
             dashboardExamsItemMore.text = context.resources.getQuantityString(
                 R.plurals.dashboard_exams_more,
-                examList.size - 5,
-                examList.size - 5
+                exams.size - 5,
+                exams.size - 5
             )
 
             with(dashboardExamsItemRecycler) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = examAdapter
-                isVisible = examList.isNotEmpty() && item.error == null
+                isVisible = exams.isNotEmpty() && error == null
             }
         }
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun bindConferencesViewHolder(
         conferencesViewHolder: ConferencesViewHolder,
         position: Int
     ) {
-        val item = items[position]
+        val (conferences, error) = items[position] as DashboardTile.Conferences
         val context = conferencesViewHolder.binding.root.context
-        val conferenceList = item.data as List<Conference>? ?: emptyList()
         val conferenceAdapter = conferencesViewHolder.adapter.apply {
-            this.items = conferenceList.take(5)
+            this.items = conferences.take(5)
         }
 
         with(conferencesViewHolder.binding) {
-            dashboardConferencesItemEmpty.isVisible = conferenceList.isEmpty() && item.error == null
-            dashboardConferencesItemError.isVisible = item.error != null
-            dashboardConferencesItemDivider.isVisible = conferenceList.size > 5
-            dashboardConferencesItemMore.isVisible = conferenceList.size > 5
+            dashboardConferencesItemEmpty.isVisible = conferences.isEmpty() && error == null
+            dashboardConferencesItemError.isVisible = error != null
+            dashboardConferencesItemDivider.isVisible = conferences.size > 5
+            dashboardConferencesItemMore.isVisible = conferences.size > 5
             dashboardConferencesItemMore.text = context.resources.getQuantityString(
                 R.plurals.dashboard_conference_more,
-                conferenceList.size - 5,
-                conferenceList.size - 5
+                conferences.size - 5,
+                conferences.size - 5
             )
 
             with(dashboardConferencesItemRecycler) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = conferenceAdapter
-                isVisible = conferenceList.isNotEmpty() && item.error == null
+                isVisible = conferences.isNotEmpty() && error == null
             }
         }
     }

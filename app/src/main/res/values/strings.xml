@@ -532,6 +532,8 @@
         <item quantity="other">%1$d more conferences</item>
     </plurals>
 
+    <string name="dashboard_horizontal_group_error">An error occurred while loading data</string>
+
 
     <!--Error dialog-->
     <string name="dialog_error_check_update">Check for updates</string>

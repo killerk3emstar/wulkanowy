@@ -6,7 +6,7 @@ interface DashboardView : BaseView {
 
     fun initView()
 
-    fun updateData(data: List<DashboardData>)
+    fun updateData(data: List<DashboardTile>)
 
     fun updateGradeTheme(theme: String)
 

@@ -59,7 +59,7 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
         }
     }
 
-    override fun updateData(data: List<DashboardData>) {
+    override fun updateData(data: List<DashboardTile>) {
         with(dashboardAdapter) {
             items = data
             notifyDataSetChanged()

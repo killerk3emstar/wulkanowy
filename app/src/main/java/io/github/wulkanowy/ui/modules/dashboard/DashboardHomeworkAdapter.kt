@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import io.github.wulkanowy.R
 import io.github.wulkanowy.data.db.entities.Homework
 import io.github.wulkanowy.databinding.SubitemDashboardHomeworkBinding
+import io.github.wulkanowy.utils.getThemeAttrColor
 import io.github.wulkanowy.utils.toFormattedString
+import java.time.LocalDate
 
 class DashboardHomeworkAdapter : RecyclerView.Adapter<DashboardHomeworkAdapter.ViewHolder>() {
 
@@ -24,11 +26,21 @@ class DashboardHomeworkAdapter : RecyclerView.Adapter<DashboardHomeworkAdapter.V
         val item = items[position]
         val context = holder.binding.root.context
         val formattedDate = item.date.toFormattedString("dd.MM")
+        val warningTextColor = context.getThemeAttrColor(
+            if (item.date == LocalDate.now()) {
+                R.attr.colorPrimary
+            } else {
+                android.R.attr.textColorPrimary
+            }
+        )
 
         with(holder.binding) {
             dashboardHomeworkSubitemTitle.text = "${item.subject} - ${item.content}"
+            dashboardHomeworkSubitemTitle.setTextColor(warningTextColor)
+
             dashboardHomeworkSubitemTime.text =
                 context.getString(R.string.dashboard_homework_time, formattedDate)
+            dashboardHomeworkSubitemTime.setTextColor(warningTextColor)
         }
     }
 
