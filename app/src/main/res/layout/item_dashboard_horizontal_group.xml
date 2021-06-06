@@ -169,22 +169,22 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/dashboard_horizontal_group_item_error_container"
+        android:id="@+id/dashboard_horizontal_group_item_info_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="4dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
+        android:visibility="gone"
         app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/dashboard_horizontal_group_item_message_container"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.40"
-        tools:visibility="gone">
+        app:layout_constraintWidth_percent="0.40">
 
         <TextView
-            android:id="@+id/dashboard_horizontal_group_item_error_text"
+            android:id="@+id/dashboard_horizontal_group_item_info_error_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
@@ -201,6 +201,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_title" />
+            app:layout_constraintTop_toBottomOf="@id/dashboard_lessons_item_title"
+            tools:visibility="gone" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/dashboard_horizontal_group_item_info_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:indeterminate="true"
+            app:indicatorSize="28dp" />
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,7 +30,7 @@ class DashboardHomeworkAdapter : RecyclerView.Adapter<DashboardHomeworkAdapter.V
             if (item.date == LocalDate.now()) {
                 R.attr.colorPrimary
             } else {
-                android.R.attr.textColorPrimary
+                android.R.attr.textColorSecondary
             }
         )
 

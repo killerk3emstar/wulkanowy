@@ -60,17 +60,14 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
     }
 
     override fun updateData(data: List<DashboardTile>) {
-        with(dashboardAdapter) {
-            items = data
-            notifyDataSetChanged()
-        }
+        dashboardAdapter.submitList(data)
     }
 
     override fun updateGradeTheme(theme: String) {
-        with(dashboardAdapter) {
-            gradeTheme = theme
-            notifyDataSetChanged()
-        }
+        /* with(dashboardAdapter) {
+             gradeTheme = theme
+             notifyDataSetChanged()
+         }*/
     }
 
     override fun showMessage(text: String) {

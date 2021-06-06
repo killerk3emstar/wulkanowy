@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.github.wulkanowy.R
@@ -36,11 +37,20 @@ import kotlin.concurrent.timer
 
 class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var items = emptyList<DashboardTile>()
+    private val items = mutableListOf<DashboardTile>()
 
     var gradeTheme = ""
 
     var lessonsTimer: Timer? = null
+
+    fun submitList(newItems: List<DashboardTile>) {
+        val dashboardAdapterDiffCallback = DashboardAdapterDiffCallback(newItems, items)
+        val diffResult = DiffUtil.calculateDiff(dashboardAdapterDiffCallback)
+
+        items.clear()
+        items.addAll(newItems)
+        diffResult.dispatchUpdatesTo(this)
+    }
 
     override fun getItemCount() = items.size
 
@@ -118,7 +128,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         horizontalGroupViewHolder: HorizontalGroupViewHolder,
         position: Int
     ) {
-        val (unreadMessagesCount, attendancePercentage, luckyNumber, error) = items[position] as DashboardTile.HorizontalGroup
+        val (unreadMessagesCount, attendancePercentage, luckyNumber, error, isLoading) = items[position] as DashboardTile.HorizontalGroup
         val binding = horizontalGroupViewHolder.binding
         val context = binding.root.context
         val attendanceColor = when {
@@ -135,11 +145,21 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         with(binding) {
             dashboardHorizontalGroupItemLuckyValue.text = luckyNumber?.luckyNumber.toString()
             dashboardHorizontalGroupItemMessageValue.text = unreadMessagesCount.toString()
+
+            if (dashboardHorizontalGroupItemInfoContainer.isVisible != (error != null || isLoading)) {
+                dashboardHorizontalGroupItemInfoContainer.isVisible = error != null || isLoading
+            }
+
+            if (dashboardHorizontalGroupItemInfoProgress.isVisible != isLoading) {
+                dashboardHorizontalGroupItemInfoProgress.isVisible = isLoading
+            }
+
+            dashboardHorizontalGroupItemInfoErrorText.isVisible = error != null
+
             dashboardHorizontalGroupItemLuckyContainer.isVisible =
-                luckyNumber != null && error == null
-            dashboardHorizontalGroupItemAttendanceContainer.isVisible = error == null
-            dashboardHorizontalGroupItemMessageContainer.isVisible = error == null
-            dashboardHorizontalGroupItemErrorContainer.isVisible = error != null
+                luckyNumber != null && error == null && !isLoading
+            dashboardHorizontalGroupItemAttendanceContainer.isVisible = error == null && !isLoading
+            dashboardHorizontalGroupItemMessageContainer.isVisible = error == null && !isLoading
             dashboardHorizontalGroupItemAttendanceContainer.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 matchConstraintPercentWidth = if (luckyNumber == null) 0.5f else 0.4f
             }
@@ -572,5 +592,21 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         RecyclerView.ViewHolder(binding.root) {
 
         val adapter by lazy { DashboardConferencesAdapter() }
+    }
+
+    class DashboardAdapterDiffCallback(
+        private val newItems: List<DashboardTile>,
+        private val oldItems: List<DashboardTile>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize() = oldItems.size
+
+        override fun getNewListSize() = newItems.size
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+            oldItems[oldItemPosition] == newItems[newItemPosition]
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+            oldItems[oldItemPosition].type == newItems[newItemPosition].type
     }
 }

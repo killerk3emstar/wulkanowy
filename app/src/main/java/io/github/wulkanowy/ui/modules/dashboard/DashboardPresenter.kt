@@ -22,6 +22,7 @@ import io.github.wulkanowy.utils.flowWithResource
 import io.github.wulkanowy.utils.flowWithResourceIn
 import io.github.wulkanowy.utils.nextOrSameSchoolDay
 import kotlinx.coroutines.flow.combineTransform
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
@@ -100,7 +101,10 @@ class DashboardPresenter @Inject constructor(
         flowWithResource { studentRepository.getCurrentStudent(false) }
             .onEach {
                 when (it.status) {
-                    Status.LOADING -> Timber.i("Loading dashboard account data started")
+                    Status.LOADING -> {
+                        updateData(DashboardTile.Account(it.data, isLoading = true))
+                        Timber.i("Loading dashboard account data started")
+                    }
                     Status.SUCCESS -> {
                         Timber.i("Loading dashboard account result: Success")
                         updateData(DashboardTile.Account(it.data))
@@ -137,39 +141,60 @@ class DashboardPresenter @Inject constructor(
 
                 val groupTriple = Triple(luckyNumber, unreadMessagesCount, attendancePercentage)
 
-                if (messages.status == Status.ERROR || attendanceSummaryList.status == Status.ERROR) {
-                    val message = messages.error?.stackTraceToString() +
-                        luckyNumberResource.error?.stackTraceToString() +
-                        attendanceSummaryList.error?.stackTraceToString()
+                when {
+                    messages.status == Status.ERROR || attendanceSummaryList.status == Status.ERROR -> {
+                        val message = messages.error?.stackTraceToString() +
+                            luckyNumberResource.error?.stackTraceToString() +
+                            attendanceSummaryList.error?.stackTraceToString()
 
-                    emit(Resource(Status.ERROR, groupTriple, Exception(message)))
-                } else {
-                    emit(Resource(Status.SUCCESS, groupTriple, null))
+                        emit(Resource(Status.ERROR, groupTriple, Exception(message)))
+                    }
+                    messages.status == Status.LOADING || attendanceSummaryList.status == Status.LOADING || luckyNumberResource.status == Status.LOADING -> {
+                        emit(Resource(Status.LOADING, groupTriple, null))
+                    }
+                    else -> emit(Resource(Status.SUCCESS, groupTriple, null))
                 }
             }
 
-        }.onEach {
-            when (it.status) {
-                Status.LOADING -> Timber.i("Loading dashboard horizontal group data started")
-                Status.SUCCESS -> {
-                    Timber.i("Loading dashboard horizontal group result: Success")
-                    val (luckyNumber, unreadMessagesCount, attendancePercentage) = it.data!!
+        }
+            .distinctUntilChangedBy { it.status }
+            .onEach {
+                when (it.status) {
+                    Status.LOADING -> {
+                        Timber.i("Loading dashboard horizontal group data started")
 
-                    updateData(
-                        DashboardTile.HorizontalGroup(
-                            unreadMessagesCount,
-                            attendancePercentage,
-                            luckyNumber
+                        val luckyNumber = it.data?.first
+                        val unreadMessagesCount = it.data?.second
+                        val attendancePercentage = it.data?.third
+
+                        updateData(
+                            DashboardTile.HorizontalGroup(
+                                unreadMessagesCount,
+                                attendancePercentage,
+                                luckyNumber,
+                                isLoading = true
+                            )
                         )
-                    )
+                    }
+                    Status.SUCCESS -> {
+                        Timber.i("Loading dashboard horizontal group result: Success")
+                        val (luckyNumber, unreadMessagesCount, attendancePercentage) = it.data!!
+
+                        updateData(
+                            DashboardTile.HorizontalGroup(
+                                unreadMessagesCount,
+                                attendancePercentage,
+                                luckyNumber
+                            )
+                        )
+                    }
+                    Status.ERROR -> {
+                        Timber.i("Loading dashboard horizontal group result: An exception occurred")
+                        errorHandler.dispatch(it.error!!)
+                        showErrorInTile(DashboardTile.HorizontalGroup(error = it.error))
+                    }
                 }
-                Status.ERROR -> {
-                    Timber.i("Loading dashboard horizontal group result: An exception occurred")
-                    errorHandler.dispatch(it.error!!)
-                    showErrorInTile(DashboardTile.HorizontalGroup(error = it.error))
-                }
-            }
-        }.launch("dashboard_horizontal_group")
+            }.launch("dashboard_horizontal_group")
     }
 
     private fun loadGrades() {
@@ -180,7 +205,26 @@ class DashboardPresenter @Inject constructor(
             gradeRepository.getGrades(student, semester, false)
         }.onEach {
             when (it.status) {
-                Status.LOADING -> Timber.i("Loading dashboard grades data started")
+                Status.LOADING -> {
+                    Timber.i("Loading dashboard grades data started")
+
+                    val filteredSubjectWithGrades = it.data?.first.orEmpty()
+                        .filter { grade ->
+                            grade.date.isAfter(LocalDate.now().minusDays(7))
+                        }
+                        .groupBy { grade -> grade.subject }
+                        .mapValues { entry ->
+                            entry.value
+                                .take(5)
+                                .sortedBy { grade -> grade.date }
+                        }
+                        .toList()
+                        .sortedBy { subjectWithGrades -> subjectWithGrades.second[0].date }
+                        .toMap()
+
+                    updateGradeTheme()
+                    updateData(DashboardTile.Grades(filteredSubjectWithGrades, isLoading = true))
+                }
                 Status.SUCCESS -> {
                     Timber.i("Loading dashboard grades result: Success")
 
@@ -225,7 +269,10 @@ class DashboardPresenter @Inject constructor(
 
         }.onEach {
             when (it.status) {
-                Status.LOADING -> Timber.i("Loading dashboard lessons data started")
+                Status.LOADING -> {
+                    Timber.i("Loading dashboard lessons data started")
+                    updateData(DashboardTile.Lessons(it.data, isLoading = true))
+                }
                 Status.SUCCESS -> {
                     Timber.i("Loading dashboard lessons result: Success")
                     updateData(DashboardTile.Lessons(it.data))
@@ -262,7 +309,10 @@ class DashboardPresenter @Inject constructor(
             homeworkResource.copy(data = filteredHomework)
         }.onEach {
             when (it.status) {
-                Status.LOADING -> Timber.i("Loading dashboard homework data started")
+                Status.LOADING -> {
+                    Timber.i("Loading dashboard homework data started")
+                    updateData(DashboardTile.Homework(it.data ?: emptyList(), isLoading = true))
+                }
                 Status.SUCCESS -> {
                     Timber.i("Loading dashboard homework result: Success")
                     updateData(DashboardTile.Homework(it.data ?: emptyList()))
@@ -283,7 +333,15 @@ class DashboardPresenter @Inject constructor(
             schoolAnnouncementRepository.getSchoolAnnouncements(student, false)
         }.onEach {
             when (it.status) {
-                Status.LOADING -> Timber.i("Loading dashboard announcements data started")
+                Status.LOADING -> {
+                    Timber.i("Loading dashboard announcements data started")
+                    updateData(
+                        DashboardTile.Announcements(
+                            it.data ?: emptyList(),
+                            isLoading = true
+                        )
+                    )
+                }
                 Status.SUCCESS -> {
                     Timber.i("Loading dashboard announcements result: Success")
                     updateData(DashboardTile.Announcements(it.data ?: emptyList()))
@@ -311,7 +369,10 @@ class DashboardPresenter @Inject constructor(
             )
         }.onEach {
             when (it.status) {
-                Status.LOADING -> Timber.i("Loading dashboard exams data started")
+                Status.LOADING -> {
+                    Timber.i("Loading dashboard exams data started")
+                    updateData(DashboardTile.Exams(it.data ?: emptyList(), isLoading = true))
+                }
                 Status.SUCCESS -> {
                     Timber.i("Loading dashboard exams result: Success")
                     updateData(DashboardTile.Exams(it.data ?: emptyList()))
@@ -341,7 +402,10 @@ class DashboardPresenter @Inject constructor(
             conferencesResource.copy(data = filteredConferences)
         }.onEach {
             when (it.status) {
-                Status.LOADING -> Timber.i("Loading dashboard conferences data started")
+                Status.LOADING -> {
+                    Timber.i("Loading dashboard conferences data started")
+                    updateData(DashboardTile.Conferences(it.data ?: emptyList(), isLoading = true))
+                }
                 Status.SUCCESS -> {
                     Timber.i("Loading dashboard conferences result: Success")
                     updateData(DashboardTile.Conferences(it.data ?: emptyList()))
@@ -369,7 +433,7 @@ class DashboardPresenter @Inject constructor(
         view?.run {
             showProgress(!isTilesLoaded)
             showContent(isTilesLoaded)
-            updateData(dashboardTileList)
+            updateData(dashboardTileList.toList())
         }
     }
 
@@ -387,7 +451,7 @@ class DashboardPresenter @Inject constructor(
         view?.run {
             showProgress(!isTilesLoaded)
             showContent(isTilesLoaded)
-            updateData(dashboardTileList)
+            updateData(dashboardTileList.toList())
         }
 
         if (isTilesLoaded) {
