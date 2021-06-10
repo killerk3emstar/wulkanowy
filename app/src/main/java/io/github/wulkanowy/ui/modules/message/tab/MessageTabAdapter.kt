@@ -97,7 +97,7 @@ class MessageTabAdapter @Inject constructor() :
                         if (item.hasAttachments) View.VISIBLE else View.GONE
 
                     root.setOnClickListener {
-                        holder.adapterPosition.let {
+                        holder.bindingAdapterPosition.let {
                             if (it != NO_POSITION) onItemClickListener(
                                 item,
                                 it
