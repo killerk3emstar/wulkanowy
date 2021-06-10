@@ -28,10 +28,10 @@ class MessageTabAdapter @Inject constructor() :
     var onChangesDetectedListener = {}
 
     private var items = mutableListOf<DataItem>()
-    private var onlyUnread = false
+    private var onlyUnread: Boolean? = null
     private var onlyWithAttachments = false
 
-    fun setDataItems(data: List<Message>, _onlyUnread: Boolean, _onlyWithAttachments: Boolean) {
+    fun setDataItems(data: List<Message>, _onlyUnread: Boolean?, _onlyWithAttachments: Boolean) {
         if (items.size != data.size) onChangesDetectedListener()
         val newItems = listOf(DataItem.Header) + data.map { DataItem.MessageItem(it) }
         val diffResult = DiffUtil.calculateDiff(MessageTabDiffUtil(items, newItems))
@@ -108,8 +108,11 @@ class MessageTabAdapter @Inject constructor() :
             }
             is HeaderViewHolder -> {
                 with(holder.binding) {
-                    chipUnread.isChecked = onlyUnread
-                    chipUnread.setOnCheckedChangeListener(onHeaderClickListener)
+                    if (onlyUnread == null) chipUnread.visibility = View.GONE
+                    else {
+                        chipUnread.isChecked = onlyUnread!!
+                        chipUnread.setOnCheckedChangeListener(onHeaderClickListener)
+                    }
                     chipAttachments.isChecked = onlyWithAttachments
                     chipAttachments.setOnCheckedChangeListener(onHeaderClickListener)
                 }

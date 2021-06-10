@@ -64,7 +64,7 @@ class MessageTabPresenter @Inject constructor(
         view?.run {
             showErrorView(false)
             showProgress(true)
-            loadData(true, onlyUnread, onlyWithAttachments)
+            loadData(true, onlyUnread == true, onlyWithAttachments)
         }
     }
 
@@ -73,15 +73,15 @@ class MessageTabPresenter @Inject constructor(
     }
 
     fun onDeleteMessage() {
-        view?.run { loadData(true, onlyUnread, onlyWithAttachments) }
+        view?.run { loadData(true, onlyUnread == true, onlyWithAttachments) }
     }
 
     fun onParentViewLoadData(
         forceRefresh: Boolean,
-        onlyUnread: Boolean = view?.onlyUnread == true,
+        onlyUnread: Boolean? = view?.onlyUnread,
         onlyWithAttachments: Boolean = view?.onlyWithAttachments == true
     ) {
-        loadData(forceRefresh, onlyUnread, onlyWithAttachments)
+        loadData(forceRefresh, onlyUnread == true, onlyWithAttachments)
     }
 
     fun onMessageItemSelected(message: Message, position: Int) {
@@ -132,7 +132,8 @@ class MessageTabPresenter @Inject constructor(
                                     lastSearchQuery,
                                     onlyUnread,
                                     onlyWithAttachments
-                                )
+                                ),
+                                folder.id == MessageFolder.SENT.id
                             )
                             notifyParentDataLoaded()
                         }
@@ -234,7 +235,7 @@ class MessageTabPresenter @Inject constructor(
             showEmpty(data.isEmpty())
             showContent(true)
             showErrorView(false)
-            updateData(data)
+            updateData(data, folder.id == MessageFolder.SENT.id)
         }
     }
 

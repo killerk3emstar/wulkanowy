@@ -7,7 +7,7 @@ interface MessageTabView : BaseView {
 
     val isViewEmpty: Boolean
 
-    var onlyUnread: Boolean
+    var onlyUnread: Boolean?
 
     var onlyWithAttachments: Boolean
 
@@ -15,7 +15,7 @@ interface MessageTabView : BaseView {
 
     fun resetListPosition()
 
-    fun updateData(data: List<Message>)
+    fun updateData(data: List<Message>, hide: Boolean)
 
     fun showProgress(show: Boolean)
 

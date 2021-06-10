@@ -48,7 +48,7 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
     override val isViewEmpty
         get() = tabAdapter.itemCount == 0
 
-    override var onlyUnread = false
+    override var onlyUnread: Boolean? = false
 
     override var onlyWithAttachments = false
 
@@ -110,7 +110,8 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
         })
     }
 
-    override fun updateData(data: List<Message>) {
+    override fun updateData(data: List<Message>, hide: Boolean) {
+        if (hide) onlyUnread = null
         tabAdapter.setDataItems(data, onlyUnread, onlyWithAttachments)
     }
 
@@ -156,7 +157,7 @@ class MessageTabFragment : BaseFragment<FragmentMessageTabBinding>(R.layout.frag
 
     fun onParentLoadData(
         forceRefresh: Boolean,
-        _onlyUnread: Boolean = onlyUnread,
+        _onlyUnread: Boolean? = onlyUnread,
         _onlyWithAttachments: Boolean = onlyWithAttachments
     ) {
         presenter.onParentViewLoadData(forceRefresh, _onlyUnread, _onlyWithAttachments)
