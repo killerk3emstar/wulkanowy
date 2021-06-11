@@ -8,9 +8,8 @@
         android:title="@string/grade_menu_read"
         app:iconTint="@color/material_on_surface_emphasis_medium"
         app:showAsAction="never">
-        <menu
-            android:id="@+id/gradeDetailsMenuReadMenu"
-        >
+
+        <menu android:id="@+id/gradeDetailsMenuReadMenu">
             <item
                 android:id="@+id/gradeDetailsMenuReadAll"
                 android:title="@string/grade_menu_read_all" />
