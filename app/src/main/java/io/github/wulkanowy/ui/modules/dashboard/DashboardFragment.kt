@@ -1,6 +1,5 @@
 package io.github.wulkanowy.ui.modules.dashboard
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -27,7 +26,6 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
 
     override val titleStringId get() = R.string.dashboard_title
 
-    @SuppressLint("DefaultLocale")
     override var subtitleString =
         LocalDate.now().toFormattedString("EEEE, d MMMM yyyy").capitalise()
 
@@ -55,19 +53,13 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
             with(dashboardRecycler) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = dashboardAdapter
+                itemAnimator = null
             }
         }
     }
 
     override fun updateData(data: List<DashboardTile>) {
         dashboardAdapter.submitList(data)
-    }
-
-    override fun updateGradeTheme(theme: String) {
-        /* with(dashboardAdapter) {
-             gradeTheme = theme
-             notifyDataSetChanged()
-         }*/
     }
 
     override fun showMessage(text: String) {
@@ -89,12 +81,8 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
         binding.dashboardErrorMessage.text = message
     }
 
-    override fun onStop() {
-        dashboardAdapter.onStopFragment()
-        super.onStop()
-    }
-
     override fun onDestroyView() {
+        dashboardAdapter.clearTimers()
         presenter.onDetachView()
         super.onDestroyView()
     }

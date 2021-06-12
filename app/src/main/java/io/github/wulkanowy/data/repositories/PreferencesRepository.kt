@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.wulkanowy.R
+import io.github.wulkanowy.ui.modules.dashboard.DashboardTile
 import io.github.wulkanowy.ui.modules.grade.GradeAverageMode
 import io.github.wulkanowy.ui.modules.grade.GradeSortingMode
 import javax.inject.Inject
@@ -150,6 +151,19 @@ class PreferencesRepository @Inject constructor(
             R.string.pref_key_optional_arithmetic_average,
             R.bool.pref_default_optional_arithmetic_average
         )
+
+    val dashboardData = setOf(
+        DashboardTile.DataType.ACCOUNT,
+        DashboardTile.DataType.LUCKY_NUMBER,
+        DashboardTile.DataType.MESSAGES,
+        DashboardTile.DataType.ATTENDANCE,
+        DashboardTile.DataType.LESSONS,
+        DashboardTile.DataType.GRADES,
+        DashboardTile.DataType.HOMEWORK,
+        DashboardTile.DataType.ANNOUNCEMENTS,
+        DashboardTile.DataType.EXAMS,
+        DashboardTile.DataType.CONFERENCES
+    )
 
     private fun getString(id: Int, default: Int) = getString(context.getString(id), default)
 

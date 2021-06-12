@@ -6,9 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,8 +36,6 @@ import kotlin.concurrent.timer
 class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items = mutableListOf<DashboardTile>()
-
-    var gradeTheme = ""
 
     var lessonsTimer: Timer? = null
 
@@ -101,7 +97,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         }
     }
 
-    fun onStopFragment() {
+    fun clearTimers() {
         lessonsTimer?.let {
             it.cancel()
             it.purge()
@@ -143,7 +139,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         }
 
         with(binding) {
-            dashboardHorizontalGroupItemLuckyValue.text = luckyNumber?.luckyNumber.toString()
+            dashboardHorizontalGroupItemLuckyValue.text = luckyNumber?.toString()
             dashboardHorizontalGroupItemMessageValue.text = unreadMessagesCount.toString()
 
             if (dashboardHorizontalGroupItemInfoContainer.isVisible != (error != null || isLoading)) {
@@ -156,21 +152,20 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
             dashboardHorizontalGroupItemInfoErrorText.isVisible = error != null
 
-            dashboardHorizontalGroupItemLuckyContainer.isVisible =
-                luckyNumber != null && error == null && !isLoading
+            dashboardHorizontalGroupItemLuckyContainer.isVisible = error == null && !isLoading
             dashboardHorizontalGroupItemAttendanceContainer.isVisible = error == null && !isLoading
             dashboardHorizontalGroupItemMessageContainer.isVisible = error == null && !isLoading
-            dashboardHorizontalGroupItemAttendanceContainer.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                matchConstraintPercentWidth = if (luckyNumber == null) 0.5f else 0.4f
-            }
+            /* dashboardHorizontalGroupItemAttendanceContainer.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                 matchConstraintPercentWidth = if (luckyNumber == null) 0.5f else 0.4f
+             }*/
         }
     }
 
     private fun bindGradesViewHolder(gradesViewHolder: GradesViewHolder, position: Int) {
-        val (subjectWithGrades, error) = items[position] as DashboardTile.Grades
+        val (subjectWithGrades, gradeTheme, error) = items[position] as DashboardTile.Grades
         val dashboardGradesAdapter = gradesViewHolder.adapter.apply {
             this.items = subjectWithGrades.toList()
-            this.gradeTheme = this@DashboardAdapter.gradeTheme
+            this.gradeTheme = gradeTheme.orEmpty()
         }
 
         with(gradesViewHolder.binding) {

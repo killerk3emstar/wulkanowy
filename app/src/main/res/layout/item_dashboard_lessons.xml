@@ -64,11 +64,18 @@
             android:fontFamily="sans-serif-medium"
             android:textColor="?colorPrimary"
             android:textSize="13sp"
-            app:layout_constraintEnd_toStartOf="@id/dashboard_lessons_item_first_time"
+            app:layout_constraintEnd_toStartOf="@id/dashboard_lessons_item_first_time_barrier"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/dashboard_lessons_item_first_title"
             app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_first_title"
             tools:text="Matematyka, Sala 28" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/dashboard_lessons_item_first_time_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="start"
+            app:constraint_referenced_ids="dashboard_lessons_item_first_time, dashboard_lessons_item_first_time_range" />
 
         <TextView
             android:id="@+id/dashboard_lessons_item_first_time"
@@ -121,7 +128,7 @@
             app:layout_constraintStart_toEndOf="@id/dashboard_lessons_item_second_title"
             app:layout_constraintTop_toTopOf="@id/dashboard_lessons_item_second_title"
             app:layout_constraintVertical_bias="0"
-            tools:text="Matematyka, Sala 28" />
+            tools:text="Matematyka (28)" />
 
         <TextView
             android:id="@+id/dashboard_lessons_item_second_time"

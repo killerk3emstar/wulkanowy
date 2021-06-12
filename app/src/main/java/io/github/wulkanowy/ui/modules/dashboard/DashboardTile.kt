@@ -3,7 +3,6 @@ package io.github.wulkanowy.ui.modules.dashboard
 import io.github.wulkanowy.data.db.entities.Conference
 import io.github.wulkanowy.data.db.entities.Exam
 import io.github.wulkanowy.data.db.entities.Grade
-import io.github.wulkanowy.data.db.entities.LuckyNumber
 import io.github.wulkanowy.data.db.entities.SchoolAnnouncement
 import io.github.wulkanowy.data.db.entities.Student
 import io.github.wulkanowy.data.pojos.TimetableFull
@@ -24,13 +23,14 @@ sealed class DashboardTile(val type: Type) {
     data class HorizontalGroup(
         val unreadMessagesCount: Int? = null,
         val attendancePercentage: Double? = null,
-        val luckyNumber: LuckyNumber? = null,
+        val luckyNumber: Int? = null,
         override val error: Throwable? = null,
         override val isLoading: Boolean = false
     ) : DashboardTile(Type.HORIZONTAL_GROUP)
 
     data class Grades(
         val subjectWithGrades: Map<String, List<Grade>> = mapOf(),
+        val gradeTheme: String? = null,
         override val error: Throwable? = null,
         override val isLoading: Boolean = false
     ) : DashboardTile(Type.GRADES)
@@ -75,5 +75,19 @@ sealed class DashboardTile(val type: Type) {
         EXAMS(7),
         CONFERENCES(8),
         ADS(9)
+    }
+
+    enum class DataType {
+        ACCOUNT,
+        LUCKY_NUMBER,
+        MESSAGES,
+        ATTENDANCE,
+        LESSONS,
+        GRADES,
+        HOMEWORK,
+        ANNOUNCEMENTS,
+        EXAMS,
+        CONFERENCES,
+        ADS
     }
 }
