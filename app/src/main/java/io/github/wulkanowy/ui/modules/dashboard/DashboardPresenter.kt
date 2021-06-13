@@ -290,12 +290,13 @@ class DashboardPresenter @Inject constructor(
         flowWithResourceIn {
             val student = studentRepository.getCurrentStudent(true)
             val semester = semesterRepository.getCurrentSemester(student)
+            val date = LocalDate.now().nextOrSameSchoolDay
 
             timetableRepository.getTimetable(
                 student = student,
                 semester = semester,
-                start = LocalDate.now(),
-                end = LocalDate.now().plusDays(1),
+                start = date,
+                end = date.plusDays(1),
                 forceRefresh = false
             )
 
