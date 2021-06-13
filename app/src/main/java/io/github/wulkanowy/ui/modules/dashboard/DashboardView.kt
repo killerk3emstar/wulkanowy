@@ -8,6 +8,8 @@ interface DashboardView : BaseView {
 
     fun updateData(data: List<DashboardTile>)
 
+    fun showDashboardTileSettings(selectedItems: List<DashboardTile.DataType>)
+
     fun showProgress(show: Boolean)
 
     fun showContent(show: Boolean)

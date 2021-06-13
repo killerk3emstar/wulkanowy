@@ -123,6 +123,11 @@ class DashboardPresenter @Inject constructor(
         view?.showErrorDetailsDialog(lastError)
     }
 
+    fun onDashboardTileSettingsSelected(): Boolean {
+        view?.showDashboardTileSettings(preferencesRepository.dashboardData.toList())
+        return true
+    }
+
     private fun loadCurrentAccount(forceRefresh: Boolean) {
         flowWithResource { studentRepository.getCurrentStudent(false) }
             .onEach {

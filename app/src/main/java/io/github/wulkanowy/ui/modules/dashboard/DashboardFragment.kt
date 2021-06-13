@@ -1,7 +1,11 @@
 package io.github.wulkanowy.ui.modules.dashboard
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,6 +51,10 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
         presenter.onAttachView(this)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.action_menu_dashboard, menu)
+    }
+
     override fun initView() {
         with(binding) {
             dashboardErrorRetry.setOnClickListener { presenter.onRetry() }
@@ -63,6 +71,26 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
                 (itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.dashboard_menu_tiles -> presenter.onDashboardTileSettingsSelected()
+            else -> false
+        }
+    }
+
+    override fun showDashboardTileSettings(selectedItems: List<DashboardTile.DataType>) {
+        val entries = requireContext().resources.getStringArray(R.array.dashboard_tile_entries)
+        val values = requireContext().resources.getStringArray(R.array.dashboard_tile_values)
+        val selectedItemsState = values.map { value -> selectedItems.any { it.name == value } }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.pref_dashboard_appearance_tiles_title)
+            .setMultiChoiceItems(entries, selectedItemsState.toBooleanArray()) { _, _, _ -> }
+            .setPositiveButton(android.R.string.ok) { dialog, _ -> }
+            .setNegativeButton(android.R.string.cancel) { _, _ -> }
+            .show()
     }
 
     override fun updateData(data: List<DashboardTile>) {
