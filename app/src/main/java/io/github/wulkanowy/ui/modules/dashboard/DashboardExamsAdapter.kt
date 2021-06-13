@@ -1,5 +1,6 @@
 package io.github.wulkanowy.ui.modules.dashboard
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +23,7 @@ class DashboardExamsAdapter :
         )
     )
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 

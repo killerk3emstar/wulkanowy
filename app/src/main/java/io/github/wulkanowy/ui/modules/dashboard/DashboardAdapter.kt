@@ -162,15 +162,22 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     private fun bindGradesViewHolder(gradesViewHolder: GradesViewHolder, position: Int) {
-        val (subjectWithGrades, gradeTheme, error) = items[position] as DashboardTile.Grades
+        val item = items[position] as DashboardTile.Grades
+        val subjectWithGrades = item.subjectWithGrades.orEmpty()
+        val gradeTheme = item.gradeTheme
+        val error = item.error
+        val isLoading = item.isLoading
         val dashboardGradesAdapter = gradesViewHolder.adapter.apply {
             this.items = subjectWithGrades.toList()
             this.gradeTheme = gradeTheme.orEmpty()
         }
 
         with(gradesViewHolder.binding) {
-            dashboardGradesItemEmpty.isVisible = subjectWithGrades.isEmpty() && error == null
-            dashboardGradesItemError.isVisible = error != null
+            dashboardGradesItemEmpty.isVisible =
+                subjectWithGrades.isEmpty() && error == null && !isLoading
+            dashboardGradesItemError.isVisible = error != null && !isLoading
+            dashboardGradesItemProgress.isVisible =
+                isLoading && error == null && subjectWithGrades.isEmpty()
 
             with(dashboardGradesItemRecycler) {
                 adapter = dashboardGradesAdapter
@@ -247,8 +254,10 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
         with(binding) {
             dashboardLessonsItemEmpty.isVisible =
-                (timetableToShow.isEmpty() || nextLessons.isEmpty()) && item.error == null && header == null
-            dashboardLessonsItemError.isVisible = item.error != null
+                (timetableToShow.isEmpty() || nextLessons.isEmpty()) && item.error == null && header == null && !item.isLoading
+            dashboardLessonsItemError.isVisible = item.error != null && !item.isLoading
+            dashboardLessonsItemProgress.isVisible =
+                item.isLoading && (timetableToShow.isEmpty() || nextLessons.isEmpty()) && item.error == null && header == null
 
             val secondLesson = nextLessons.getOrNull(1)
             val firstLesson = nextLessons.getOrNull(0)
@@ -441,15 +450,21 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     private fun bindHomeworkViewHolder(homeworkViewHolder: HomeworkViewHolder, position: Int) {
-        val (homeworkList, error) = items[position] as DashboardTile.Homework
+        val item = items[position] as DashboardTile.Homework
+        val homeworkList = item.homework.orEmpty()
+        val error = item.error
+        val isLoading = item.isLoading
         val context = homeworkViewHolder.binding.root.context
         val homeworkAdapter = homeworkViewHolder.adapter.apply {
             this.items = homeworkList.take(5)
         }
 
         with(homeworkViewHolder.binding) {
-            dashboardHomeworkItemEmpty.isVisible = homeworkList.isEmpty() && error == null
-            dashboardHomeworkItemError.isVisible = error != null
+            dashboardHomeworkItemEmpty.isVisible =
+                homeworkList.isEmpty() && error == null && !isLoading
+            dashboardHomeworkItemError.isVisible = error != null && !isLoading
+            dashboardHomeworkItemProgress.isVisible =
+                isLoading && error == null && homeworkList.isEmpty()
             dashboardHomeworkItemDivider.isVisible = homeworkList.size > 5
             dashboardHomeworkItemMore.isVisible = homeworkList.size > 5
             dashboardHomeworkItemMore.text = context.resources.getQuantityString(
@@ -470,7 +485,10 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         announcementsViewHolder: AnnouncementsViewHolder,
         position: Int
     ) {
-        val (schoolAnnouncementList, error) = items[position] as DashboardTile.Announcements
+        val item = items[position] as DashboardTile.Announcements
+        val schoolAnnouncementList = item.announcement.orEmpty()
+        val error = item.error
+        val isLoading = item.isLoading
         val context = announcementsViewHolder.binding.root.context
         val schoolAnnouncementsAdapter = announcementsViewHolder.adapter.apply {
             this.items = schoolAnnouncementList.take(5)
@@ -478,8 +496,10 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
 
         with(announcementsViewHolder.binding) {
             dashboardAnnouncementsItemEmpty.isVisible =
-                schoolAnnouncementList.isEmpty() && error == null
-            dashboardAnnouncementsItemError.isVisible = error != null
+                schoolAnnouncementList.isEmpty() && error == null && !isLoading
+            dashboardAnnouncementsItemError.isVisible = error != null && !isLoading
+            dashboardAnnouncementsItemProgress.isVisible =
+                isLoading && error == null && schoolAnnouncementList.isEmpty()
             dashboardAnnouncementsItemDivider.isVisible = schoolAnnouncementList.size > 5
             dashboardAnnouncementsItemMore.isVisible = schoolAnnouncementList.size > 5
             dashboardAnnouncementsItemMore.text = context.resources.getQuantityString(
@@ -496,15 +516,19 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     private fun bindExamsViewHolder(examsViewHolder: ExamsViewHolder, position: Int) {
-        val (exams, error) = items[position] as DashboardTile.Exams
+        val item = items[position] as DashboardTile.Exams
+        val exams = item.exams.orEmpty()
+        val error = item.error
+        val isLoading = item.isLoading
         val context = examsViewHolder.binding.root.context
         val examAdapter = examsViewHolder.adapter.apply {
             this.items = exams.take(5)
         }
 
         with(examsViewHolder.binding) {
-            dashboardExamsItemEmpty.isVisible = exams.isEmpty() && error == null
-            dashboardExamsItemError.isVisible = error != null
+            dashboardExamsItemEmpty.isVisible = exams.isEmpty() && error == null && !isLoading
+            dashboardExamsItemError.isVisible = error != null && !isLoading
+            dashboardExamsItemProgress.isVisible = isLoading && error == null && exams.isEmpty()
             dashboardExamsItemDivider.isVisible = exams.size > 5
             dashboardExamsItemMore.isVisible = exams.size > 5
             dashboardExamsItemMore.text = context.resources.getQuantityString(
@@ -525,15 +549,21 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         conferencesViewHolder: ConferencesViewHolder,
         position: Int
     ) {
-        val (conferences, error) = items[position] as DashboardTile.Conferences
+        val item = items[position] as DashboardTile.Conferences
+        val conferences = item.conferences.orEmpty()
+        val error = item.error
+        val isLoading = item.isLoading
         val context = conferencesViewHolder.binding.root.context
         val conferenceAdapter = conferencesViewHolder.adapter.apply {
             this.items = conferences.take(5)
         }
 
         with(conferencesViewHolder.binding) {
-            dashboardConferencesItemEmpty.isVisible = conferences.isEmpty() && error == null
-            dashboardConferencesItemError.isVisible = error != null
+            dashboardConferencesItemEmpty.isVisible =
+                conferences.isEmpty() && error == null && !isLoading
+            dashboardConferencesItemError.isVisible = error != null && !isLoading
+            dashboardConferencesItemProgress.isVisible =
+                isLoading && error == null && conferences.isEmpty()
             dashboardConferencesItemDivider.isVisible = conferences.size > 5
             dashboardConferencesItemMore.isVisible = conferences.size > 5
             dashboardConferencesItemMore.text = context.resources.getQuantityString(

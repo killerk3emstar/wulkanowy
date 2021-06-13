@@ -14,11 +14,16 @@ sealed class DashboardTile(val type: Type) {
 
     abstract val isLoading: Boolean
 
+    abstract val isDataLoaded: Boolean
+
     data class Account(
         val student: Student? = null,
         override val error: Throwable? = null,
         override val isLoading: Boolean = false
-    ) : DashboardTile(Type.ACCOUNT)
+    ) : DashboardTile(Type.ACCOUNT) {
+
+        override val isDataLoaded get() = student != null
+    }
 
     data class HorizontalGroup(
         val unreadMessagesCount: Int? = null,
@@ -26,44 +31,66 @@ sealed class DashboardTile(val type: Type) {
         val luckyNumber: Int? = null,
         override val error: Throwable? = null,
         override val isLoading: Boolean = false
-    ) : DashboardTile(Type.HORIZONTAL_GROUP)
+    ) : DashboardTile(Type.HORIZONTAL_GROUP) {
+
+        override val isDataLoaded
+            get() = unreadMessagesCount != null || attendancePercentage != null || luckyNumber != null
+    }
 
     data class Grades(
-        val subjectWithGrades: Map<String, List<Grade>> = mapOf(),
+        val subjectWithGrades: Map<String, List<Grade>>? = null,
         val gradeTheme: String? = null,
         override val error: Throwable? = null,
         override val isLoading: Boolean = false
-    ) : DashboardTile(Type.GRADES)
+    ) : DashboardTile(Type.GRADES) {
+
+        override val isDataLoaded get() = subjectWithGrades != null
+    }
 
     data class Lessons(
         val lessons: TimetableFull? = null,
         override val error: Throwable? = null,
         override val isLoading: Boolean = false
-    ) : DashboardTile(Type.LESSONS)
+    ) : DashboardTile(Type.LESSONS) {
+
+        override val isDataLoaded get() = lessons != null
+    }
 
     data class Homework(
-        val homework: List<EntitiesHomework> = emptyList(),
+        val homework: List<EntitiesHomework>? = null,
         override val error: Throwable? = null,
         override val isLoading: Boolean = false
-    ) : DashboardTile(Type.HOMEWORK)
+    ) : DashboardTile(Type.HOMEWORK) {
+
+        override val isDataLoaded get() = homework != null
+    }
 
     data class Announcements(
-        val announcement: List<SchoolAnnouncement> = emptyList(),
+        val announcement: List<SchoolAnnouncement>? = null,
         override val error: Throwable? = null,
         override val isLoading: Boolean = false
-    ) : DashboardTile(Type.ANNOUNCEMENTS)
+    ) : DashboardTile(Type.ANNOUNCEMENTS) {
+
+        override val isDataLoaded get() = announcement != null
+    }
 
     data class Exams(
-        val exams: List<Exam> = emptyList(),
+        val exams: List<Exam>? = null,
         override val error: Throwable? = null,
         override val isLoading: Boolean = false
-    ) : DashboardTile(Type.EXAMS)
+    ) : DashboardTile(Type.EXAMS) {
+
+        override val isDataLoaded get() = exams != null
+    }
 
     data class Conferences(
-        val conferences: List<Conference> = emptyList(),
+        val conferences: List<Conference>? = null,
         override val error: Throwable? = null,
         override val isLoading: Boolean = false
-    ) : DashboardTile(Type.CONFERENCES)
+    ) : DashboardTile(Type.CONFERENCES) {
+
+        override val isDataLoaded get() = conferences != null
+    }
 
     enum class Type(val id: Int) {
         ACCOUNT(1),

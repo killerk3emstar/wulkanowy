@@ -109,64 +109,6 @@ class DashboardPresenter @Inject constructor(
         view?.showErrorDetailsDialog(lastError)
     }
 
-    private fun processHorizontalGroupData(
-        luckyNumber: Int? = null,
-        unreadMessagesCount: Int? = null,
-        attendancePercentage: Double? = null,
-        error: Throwable? = null,
-        isLoading: Boolean = false
-    ) {
-        val isLuckyNumberToLoad =
-            dashboardDataToLoad.any { it == DashboardTile.DataType.LUCKY_NUMBER }
-        val isMessagesToLoad = dashboardDataToLoad.any { it == DashboardTile.DataType.MESSAGES }
-        val isAttendanceToLoad = dashboardDataToLoad.any { it == DashboardTile.DataType.ATTENDANCE }
-
-        val isPushedToList =
-            dashboardTileList.any { it.type == DashboardTile.Type.HORIZONTAL_GROUP }
-
-        if (error != null && !isPushedToList) {
-            showErrorInTile(DashboardTile.HorizontalGroup(error = error))
-            return
-        } else if (error != null && isPushedToList) return
-
-        if (!isPushedToList && isLoading) {
-            updateData(DashboardTile.HorizontalGroup(isLoading = true))
-            return
-        }
-
-        val horizontalGroup =
-            dashboardTileList.single { it is DashboardTile.HorizontalGroup } as DashboardTile.HorizontalGroup
-
-        when {
-            luckyNumber != null -> {
-                updateData(horizontalGroup.copy(luckyNumber = luckyNumber))
-            }
-            unreadMessagesCount != null -> {
-                updateData(horizontalGroup.copy(unreadMessagesCount = unreadMessagesCount))
-            }
-            attendancePercentage != null -> {
-                updateData(horizontalGroup.copy(attendancePercentage = attendancePercentage))
-            }
-        }
-
-        val isHorizontalGroupLoaded = dashboardTileList.any {
-            if (it !is DashboardTile.HorizontalGroup) return@any false
-
-            val isLuckyNumberStateCorrect = (it.luckyNumber != null) == isLuckyNumberToLoad
-            val isMessagesStateCorrect = (it.unreadMessagesCount != null) == isMessagesToLoad
-            val isAttendanceStateCorrect = (it.attendancePercentage != null) == isAttendanceToLoad
-
-            isLuckyNumberStateCorrect && isAttendanceStateCorrect && isMessagesStateCorrect
-        }
-
-        if (isHorizontalGroupLoaded) {
-            val updatedHorizontalGroup =
-                dashboardTileList.single { it is DashboardTile.HorizontalGroup } as DashboardTile.HorizontalGroup
-
-            updateData(updatedHorizontalGroup.copy(isLoading = false))
-        }
-    }
-
     private fun loadCurrentAccount() {
         flowWithResource { studentRepository.getCurrentStudent(false) }
             .onEach {
@@ -509,6 +451,64 @@ class DashboardPresenter @Inject constructor(
         }.launch("dashboard_conferences")
     }
 
+    private fun processHorizontalGroupData(
+        luckyNumber: Int? = null,
+        unreadMessagesCount: Int? = null,
+        attendancePercentage: Double? = null,
+        error: Throwable? = null,
+        isLoading: Boolean = false
+    ) {
+        val isLuckyNumberToLoad =
+            dashboardDataToLoad.any { it == DashboardTile.DataType.LUCKY_NUMBER }
+        val isMessagesToLoad = dashboardDataToLoad.any { it == DashboardTile.DataType.MESSAGES }
+        val isAttendanceToLoad = dashboardDataToLoad.any { it == DashboardTile.DataType.ATTENDANCE }
+
+        val isPushedToList =
+            dashboardTileList.any { it.type == DashboardTile.Type.HORIZONTAL_GROUP }
+
+        if (error != null && !isPushedToList) {
+            showErrorInTile(DashboardTile.HorizontalGroup(error = error))
+            return
+        } else if (error != null && isPushedToList) return
+
+        if (!isPushedToList && isLoading) {
+            updateData(DashboardTile.HorizontalGroup(isLoading = true))
+            return
+        }
+
+        val horizontalGroup =
+            dashboardTileList.single { it is DashboardTile.HorizontalGroup } as DashboardTile.HorizontalGroup
+
+        when {
+            luckyNumber != null -> {
+                updateData(horizontalGroup.copy(luckyNumber = luckyNumber))
+            }
+            unreadMessagesCount != null -> {
+                updateData(horizontalGroup.copy(unreadMessagesCount = unreadMessagesCount))
+            }
+            attendancePercentage != null -> {
+                updateData(horizontalGroup.copy(attendancePercentage = attendancePercentage))
+            }
+        }
+
+        val isHorizontalGroupLoaded = dashboardTileList.any {
+            if (it !is DashboardTile.HorizontalGroup) return@any false
+
+            val isLuckyNumberStateCorrect = (it.luckyNumber != null) == isLuckyNumberToLoad
+            val isMessagesStateCorrect = (it.unreadMessagesCount != null) == isMessagesToLoad
+            val isAttendanceStateCorrect = (it.attendancePercentage != null) == isAttendanceToLoad
+
+            isLuckyNumberStateCorrect && isAttendanceStateCorrect && isMessagesStateCorrect
+        }
+
+        if (isHorizontalGroupLoaded) {
+            val updatedHorizontalGroup =
+                dashboardTileList.single { it is DashboardTile.HorizontalGroup } as DashboardTile.HorizontalGroup
+
+            updateData(updatedHorizontalGroup.copy(isLoading = false))
+        }
+    }
+
     private fun updateData(dashboardTile: DashboardTile) {
         dashboardTileList.removeAll { it.type == dashboardTile.type }
         dashboardTileList.add(dashboardTile)
@@ -517,10 +517,13 @@ class DashboardPresenter @Inject constructor(
 
         val isTilesLoaded =
             dashboardTilesToLoad.all { type -> dashboardTileList.any { it.type == type } }
+        val isTilesDataLoaded = isTilesLoaded && dashboardTileList.all {
+            it.isDataLoaded || it.error != null
+        }
 
         view?.run {
-            showProgress(!isTilesLoaded)
-            showContent(isTilesLoaded)
+            showProgress(!isTilesDataLoaded)
+            showContent(isTilesDataLoaded)
             updateData(dashboardTileList.toList())
         }
     }
@@ -533,10 +536,13 @@ class DashboardPresenter @Inject constructor(
 
         val isTilesLoaded =
             dashboardTilesToLoad.all { type -> dashboardTileList.any { it.type == type } }
+        val isTilesDataLoaded = isTilesLoaded && dashboardTileList.all {
+            it.isDataLoaded || it.error != null
+        }
 
         view?.run {
-            showProgress(!isTilesLoaded)
-            showContent(isTilesLoaded)
+            showProgress(!isTilesDataLoaded)
+            showContent(isTilesDataLoaded)
             updateData(dashboardTileList.toList())
         }
 
