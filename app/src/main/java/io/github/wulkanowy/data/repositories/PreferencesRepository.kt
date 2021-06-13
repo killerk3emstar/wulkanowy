@@ -154,9 +154,9 @@ class PreferencesRepository @Inject constructor(
 
     val dashboardData = setOf(
         DashboardTile.DataType.ACCOUNT,
-        DashboardTile.DataType.LUCKY_NUMBER,
         DashboardTile.DataType.MESSAGES,
         DashboardTile.DataType.ATTENDANCE,
+        DashboardTile.DataType.LUCKY_NUMBER,
         DashboardTile.DataType.LESSONS,
         DashboardTile.DataType.GRADES,
         DashboardTile.DataType.HOMEWORK,
