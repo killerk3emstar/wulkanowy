@@ -12,7 +12,11 @@ interface DashboardView : BaseView {
 
     fun showContent(show: Boolean)
 
+    fun showRefresh(show: Boolean)
+
     fun showErrorView(show: Boolean)
 
     fun setErrorDetails(message: String)
+
+    fun resetView()
 }

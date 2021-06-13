@@ -152,18 +152,16 @@ class PreferencesRepository @Inject constructor(
             R.bool.pref_default_optional_arithmetic_average
         )
 
-    val dashboardData = setOf(
-        DashboardTile.DataType.ACCOUNT,
-        DashboardTile.DataType.MESSAGES,
-        DashboardTile.DataType.ATTENDANCE,
-        DashboardTile.DataType.LUCKY_NUMBER,
-        DashboardTile.DataType.LESSONS,
-        DashboardTile.DataType.GRADES,
-        DashboardTile.DataType.HOMEWORK,
-        DashboardTile.DataType.ANNOUNCEMENTS,
-        DashboardTile.DataType.EXAMS,
-        DashboardTile.DataType.CONFERENCES
-    )
+    val dashboardData: Set<DashboardTile.DataType>
+        get() {
+            val defaultSet =
+                context.resources.getStringArray(R.array.pref_default_dashboard_tiles).toSet()
+            val dashboardTileStrings = sharedPref.getStringSet(
+                context.getString(R.string.pref_key_dashboard_tiles), defaultSet
+            ) ?: defaultSet
+
+            return dashboardTileStrings.map { DashboardTile.DataType.valueOf(it) }.toSet()
+        }
 
     private fun getString(id: Int, default: Int) = getString(context.getString(id), default)
 

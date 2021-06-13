@@ -11,13 +11,14 @@ import io.github.wulkanowy.databinding.FragmentDashboardBinding
 import io.github.wulkanowy.ui.base.BaseFragment
 import io.github.wulkanowy.ui.modules.main.MainView
 import io.github.wulkanowy.utils.capitalise
+import io.github.wulkanowy.utils.getThemeAttrColor
 import io.github.wulkanowy.utils.toFormattedString
 import java.time.LocalDate
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragment_dashboard),
-    DashboardView, MainView.TitledView {
+    DashboardView, MainView.TitledView, MainView.MainChildView {
 
     @Inject
     lateinit var presenter: DashboardPresenter
@@ -50,6 +51,11 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
         with(binding) {
             dashboardErrorRetry.setOnClickListener { presenter.onRetry() }
             dashboardErrorDetails.setOnClickListener { presenter.onDetailsClick() }
+            dashboardSwipe.setOnRefreshListener(presenter::onSwipeRefresh)
+            dashboardSwipe.setColorSchemeColors(requireContext().getThemeAttrColor(R.attr.colorPrimary))
+            dashboardSwipe.setProgressBackgroundColorSchemeColor(
+                requireContext().getThemeAttrColor(R.attr.colorSwipeRefresh)
+            )
 
             with(dashboardRecycler) {
                 layoutManager = LinearLayoutManager(context)
@@ -66,6 +72,10 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
     override fun showMessage(text: String) {
     }
 
+    override fun showRefresh(show: Boolean) {
+        binding.dashboardSwipe.isRefreshing = show
+    }
+
     override fun showProgress(show: Boolean) {
         binding.dashboardProgress.isVisible = show
     }
@@ -80,6 +90,14 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
 
     override fun setErrorDetails(message: String) {
         binding.dashboardErrorMessage.text = message
+    }
+
+    override fun resetView() {
+        binding.dashboardRecycler.smoothScrollToPosition(0)
+    }
+
+    override fun onFragmentReselected() {
+        if (::presenter.isInitialized) presenter.onViewReselected()
     }
 
     override fun onDestroyView() {
