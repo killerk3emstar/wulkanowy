@@ -62,11 +62,13 @@ class DashboardPresenter @Inject constructor(
             showContent(false)
         }
 
-        loadData()
+        preferencesRepository.dashboardDataFlow
+            .onEach { loadData(dataToLoad = it) }
+            .launch("dashboard_pref")
     }
 
-    fun loadData(forceRefresh: Boolean = false) {
-        dashboardDataToLoad = preferencesRepository.dashboardData
+    fun loadData(forceRefresh: Boolean = false, dataToLoad: Set<DashboardTile.DataType>) {
+        dashboardDataToLoad = dataToLoad
         dashboardTilesToLoad = dashboardDataToLoad.map {
             when (it) {
                 DashboardTile.DataType.ACCOUNT -> DashboardTile.Type.ACCOUNT
@@ -104,7 +106,7 @@ class DashboardPresenter @Inject constructor(
 
     fun onSwipeRefresh() {
         Timber.i("Force refreshing the dashboard")
-        loadData(true)
+        loadData(true, preferencesRepository.dashboardData)
     }
 
     fun onRetry() {
@@ -126,6 +128,12 @@ class DashboardPresenter @Inject constructor(
     fun onDashboardTileSettingsSelected(): Boolean {
         view?.showDashboardTileSettings(preferencesRepository.dashboardData.toList())
         return true
+    }
+
+    fun onDashboardTileSettingSelected(selectedItems: List<String>) {
+        preferencesRepository.dashboardData = selectedItems.map {
+            DashboardTile.DataType.valueOf(it)
+        }.toSet()
     }
 
     private fun loadCurrentAccount(forceRefresh: Boolean) {
@@ -521,14 +529,18 @@ class DashboardPresenter @Inject constructor(
         val isPushedToList =
             dashboardTileLoadedList.any { it.type == DashboardTile.Type.HORIZONTAL_GROUP }
 
-        if (error != null && !isPushedToList) {
+        if (error != null) {
             showErrorInTile(DashboardTile.HorizontalGroup(error = error), forceRefresh)
             return
-        } else if (error != null && isPushedToList) return
+        }
 
-        if (!isPushedToList && isLoading) {
+        if (isLoading) {
             updateData(DashboardTile.HorizontalGroup(isLoading = true), forceRefresh)
             return
+        }
+
+        if (forceRefresh && !isPushedToList) {
+            updateData(DashboardTile.HorizontalGroup(), forceRefresh)
         }
 
         val horizontalGroup =
@@ -549,6 +561,21 @@ class DashboardPresenter @Inject constructor(
                     horizontalGroup.copy(attendancePercentage = attendancePercentage),
                     forceRefresh
                 )
+            }
+        }
+
+        val horizontalGroupUpdated =
+            dashboardTileLoadedList.single { it is DashboardTile.HorizontalGroup } as DashboardTile.HorizontalGroup
+
+        when {
+            horizontalGroupUpdated.luckyNumber != null && !isLuckyNumberToLoad -> {
+                updateData(horizontalGroupUpdated.copy(luckyNumber = null), forceRefresh)
+            }
+            horizontalGroupUpdated.attendancePercentage != null && !isAttendanceToLoad -> {
+                updateData(horizontalGroupUpdated.copy(attendancePercentage = null), forceRefresh)
+            }
+            horizontalGroupUpdated.unreadMessagesCount != null && !isMessagesToLoad -> {
+                updateData(horizontalGroupUpdated.copy(unreadMessagesCount = null), forceRefresh)
             }
         }
 
@@ -606,15 +633,33 @@ class DashboardPresenter @Inject constructor(
             }
             updateData(dashboardTileLoadedList.toList())
         }
+
+        if (isTilesLoaded) {
+            val filteredTiles =
+                dashboardTileLoadedList.filterNot { it.type == DashboardTile.Type.ACCOUNT }
+            val isAccountTileError =
+                dashboardTileLoadedList.single { it.type == DashboardTile.Type.ACCOUNT }.error != null
+            val isGeneralError =
+                filteredTiles.all { it.error != null } && filteredTiles.isNotEmpty() || isAccountTileError
+
+            view?.run {
+                showContent(!isGeneralError)
+                showErrorView(isGeneralError)
+            }
+        }
     }
 
     private fun showErrorInTile(dashboardTile: DashboardTile, forceRefresh: Boolean) {
-        dashboardTileLoadedList.removeAll { it.type == dashboardTile.type }
-        dashboardTileLoadedList.add(dashboardTile)
-
         if (forceRefresh) {
             dashboardTileRefreshLoadedList.removeAll { it.type == dashboardTile.type }
             dashboardTileRefreshLoadedList.add(dashboardTile)
+
+            if (!dashboardTileLoadedList.any { it.type == dashboardTile.type }) {
+                dashboardTileLoadedList.add(dashboardTile)
+            }
+        } else {
+            dashboardTileLoadedList.removeAll { it.type == dashboardTile.type }
+            dashboardTileLoadedList.add(dashboardTile)
         }
 
         dashboardTileLoadedList.sortBy { tile -> dashboardTilesToLoad.single { it == tile.type }.ordinal }
@@ -649,7 +694,8 @@ class DashboardPresenter @Inject constructor(
                 dashboardTileLoadedList.filterNot { it.type == DashboardTile.Type.ACCOUNT }
             val isAccountTileError =
                 dashboardTileLoadedList.single { it.type == DashboardTile.Type.ACCOUNT }.error != null
-            val isGeneralError = filteredTiles.all { it.error != null } || isAccountTileError
+            val isGeneralError =
+                filteredTiles.all { it.error != null } && filteredTiles.isNotEmpty() || isAccountTileError
 
             val errorMessage = filteredTiles.map { it.error?.stackTraceToString() }.toString()
 

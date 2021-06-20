@@ -88,7 +88,12 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
         AlertDialog.Builder(requireContext())
             .setTitle(R.string.pref_dashboard_appearance_tiles_title)
             .setMultiChoiceItems(entries, selectedItemsState.toBooleanArray()) { _, _, _ -> }
-            .setPositiveButton(android.R.string.ok) { dialog, _ -> }
+            .setPositiveButton(android.R.string.ok) { dialog, _ ->
+                val selectedState = (dialog as AlertDialog).listView.checkedItemPositions
+                val selectedValues = values.filterIndexed { index, _ -> selectedState[index] }
+
+                presenter.onDashboardTileSettingSelected(selectedValues)
+            }
             .setNegativeButton(android.R.string.cancel) { _, _ -> }
             .show()
     }

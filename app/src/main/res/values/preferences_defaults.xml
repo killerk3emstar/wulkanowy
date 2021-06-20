@@ -26,7 +26,6 @@
     <bool name="pref_default_subjects_without_grades">false</bool>
     <bool name="pref_default_optional_arithmetic_average">false</bool>
     <string-array name="pref_default_dashboard_tiles">
-        <item>ACCOUNT</item>
         <item>LUCKY_NUMBER</item>
         <item>MESSAGES</item>
         <item>ATTENDANCE</item>

@@ -111,7 +111,6 @@
     </string-array>
 
     <string-array name="dashboard_tile_entries">
-        <item>Account</item>
         <item>Lucky number</item>
         <item>Unread messages</item>
         <item>Attendance</item>
@@ -123,7 +122,6 @@
         <item>Conferences</item>
     </string-array>
     <string-array name="dashboard_tile_values" translatable="false">
-        <item>ACCOUNT</item>
         <item>LUCKY_NUMBER</item>
         <item>MESSAGES</item>
         <item>ATTENDANCE</item>
