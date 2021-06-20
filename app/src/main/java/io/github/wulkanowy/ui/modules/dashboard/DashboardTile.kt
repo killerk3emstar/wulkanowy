@@ -118,3 +118,17 @@ sealed class DashboardTile(val type: Type) {
         ADS
     }
 }
+
+fun DashboardTile.DataType.toDashboardType() = when (this) {
+    DashboardTile.DataType.ACCOUNT -> DashboardTile.Type.ACCOUNT
+    DashboardTile.DataType.LUCKY_NUMBER -> DashboardTile.Type.HORIZONTAL_GROUP
+    DashboardTile.DataType.MESSAGES -> DashboardTile.Type.HORIZONTAL_GROUP
+    DashboardTile.DataType.ATTENDANCE -> DashboardTile.Type.HORIZONTAL_GROUP
+    DashboardTile.DataType.LESSONS -> DashboardTile.Type.LESSONS
+    DashboardTile.DataType.GRADES -> DashboardTile.Type.GRADES
+    DashboardTile.DataType.HOMEWORK -> DashboardTile.Type.HOMEWORK
+    DashboardTile.DataType.ANNOUNCEMENTS -> DashboardTile.Type.ANNOUNCEMENTS
+    DashboardTile.DataType.EXAMS -> DashboardTile.Type.EXAMS
+    DashboardTile.DataType.CONFERENCES -> DashboardTile.Type.CONFERENCES
+    DashboardTile.DataType.ADS -> DashboardTile.Type.ADS
+}

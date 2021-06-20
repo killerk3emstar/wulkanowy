@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import io.github.wulkanowy.R
 import io.github.wulkanowy.data.db.entities.Timetable
@@ -35,24 +36,12 @@ import java.util.Timer
 import javax.inject.Inject
 import kotlin.concurrent.timer
 
-class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private val items = mutableListOf<DashboardTile>()
+class DashboardAdapter @Inject constructor() :
+    ListAdapter<DashboardTile, RecyclerView.ViewHolder>(DashboardAdapterDiffCallback()) {
 
     var lessonsTimer: Timer? = null
 
-    fun submitList(newItems: List<DashboardTile>) {
-        val dashboardAdapterDiffCallback = DashboardAdapterDiffCallback(newItems, items)
-        val diffResult = DiffUtil.calculateDiff(dashboardAdapterDiffCallback)
-
-        items.clear()
-        items.addAll(newItems)
-        diffResult.dispatchUpdatesTo(this)
-    }
-
-    override fun getItemCount() = items.size
-
-    override fun getItemViewType(position: Int) = items[position].type.id
+    override fun getItemViewType(position: Int) = getItem(position).type.id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -108,16 +97,24 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     private fun bindAccountViewHolder(accountViewHolder: AccountViewHolder, position: Int) {
-        val student = (items[position] as DashboardTile.Account).student ?: return
-        val avatar = accountViewHolder.binding.root.context.createNameInitialsDrawable(
-            text = student.nickOrName,
-            backgroundColor = student.avatarColor
-        )
+        val item = getItem(position) as DashboardTile.Account
+        val student = item.student
+        val isLoading = item.isLoading
+
+        val avatar = student?.let {
+            accountViewHolder.binding.root.context.createNameInitialsDrawable(
+                text = it.nickOrName,
+                backgroundColor = it.avatarColor
+            )
+        }
 
         with(accountViewHolder.binding) {
+            dashboardAccountItemContent.isVisible = !isLoading
+            dashboardAccountItemProgress.isVisible = isLoading
+
             dashboardAccountItemAvatar.setImageDrawable(avatar)
-            dashboardAccountItemName.text = student.nickOrName
-            dashboardAccountItemSchoolName.text = student.schoolName
+            dashboardAccountItemName.text = student?.nickOrName.orEmpty()
+            dashboardAccountItemSchoolName.text = student?.schoolName.orEmpty()
         }
     }
 
@@ -126,7 +123,9 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         horizontalGroupViewHolder: HorizontalGroupViewHolder,
         position: Int
     ) {
-        val (unreadMessagesCount, attendancePercentage, luckyNumber, error, isLoading) = items[position] as DashboardTile.HorizontalGroup
+        val (unreadMessagesCount, attendancePercentage, luckyNumber, error, isLoading) = getItem(
+            position
+        ) as DashboardTile.HorizontalGroup
         val binding = horizontalGroupViewHolder.binding
         val context = binding.root.context
         val attendanceColor = when {
@@ -172,7 +171,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     private fun bindGradesViewHolder(gradesViewHolder: GradesViewHolder, position: Int) {
-        val item = items[position] as DashboardTile.Grades
+        val item = getItem(position) as DashboardTile.Grades
         val subjectWithGrades = item.subjectWithGrades.orEmpty()
         val gradeTheme = item.gradeTheme
         val error = item.error
@@ -198,7 +197,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     private fun bindLessonsViewHolder(lessonsViewHolder: LessonsViewHolder, position: Int) {
-        val item = items[position] as DashboardTile.Lessons
+        val item = getItem(position) as DashboardTile.Lessons
         val timetableFull = item.lessons
         val binding = lessonsViewHolder.binding
 
@@ -460,7 +459,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     private fun bindHomeworkViewHolder(homeworkViewHolder: HomeworkViewHolder, position: Int) {
-        val item = items[position] as DashboardTile.Homework
+        val item = getItem(position) as DashboardTile.Homework
         val homeworkList = item.homework.orEmpty()
         val error = item.error
         val isLoading = item.isLoading
@@ -495,7 +494,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         announcementsViewHolder: AnnouncementsViewHolder,
         position: Int
     ) {
-        val item = items[position] as DashboardTile.Announcements
+        val item = getItem(position) as DashboardTile.Announcements
         val schoolAnnouncementList = item.announcement.orEmpty()
         val error = item.error
         val isLoading = item.isLoading
@@ -526,7 +525,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
     }
 
     private fun bindExamsViewHolder(examsViewHolder: ExamsViewHolder, position: Int) {
-        val item = items[position] as DashboardTile.Exams
+        val item = getItem(position) as DashboardTile.Exams
         val exams = item.exams.orEmpty()
         val error = item.error
         val isLoading = item.isLoading
@@ -559,7 +558,7 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         conferencesViewHolder: ConferencesViewHolder,
         position: Int
     ) {
-        val item = items[position] as DashboardTile.Conferences
+        val item = getItem(position) as DashboardTile.Conferences
         val conferences = item.conferences.orEmpty()
         val error = item.error
         val isLoading = item.isLoading
@@ -629,19 +628,12 @@ class DashboardAdapter @Inject constructor() : RecyclerView.Adapter<RecyclerView
         val adapter by lazy { DashboardConferencesAdapter() }
     }
 
-    class DashboardAdapterDiffCallback(
-        private val newItems: List<DashboardTile>,
-        private val oldItems: List<DashboardTile>
-    ) : DiffUtil.Callback() {
+    class DashboardAdapterDiffCallback : DiffUtil.ItemCallback<DashboardTile>() {
 
-        override fun getOldListSize() = oldItems.size
+        override fun areItemsTheSame(oldItem: DashboardTile, newItem: DashboardTile) =
+            oldItem.type == newItem.type
 
-        override fun getNewListSize() = newItems.size
-
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-            oldItems[oldItemPosition] == newItems[newItemPosition]
-
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-            oldItems[oldItemPosition].type == newItems[newItemPosition].type
+        override fun areContentsTheSame(oldItem: DashboardTile, newItem: DashboardTile) =
+            if (newItem is DashboardTile.Account) false else oldItem == newItem
     }
 }

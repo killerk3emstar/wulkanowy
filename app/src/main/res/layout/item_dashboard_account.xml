@@ -9,6 +9,7 @@
     app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dashboard_account_item_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -40,11 +41,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
-            android:textSize="12sp"
             android:textColor="?android:textColorSecondary"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/dashboard_account_item_avatar"
             app:layout_constraintTop_toBottomOf="@id/dashboard_account_item_name"
             tools:text="Szkoła Wulkanowego " />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/dashboard_account_item_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:visibility="gone" />
 </com.google.android.material.card.MaterialCardView>
