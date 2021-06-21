@@ -634,6 +634,6 @@ class DashboardAdapter @Inject constructor() :
             oldItem.type == newItem.type
 
         override fun areContentsTheSame(oldItem: DashboardTile, newItem: DashboardTile) =
-            if (newItem is DashboardTile.Account) false else oldItem == newItem
+            oldItem == newItem
     }
 }

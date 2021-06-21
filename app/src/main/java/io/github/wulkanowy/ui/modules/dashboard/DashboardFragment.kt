@@ -99,7 +99,7 @@ class DashboardFragment : BaseFragment<FragmentDashboardBinding>(R.layout.fragme
     }
 
     override fun updateData(data: List<DashboardTile>) {
-        dashboardAdapter.submitList(data)
+        dashboardAdapter.submitList(data.toMutableList())
     }
 
     override fun showMessage(text: String) {
