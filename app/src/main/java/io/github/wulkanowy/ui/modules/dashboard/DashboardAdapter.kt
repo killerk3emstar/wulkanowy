@@ -238,7 +238,8 @@ class DashboardAdapter @Inject constructor() :
                 }
                 else -> {
                     updateLessonView(item, emptyList(), binding)
-                    binding.dashboardLessonsItemTitleTomorrow.isVisible = true
+                    binding.dashboardLessonsItemTitleTomorrow.isVisible =
+                        !(item.isLoading && item.error == null)
                 }
             }
         }
