@@ -11,6 +11,8 @@
     <string name="more_title">Mehr</string>
     <string name="about_title">Über die Applikation</string>
     <string name="logviewer_title">Log Viewer</string>
+    <string name="debug_title">Debug</string>
+    <string name="notification_debug_title">Notification debug</string>
     <string name="contributors_title">Mitarbeiter</string>
     <string name="license_title">Lizenzen</string>
     <string name="message_title">Nachrichten</string>
@@ -278,7 +280,7 @@
     <string name="lucky_number_header">Die heutige Glücksnummer ist </string>
     <string name="lucky_number_empty">Keine Information über die Glücksnummer.</string>
     <string name="lucky_number_notify_new_item_title">Glücksnummer für heute</string>
-    <string name="lucky_number_notify_new_item">Die heutige Glücksnummer ist: %d</string>
+    <string name="lucky_number_notify_new_item">Today\'s lucky number is: %s</string>
     <string name="lucky_number_history_button">Verlauf anzeigen</string>
     <!--Lucky number history-->
     <string name="lucky_number_history_title">Glücksnummerverlauf</string>
