@@ -11,6 +11,8 @@
     <string name="more_title">Ещё</string>
     <string name="about_title">О приложении</string>
     <string name="logviewer_title">Просмотр журнала</string>
+    <string name="debug_title">Debug</string>
+    <string name="notification_debug_title">Notification debug</string>
     <string name="contributors_title">Разработчики</string>
     <string name="license_title">Лицензии</string>
     <string name="message_title">Сообщения</string>
@@ -324,7 +326,7 @@
     <string name="lucky_number_header">Сегодняшний счастливый номер это</string>
     <string name="lucky_number_empty">Нет данных о счастливом номере</string>
     <string name="lucky_number_notify_new_item_title">Сегодняшний счастливый номер</string>
-    <string name="lucky_number_notify_new_item">Сегодняшний счастливый номер это: %d</string>
+    <string name="lucky_number_notify_new_item">Today\'s lucky number is: %s</string>
     <string name="lucky_number_history_button">Показать историю</string>
     <!--Lucky number history-->
     <string name="lucky_number_history_title">История удачных чисел</string>
