@@ -11,6 +11,8 @@
     <string name="more_title">More</string>
     <string name="about_title">About</string>
     <string name="logviewer_title">Log viewer</string>
+    <string name="debug_title">Debug</string>
+    <string name="notification_debug_title">Notification debug</string>
     <string name="contributors_title">Contributors</string>
     <string name="license_title">Licenses</string>
     <string name="message_title">Messages</string>
@@ -112,9 +114,30 @@
         <item quantity="one">%d grade</item>
         <item quantity="other">%d grades</item>
     </plurals>
-    <string name="grade_new_item">New grade</string>
-    <string name="grade_new_items_predicted">New predicted grade</string>
-    <string name="grade_new_items_final">New final grade</string>
+    <plurals name="grade_new_items">
+        <item quantity="one">New grade</item>
+        <item quantity="other">New grades</item>
+    </plurals>
+    <plurals name="grade_new_items_predicted">
+        <item quantity="one">New predicted grade</item>
+        <item quantity="other">New predicted grades</item>
+    </plurals>
+    <plurals name="grade_new_items_final">
+        <item quantity="one">New final grade</item>
+        <item quantity="other">New final grades</item>
+    </plurals>
+    <plurals name="grade_notify_new_items">
+        <item quantity="one">You received %1$d grade</item>
+        <item quantity="other">You received %1$d grades</item>
+    </plurals>
+    <plurals name="grade_notify_new_items_predicted">
+        <item quantity="one">You received %1$d predicted grade</item>
+        <item quantity="other">You received %1$d predicted grades</item>
+    </plurals>
+    <plurals name="grade_notify_new_items_final">
+        <item quantity="one">You received %1$d final grade</item>
+        <item quantity="other">You received %1$d final grades</item>
+    </plurals>
 
 
     <!--Timetable-->
@@ -177,7 +200,14 @@
     <string name="exam_no_items">No exams this week</string>
     <string name="exam_type">Type</string>
     <string name="exam_entry_date">Entry date</string>
-    <string name="exam_notify_new_item_title">New exam</string>
+    <plurals name="exam_notify_new_item_title">
+        <item quantity="one">New exam</item>
+        <item quantity="other">New exams</item>
+    </plurals>
+    <plurals name="exam_number_item">
+        <item quantity="one">%d exam</item>
+        <item quantity="other">%d exams</item>
+    </plurals>
 
 
     <!--Message-->
@@ -203,15 +233,63 @@
     <string name="message_not_exists">Message does not exist</string>
     <string name="message_required_recipients">You need to choose at least 1 recipient</string>
     <string name="message_content_min_length">The message content must be at least 3 characters</string>
-    <string name="message_new_item">New message</string>
+    <plurals name="message_number_item">
+        <item quantity="one">%d message</item>
+        <item quantity="other">%d messages</item>
+    </plurals>
+    <plurals name="message_new_items">
+        <item quantity="one">New message</item>
+        <item quantity="other">New messages</item>
+    </plurals>
+    <plurals name="message_notify_new_items">
+        <item quantity="one">You received %1$d message</item>
+        <item quantity="other">You received %1$d messages</item>
+    </plurals>
 
 
     <!--Note-->
     <string name="note_no_items">No info about notes</string>
     <string name="note_points">Points</string>
-    <string name="note_new_item">New note</string>
-    <string name="praise_new_item">New praise</string>
-    <string name="neutral_note_new_item">New neutral note</string>
+    <plurals name="note_number_item">
+        <item quantity="one">%d note</item>
+        <item quantity="other">%d notes</item>
+    </plurals>
+    <plurals name="note_new_items">
+        <item quantity="one">New note</item>
+        <item quantity="other">New notes</item>
+    </plurals>
+    <plurals name="note_notify_new_items">
+        <item quantity="one">You received %1$d note</item>
+        <item quantity="other">You received %1$d notes</item>
+    </plurals>
+
+    <!--Praise-->
+    <plurals name="praise_number_item">
+        <item quantity="one">%d praise</item>
+        <item quantity="other">%d praises</item>
+    </plurals>
+    <plurals name="praise_new_items">
+        <item quantity="one">New praise</item>
+        <item quantity="other">New praises</item>
+    </plurals>
+    <plurals name="praise_notify_new_items">
+        <item quantity="one">You received %1$d praise</item>
+        <item quantity="other">You received %1$d praises</item>
+    </plurals>
+
+    <!--Neutral notes-->
+    <plurals name="neutral_note_number_item">
+        <item quantity="one">%d neutral note</item>
+        <item quantity="other">%d neutral notes</item>
+    </plurals>
+    <plurals name="neutral_note_new_items">
+        <item quantity="one">New neutral note</item>
+        <item quantity="other">New neutral notes</item>
+    </plurals>
+    <plurals name="neutral_note_notify_new_items">
+        <item quantity="one">You received %1$d neutral note</item>
+        <item quantity="other">You received %1$d neutral notes</item>
+    </plurals>
 
 
     <!--Homework-->
@@ -219,7 +297,14 @@
     <string name="homework_mark_as_done">Mark as done</string>
     <string name="homework_mark_as_undone">Mark as undone</string>
     <string name="homework_attachments">Attachments</string>
-    <string name="homework_notify_new_item_title">New homework</string>
+    <plurals name="homework_notify_new_item_title">
+        <item quantity="one">New homework</item>
+        <item quantity="other">New homework</item>
+    </plurals>
+    <plurals name="homework_number_item">
+        <item quantity="one">%d homework</item>
+        <item quantity="other">%d homework</item>
+    </plurals>
 
 
     <!--Lucky number-->
@@ -227,7 +312,7 @@
     <string name="lucky_number_header">Today\'s lucky number is</string>
     <string name="lucky_number_empty">No info about the lucky number</string>
     <string name="lucky_number_notify_new_item_title">Lucky number for today</string>
-    <string name="lucky_number_notify_new_item">Today\'s lucky number is: %d</string>
+    <string name="lucky_number_notify_new_item">Today\'s lucky number is: %s</string>
     <string name="lucky_number_history_button">Show history</string>
 
     <!--Lucky number history-->
@@ -270,13 +355,35 @@
     <!--Conference-->
     <string name="conferences_title">Conferences</string>
     <string name="conference_no_items">No info about conferences</string>
-    <string name="conference_notify_new_item_title">New conference</string>
+    <plurals name="conference_number_item">
+        <item quantity="one">%d conference</item>
+        <item quantity="other">%d conferences</item>
+    </plurals>
+    <plurals name="conference_notify_new_item_title">
+        <item quantity="one">New conference</item>
+        <item quantity="other">New conferences</item>
+    </plurals>
+    <plurals name="conference_notify_new_items">
+        <item quantity="one">You have %1$d new conference</item>
+        <item quantity="other">You have %1$d new conferences</item>
+    </plurals>
 
 
     <!--Director information-->
     <string name="school_announcement_title">School announcements</string>
     <string name="school_announcement_no_items">No school announcements</string>
-    <string name="school_announcement_notify_new_item_title">New school announcement</string>
+    <plurals name="school_announcement_number_item">
+        <item quantity="one">%d school announcement</item>
+        <item quantity="other">%d school announcements</item>
+    </plurals>
+    <plurals name="school_announcement_notify_new_item_title">
+        <item quantity="one">New school announcement</item>
+        <item quantity="other">New school announcements</item>
+    </plurals>
+    <plurals name="school_announcement_notify_new_items">
+        <item quantity="one">You have %1$d new school announcement</item>
+        <item quantity="other">You have %1$d new school announcements</item>
+    </plurals>
 
 
     <!--Account-->

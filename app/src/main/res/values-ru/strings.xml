@@ -104,9 +104,42 @@
         <item quantity="many">%d оценок</item>
         <item quantity="other">%d оценок</item>
     </plurals>
-    <string name="grade_new_item">Новая оценка</string>
-    <string name="grade_new_items_predicted">Новая ожидаемая оценка</string>
-    <string name="grade_new_items_final">Новая итоговая оценка</string>
+    <plurals name="grade_new_items">
+        <item quantity="one">Новая оценка</item>
+        <item quantity="few">Новые оценки</item>
+        <item quantity="many">Новые оценки</item>
+        <item quantity="other">Новые оценки</item>
+    </plurals>
+    <plurals name="grade_new_items_predicted">
+        <item quantity="one">Новая ожидаемая оценка</item>
+        <item quantity="few">Новые ожидаемые оценки</item>
+        <item quantity="many">Новые ожидаемые оценки</item>
+        <item quantity="other">Новые ожидаемые оценки</item>
+    </plurals>
+    <plurals name="grade_new_items_final">
+        <item quantity="one">Новая итоговая оценка</item>
+        <item quantity="few">Новые итоговые оценки</item>
+        <item quantity="many">Новые итоговые оценки</item>
+        <item quantity="other">Новые итоговые оценки</item>
+    </plurals>
+    <plurals name="grade_notify_new_items">
+        <item quantity="one">Вы получили %1$d оценку</item>
+        <item quantity="few">Вы получили %1$d оценки</item>
+        <item quantity="many">Вы получили %1$d оценок</item>
+        <item quantity="other">Вы получили %1$d оценок</item>
+    </plurals>
+    <plurals name="grade_notify_new_items_predicted">
+        <item quantity="one">Вы получили %1$d ожидаемую оценку</item>
+        <item quantity="few">Вы получили %1$d ожидаемые оценки</item>
+        <item quantity="many">Вы получили %1$d ожидаемых оценок</item>
+        <item quantity="other">Вы получили %1$d ожидаемых оценок</item>
+    </plurals>
+    <plurals name="grade_notify_new_items_final">
+        <item quantity="one">Вы получили %1$d итоговою оценку</item>
+        <item quantity="few">Вы получили %1$d итоговых оценки</item>
+        <item quantity="many">Вы получили %1$d итоговых оценок</item>
+        <item quantity="other">Вы получили %1$d финальные оценки</item>
+    </plurals>
     <!--Timetable-->
     <string name="timetable_lesson">Урок</string>
     <string name="timetable_room">Аудитория</string>
@@ -157,7 +190,18 @@
     <string name="exam_no_items">Нет тестов на этой неделе</string>
     <string name="exam_type">Тип</string>
     <string name="exam_entry_date">Дата записи</string>
-    <string name="exam_notify_new_item_title">New exam</string>
+    <plurals name="exam_notify_new_item_title">
+        <item quantity="one">New exam</item>
+        <item quantity="few">New exams</item>
+        <item quantity="many">New exams</item>
+        <item quantity="other">New exams</item>
+    </plurals>
+    <plurals name="exam_number_item">
+        <item quantity="one">%d exam</item>
+        <item quantity="few">%d exams</item>
+        <item quantity="many">%d exams</item>
+        <item quantity="other">%d exams</item>
+    </plurals>
     <!--Message-->
     <string name="message_inbox">Полученные</string>
     <string name="message_sent">Отправленные</string>
@@ -181,26 +225,106 @@
     <string name="message_not_exists">Сообщения не существует</string>
     <string name="message_required_recipients">Вы должны выбрать как минимум одного получателя</string>
     <string name="message_content_min_length">Текст сообщения должен содержать как минимум 3 знака</string>
-    <string name="message_new_item">Новое сообщение</string>
+    <plurals name="message_number_item">
+        <item quantity="one">%d сообщение</item>
+        <item quantity="few">%d сообщения</item>
+        <item quantity="many">%d сообщений</item>
+        <item quantity="other">%d сообщений</item>
+    </plurals>
+    <plurals name="message_new_items">
+        <item quantity="one">Новое сообщение</item>
+        <item quantity="few">Новые сообщения</item>
+        <item quantity="many">Новые сообщения</item>
+        <item quantity="other">Новые сообщения</item>
+    </plurals>
+    <plurals name="message_notify_new_items">
+        <item quantity="one">Вы получили %1$d новое сообщение</item>
+        <item quantity="few">Вы получили %1$d новых сообщения</item>
+        <item quantity="many">Вы получили %1$d новых сообщений</item>
+        <item quantity="other">Вы получили %1$d новых сообщений</item>
+    </plurals>
     <!--Note-->
     <string name="note_no_items">Нет информации о заметках</string>
     <string name="note_points">Баллы</string>
-    <string name="note_new_item">Новое предупреждение</string>
+    <plurals name="note_number_item">
+        <item quantity="one">%d предупреждение</item>
+        <item quantity="few">%d предупреждения</item>
+        <item quantity="many">%d предупреждений</item>
+        <item quantity="other">%d предупреждений</item>
+    </plurals>
+    <plurals name="note_new_items">
+        <item quantity="one">Новое предупреждение</item>
+        <item quantity="few">Новые предупреждения</item>
+        <item quantity="many">Новых предупреждений</item>
+        <item quantity="other">Новых предупреждений</item>
+    </plurals>
+    <plurals name="note_notify_new_items">
+        <item quantity="one">Вы получили %1$d предупреждение</item>
+        <item quantity="few">Вы получили %1$d предупреждения</item>
+        <item quantity="many">Вы получили %1$d предупреждений</item>
+        <item quantity="other">Вы получили %1$d предупреждений</item>
+    </plurals>
     <!--Praise-->
-    <string name="praise_new_item">Новая похвала</string>
-    <string name="neutral_note_new_item">Новое нейтральное замечание</string>
+    <plurals name="praise_number_item">
+        <item quantity="one">%d похвала</item>
+        <item quantity="few">%d похвала</item>
+        <item quantity="many">%d похвала</item>
+        <item quantity="other">%d похвала</item>
+    </plurals>
+    <plurals name="praise_new_items">
+        <item quantity="one">Новая похвала</item>
+        <item quantity="few">Новые похвалы</item>
+        <item quantity="many">Новые свершения</item>
+        <item quantity="other">Новые похвалы</item>
+    </plurals>
+    <plurals name="praise_notify_new_items">
+        <item quantity="one">Вы получили %1$d похвалу</item>
+        <item quantity="few">Вы получили %1$d похвалы</item>
+        <item quantity="many">Вы получили %1$d похвалы</item>
+        <item quantity="other">Вы получили %1$d похвалы</item>
+    </plurals>
+    <!--Neutral notes-->
+    <plurals name="neutral_note_number_item">
+        <item quantity="one">%d нейтральное замечание</item>
+        <item quantity="few">%d нейтральных замечания</item>
+        <item quantity="many">%d нейтральных замечаний</item>
+        <item quantity="other">%d нейтральных замечаний</item>
+    </plurals>
+    <plurals name="neutral_note_new_items">
+        <item quantity="one">Новое нейтральное замечание</item>
+        <item quantity="few">Новые нейтральные замечания</item>
+        <item quantity="many">Новые нейтральные замечания</item>
+        <item quantity="other">Новые нейтральные замечания</item>
+    </plurals>
+    <plurals name="neutral_note_notify_new_items">
+        <item quantity="one">Вы получили %1$d нейтральное замечание</item>
+        <item quantity="few">Вы получили %1$d нейтральных замечания</item>
+        <item quantity="many">Вы получили %1$d нейтральных замечаний</item>
+        <item quantity="other">Вы получили %1$d нейтральных замечаний</item>
+    </plurals>
     <!--Homework-->
     <string name="homework_no_items">Нет домашних заданий</string>
     <string name="homework_mark_as_done">Отметить как выполненное</string>
     <string name="homework_mark_as_undone">Отметить как невыполненное</string>
     <string name="homework_attachments">Вложения</string>
-    <string name="homework_notify_new_item_title">New homework</string>
+    <plurals name="homework_notify_new_item_title">
+        <item quantity="one">New homework</item>
+        <item quantity="few">New homework</item>
+        <item quantity="many">New homework</item>
+        <item quantity="other">New homework</item>
+    </plurals>
+    <plurals name="homework_number_item">
+        <item quantity="one">%d homework</item>
+        <item quantity="few">%d homework</item>
+        <item quantity="many">%d homework</item>
+        <item quantity="other">%d homework</item>
+    </plurals>
     <!--Lucky number-->
     <string name="lucky_number_title">Счастливый номер</string>
     <string name="lucky_number_header">Сегодняшний счастливый номер это</string>
     <string name="lucky_number_empty">Нет данных о счастливом номере</string>
     <string name="lucky_number_notify_new_item_title">Сегодняшний счастливый номер</string>
-    <string name="lucky_number_notify_new_item">Сегодняшний счастливый номер это: %d</string>
+    <string name="lucky_number_notify_new_item">Сегодняшний счастливый номер это: %s</string>
     <string name="lucky_number_history_button">Показать историю</string>
     <!--Lucky number history-->
     <string name="lucky_number_history_title">История удачных чисел</string>
