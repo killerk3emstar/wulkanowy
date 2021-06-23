@@ -26,7 +26,14 @@ class DashboardHomeworkAdapter : RecyclerView.Adapter<DashboardHomeworkAdapter.V
         val item = items[position]
         val context = holder.binding.root.context
         val formattedDate = item.date.toFormattedString("dd.MM")
-        val warningTextColor = context.getThemeAttrColor(
+        val primaryWarningTextColor = context.getThemeAttrColor(
+            if (item.date == LocalDate.now()) {
+                R.attr.colorPrimary
+            } else {
+                android.R.attr.textColorPrimary
+            }
+        )
+        val secondaryWarningTextColor = context.getThemeAttrColor(
             if (item.date == LocalDate.now()) {
                 R.attr.colorPrimary
             } else {
@@ -36,11 +43,11 @@ class DashboardHomeworkAdapter : RecyclerView.Adapter<DashboardHomeworkAdapter.V
 
         with(holder.binding) {
             dashboardHomeworkSubitemTitle.text = "${item.subject} - ${item.content}"
-            dashboardHomeworkSubitemTitle.setTextColor(warningTextColor)
+            dashboardHomeworkSubitemTitle.setTextColor(primaryWarningTextColor)
 
             dashboardHomeworkSubitemTime.text =
                 context.getString(R.string.dashboard_homework_time, formattedDate)
-            dashboardHomeworkSubitemTime.setTextColor(warningTextColor)
+            dashboardHomeworkSubitemTime.setTextColor(secondaryWarningTextColor)
         }
     }
 
